@@ -15,20 +15,24 @@ old_settings = termios.tcgetattr(sys.stdin)
 #My var
 window= None
 TimeStep = None
-lastTime = None
+lastTime = []
 
 #entity type
 Player = None
 Mob = None
 Boon = None
+Menu = None
 #______INIT________________________________________________________________________
 
 def Init():
-	global window, TimeStep, lastTime, Player
-	lastTime = time.time()
+	global window, TimeStep, lastTime, Menu, Player
+	lastTime["dt"] = time.time()
+	lastTime["2s"] = time.time()
+	Menue = "Quiche"
 	TimeStep = 0.05 #seconde (0.05 equivaux a 20 img seconde)
 	window = Background.create_wd("Windows.txt")
 
+	Background.show_wd(window)
 	# interaction clavier
 	tty.setcbreak(sys.stdin.fileno())
 
@@ -40,14 +44,18 @@ def Init():
 #______SHOW________________________________________________________________________
 
 def show():
-	global window, TimeStep, lastTime
+	global window, TimeStep, lastTime, Menu
+
 	#Show Frame
-	if time.time() >= lastTime + TimeStep:
+	if time.time() >= lastTime["dt"] + TimeStep:
 		Background.show_wd(window)
-		print "AHHHHHHH"
-		print time.time()
-		lastTime = time.time()
+		if Menu = "Quiche":
+			Background.show({"test":['#']}, 20, 10, 43, 31, "Menu/Game_dev.txt")
+		lastTime["dt"] = time.time()
 	#end loop
+	if time.time() >= lastTime["2s"] + 2:
+		lastTime["2s"]=time.time()
+
 
 	#restoration couleur
 	sys.stdout.write("\033[37m")
@@ -58,6 +66,7 @@ def show():
 
 #______INTERACT________________________________________________________________________
 def Interact():
+	global Menu
     if isData():
 		c = sys.stdin.read(1)
 		if c == '\x1b': # \x1b = esp

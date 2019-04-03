@@ -27,13 +27,12 @@ def show_wd(doc):
 			#affiche
 			sys.stdout.write(doc["window"][y][x])
 
-def show(doc, X, Y, color_bg, color_txt, open_doc=0):
+def show(doc, X, Y, color_bg, color_txt,open_doc ="0"):
     #couleur fond
-	sys.stdout.write("\033["+str(color_bg)+"m")
+    sys.stdout.write("\033["+str(color_bg)+"m")
 	#couleur white
-	sys.stdout.write("\033["+str(color_txt)+"m")
-
-    if open_doc =! 0:
+    sys.stdout.write("\033["+str(color_txt)+"m")
+    if open_doc != "0":
         doc= create(open_doc)
     for y in range(0,len(doc["window"])):
 		for x in range(0,len(doc["window"][y])):

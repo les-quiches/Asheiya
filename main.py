@@ -7,7 +7,10 @@ import termios
 import tty
 
 #My module
-import Background
+import background
+B=background
+import entity
+E=entity
 
 #interaction clavier
 old_settings = termios.tcgetattr(sys.stdin)
@@ -17,26 +20,40 @@ window= None
 TimeStep = None
 lastTime = {}
 
+#asset
+entity_asset = None
+window= None
+
 #entity type
 Player = None
 Mob = None
 Boon = None
 Menu = None
+
+
 #______INIT________________________________________________________________________
 
 def Init():
-	global window, TimeStep, lastTime, Menu, Player
+	global window, TimeStep, lastTime, Menu, Player, entity_asset
 	lastTime["dt"] = time.time()
 	lastTime["2s"] = time.time()
 	Menue = "Quiche"
-	TimeStep = 0.2 #seconde (0.05 equivaux a 20 img seconde)
-	window = Background.create_wd("Windows.txt")
+	TimeStep = 0.05 #seconde (0.05 equivaux a 20 img seconde)
+	#asset bg
+	window = B.create_wd("Windows.txt")
 
-	Background.show_wd(window)
+	B.show_wd(window)
 	# interaction clavier
 	tty.setcbreak(sys.stdin.fileno())
 
-	Player = Background.create_wd("player.txt")
+	#Player
+	X_player = 20
+	Y_player = 37
+	life_player = 18
+	armor_player =25
+	speed_player = 5
+	Player = E.create_entity("Asheiya Briceval", X_player, Y_player, "Player", life_player, armor_player, speed_player)
+	entity_asset["Player"] = B.create_wd("Player.txt")
 
 	#effacer la console
 	sys.stdout.write("\033[1;1H")
@@ -46,13 +63,13 @@ def Init():
 #______SHOW________________________________________________________________________
 
 def show():
-	global window, TimeStep, lastTime, Menu,Player
+	global window, TimeStep, lastTime, Menu,Player, entity_asset
 	#
 	#Show Frame
 	if time.time() >= lastTime["dt"] + TimeStep:
-		Background.show_wd(window)
+		B.show_wd(window)
 		#if Menu == "Quiche" :
-		Background.show(Player, 20, 37, 40, 34)
+		B.show(entity_asset["Player"], Player["x"], Player["y"], 40, 34)
 		lastTime["dt"] = time.time()
 	#end loop
 	if time.time() >= lastTime["2s"] + 2:
@@ -68,7 +85,7 @@ def show():
 
 #______INTERACT________________________________________________________________________
 def Interact():
-	global Menu
+	global Menu, Player
 	if isData() :
 		c = sys.stdin.read(1)
 		if c == '\x1b': # \x1b = esp

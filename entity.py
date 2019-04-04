@@ -1,3 +1,8 @@
+import sys
+import os
+
+import files
+f=files
 
 def create_entity(Name, Type, X, Y, Life, Armor, Speed):
     Entity=dict()
@@ -11,6 +16,19 @@ def create_entity(Name, Type, X, Y, Life, Armor, Speed):
 
 
     return(Entity)
+def create_asset(filename):
+    ca=dict()
+    ca["Asset"]= []
+    myfile= f.OPEN_FILE_XML(filename)
+    myfileframe= f.SPLIT(myFile,"Frame")
+    ca["nbFrame"]=len(myfileframe)-1
+    for y in my
+    doc = f.SPLIT_LINES(myfileframe) # axe y
+    for x in doc:# axe x
+        y = list(x)
+        ca["Asset"].append(y)
+    ca["nbFrame"]=
+    return(ca)
 
 def move_entity(Entity,x,y):
     Entity["x"]=x

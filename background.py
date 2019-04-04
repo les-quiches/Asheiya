@@ -1,8 +1,8 @@
 import sys
 import os
 
-import Files
-f =Files
+import files
+f =files
 
 def create_wd(filename):
     wd = dict()

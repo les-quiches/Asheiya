@@ -23,6 +23,8 @@ lastTime = {}
 #asset
 entity_asset = {}
 entity_asset["Player"]={}
+Ea_p = None # Ea_p = entity_asset["Player"]["position"]
+
 window= None
 
 #entity type
@@ -56,7 +58,7 @@ def Init():
 
 	#Player
 	entity_asset["Player"]["position"] = ["Wait","Right","0"]
-	Ea_p = Ea_p=entity_asset["Player"]["position"]
+	Ea_p = entity_asset["Player"]["position"]
 	X_player = 20
 	Y_player = 37
 	life_player = 18
@@ -112,7 +114,9 @@ def Interact():
 			Ea_p=[Ea_p[0],"Left",Ea_p[2]]
 	else:
 		Ea_p = ["Wait",Ea_p[1],Ea_p[2]]
-
+#_____HIT BOX_________________________________________________________________________
+def Hit_box():
+	return
 #_____MOVE_________________________________________________________________________
 def move():
 	global Player

@@ -21,23 +21,23 @@ TimeStep = None
 lastTime = {}
 
 #asset
-entity_asset = None
+entity_asset = {}
 window= None
 
 #entity type
 Player = None
 Mob = None
 Boon = None
+
 Menu = None
 
 
 #______INIT________________________________________________________________________
-
 def Init():
 	global window, TimeStep, lastTime, Menu, Player, entity_asset
 	lastTime["dt"] = time.time()
 	lastTime["2s"] = time.time()
-	Menue = "Quiche"
+	Menu = "Quiche"
 	TimeStep = 0.05 #seconde (0.05 equivaux a 20 img seconde)
 	#asset bg
 	window = B.create_wd("Windows.txt")
@@ -52,8 +52,8 @@ def Init():
 	life_player = 18
 	armor_player =25
 	speed_player = 5
-	Player = E.create_entity("Asheiya Briceval", X_player, Y_player, "Player", life_player, armor_player, speed_player)
-	entity_asset["Player"] = B.create_wd("Player.txt")
+	Player = E.create_entity("Asheiya Briceval", "Player", X_player, Y_player, life_player, armor_player, speed_player)
+	entity_asset["Player"] = E.create_asset("Player.txt")
 
 	#effacer la console
 	sys.stdout.write("\033[1;1H")
@@ -61,7 +61,6 @@ def Init():
 	return()
 
 #______SHOW________________________________________________________________________
-
 def show():
 	global window, TimeStep, lastTime, Menu,Player, entity_asset
 	#
@@ -69,7 +68,7 @@ def show():
 	if time.time() >= lastTime["dt"] + TimeStep:
 		B.show_wd(window)
 		#if Menu == "Quiche" :
-		B.show(entity_asset["Player"], Player["x"], Player["y"], 40, 34)
+		E.show_entity(entity_asset["Player"],Player, 40, 33)
 		lastTime["dt"] = time.time()
 	#end loop
 	if time.time() >= lastTime["2s"] + 2:
@@ -80,21 +79,38 @@ def show():
 	sys.stdout.write("\033[40m")
 	#
 	#deplacement curseur
-	sys.stdout.write("\033[1;1H\n")
+	#sys.stdout.write("\033[1;1H\n")
 	return
 
 #______INTERACT________________________________________________________________________
 def Interact():
+	def isData():
+		#recuperation evenement clavier
+		return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
 	global Menu, Player
 	if isData() :
 		c = sys.stdin.read(1)
 		if c == '\x1b': # \x1b = esp
 			quitGame()
 
-def isData():
-	#recuperation evenement clavier
-	return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
+#_____MOVE_________________________________________________________________________
+def move():
+	global Player
+	return()
 
+#_____RUN_________________________________________________________________________
+def Run():
+	Init()
+	#Loop
+	while True:
+		Interact()
+		show()
+	return()
+
+#____Start___________________________________________________________________________
+Run()
+quitGame()
+#____END___________________________________________________________________________
 def quitGame():
 
 	#restoration parametres terminal
@@ -106,21 +122,3 @@ def quitGame():
 
 	termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
 	sys.exit()
-#_____MOVE_________________________________________________________________________
-def move():
-	global Player
-	return()
-#_____RUN_________________________________________________________________________
-def Run():
-	Init()
-	#Loop
-	while True:
-		Interact()
-		show()
-	return()
-
-
-#____Start___________________________________________________________________________
-Run()
-quitGame()
-#____END___________________________________________________________________________

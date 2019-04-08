@@ -19,6 +19,7 @@ old_settings = termios.tcgetattr(sys.stdin)
 window= None
 TimeStep = None
 lastTime = {}
+player_move =False
 
 #asset
 entity_asset = {}
@@ -45,10 +46,16 @@ Asheiya_asset=[
 #______INIT________________________________________________________________________
 def Init():
 	global window, TimeStep, lastTime, Menu, Player, entity_asset, Ea_p
+#time
+	TimeStep = 0.05 #seconde (0.05 equivaux a 20 img seconde)
+
 	lastTime["dt"] = time.time()
 	lastTime["2s"] = time.time()
+	lastTime["Player"] = time.time()
+
+	#start menu
 	Menu = "Quiche"
-	TimeStep = 0.05 #seconde (0.05 equivaux a 20 img seconde)
+
 	#asset bg
 	window = B.create_wd("Windows.txt")
 
@@ -63,11 +70,10 @@ def Init():
 	Y_player = 37
 	life_player = 18
 	armor_player =25
-	speed_player = 5
+	speed_player = 0.1 #deplaxcement pas seconde
 	Player = E.create_entity("Asheiya Briceval", "Player", X_player, Y_player, life_player, armor_player, speed_player)
 	for Asheiya_doc in ["Run_Right_0","Wait_Right_0","Run_Left_0","Wait_Left_0"]:# a terme on utilisera "Asheiya_asset" ou un constructeur de txt
 		entity_asset["Player"][Asheiya_doc]=E.create_asset("Asheiya/Asset/" + Asheiya_doc + ".txt") #chargement Asset
-	entity_asset["Player"]["FramesNb"]=0
 	print entity_asset
 	#effacer la console
 	sys.stdout.write("\033[1;1H")
@@ -76,25 +82,27 @@ def Init():
 
 #______SHOW________________________________________________________________________
 def show():
-	global window, TimeStep, lastTime, Menu,Player, entity_asset, Ea_p
-	#
+	global window, TimeStep, lastTime, Menu,Player, entity_asset, Ea_p, player_move
+
 	#Show Frame
 	if time.time() >= lastTime["dt"] + TimeStep:
 		B.show_wd(window)
-		#if Menu == "Quiche" :
 		print Ea_p[0]+"_"+Ea_p[1]+"_"+Ea_p[2]
 		E.show_entity(entity_asset["Player"][str(Ea_p[0]+"_"+Ea_p[1]+"_"+Ea_p[2])], Player, 40, 33)
 		lastTime["dt"] = time.time()
-	#end loop
+
 	if time.time() >= lastTime["2s"] + 2:
 		lastTime["2s"]=time.time()
-	#
+
+	if time.time() >= lastTime["Player"] + Player["Speed"]:
+		player_move = False
+		lastTime["Player"]=time.time()
 	#restoration couleur
 	sys.stdout.write("\033[37m")
 	sys.stdout.write("\033[40m")
 	#
 	#deplacement curseur
-	#sys.stdout.write("\033[1;1H\n")
+	sys.stdout.write("\033[1;1H\n")
 	return
 
 #______INTERACT________________________________________________________________________
@@ -103,17 +111,26 @@ def Interact():
 		#recuperation evenement clavier
 		return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
 
-	global Menu, Player, Ea_p
+	global Menu, Player, Ea_p, player_move
 	if isData() :
 		c = sys.stdin.read(1)
 		if c == '\x1b': # \x1b = esp
 			quitGame()
-		elif c == "l":
+		if c == "l":
 			Ea_p=[Ea_p[0],"Right",Ea_p[2]]
 		elif c == "j":
 			Ea_p=[Ea_p[0],"Left",Ea_p[2]]
+		if c == "d" and player_move == False:
+			Ea_p=["Run",Ea_p[1],Ea_p[2]]
+			Player["x"]+=1
+			player_move = True
+		elif c == "q" and player_move == False:
+			Ea_p=["Run",Ea_p[1],Ea_p[2]]
+			Player["x"]+=(-1)
+			player_move = True
 	else:
-		Ea_p = ["Wait",Ea_p[1],Ea_p[2]]
+		if player_move == False:
+			Ea_p=["Wait",Ea_p[1],Ea_p[2]]
 
 #_____HIT BOX_________________________________________________________________________
 def Hit_box():
@@ -122,6 +139,7 @@ def Hit_box():
 #_____MOVE_________________________________________________________________________
 def move():
 	global Player
+
 	return()
 
 #_____RUN_________________________________________________________________________

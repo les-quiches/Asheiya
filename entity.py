@@ -4,12 +4,14 @@ import os
 import files
 f=files
 #_____Create____________________________________________________________________
-def create_entity(Name, Type, X, Y, Life, Armor, Speed, AI = None):
+def create_entity(Name, Type, X, Y, Vx, Vy, Life, Armor, Speed, AI = None):
     Entity=dict()
     Entity["Name"]= Name
     Entity["Type"]= type
     Entity["x"]= X
     Entity["y"]= Y
+    Entity["Vx"]= Vy
+    Entity["Vy"]= Vy
     Entity["Life"]= Life
     Entity["Armor"]= Armor
     Entity["Speed"]=Speed

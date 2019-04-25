@@ -23,8 +23,6 @@ player_move =False
 game_border=[]
 #asset
 entity_asset = {}
-Ea_p = None # Ea_p = entity_asset["Player"]["position"]
-
 window= None
 
 Entity= {}
@@ -49,7 +47,7 @@ Projectile_Asset=[
 
 #______INIT________________________________________________________________________
 def Init():
-	global window, TimeStep, lastTime, Menu, Player, entity_asset, Ea_p, game_border, Entity
+	global window, TimeStep, lastTime, Menu, Player, entity_asset, game_border, Entity
 #time
 	TimeStep = 0.05 #seconde (0.05 equivaux a 20 img seconde)
 	Entity["Projectile"]={}
@@ -73,7 +71,6 @@ def Init():
 
 	#Player
 	entity_asset["Player"]["position"] = ["Wait","Right",0]
-	Ea_p = entity_asset["Player"]["position"]
 	X_player = 20
 	Y_player = 37
 	Vx_player = 0
@@ -101,8 +98,8 @@ def Init():
 	sys.stdout.write("\033[2J")
 	return()
 
-def Time_game():
-	global TimeStep, lastTime, player_move, entity_asset, Ea_p,Entity, Player
+def TimeGame():
+	global TimeStep, lastTime, player_move, entity_asset,Entity, Player
 	if time.time() >= lastTime["dt"] + TimeStep:
 		Show()
 	if time.time() >= lastTime["2s"] + 2:
@@ -120,7 +117,7 @@ def Time_game():
 		Move()
 		lastTime["Player"]=time.time()
 
-def Windows():
+class Windows():
 	print "lol"
 	#sa sera des fonction pour afficher dans les fenetres a droite (le texte)
 def Randoms_Entity():
@@ -128,12 +125,12 @@ def Randoms_Entity():
 	#creation entity de facon aleatoire genre les pics qui tombe du plafon ou montre random et des fonctoin autour de l'allea et des entiter
 #______SHOW________________________________________________________________________
 def Show():
-	global window, TimeStep, lastTime, Menu, Player, entity_asset, Ea_p
+	global window, TimeStep, lastTime, Menu, Player, entity_asset
 
 	#Show Frame
 	B.show_wd(window)
-	print Ea_p[0]+"_"+Ea_p[1]+"_"+str(Ea_p[2])#--------------------------------------------------------------print
-	E.show_entity(entity_asset["Player"][str(Ea_p[0]+"_"+Ea_p[1]+"_"+str(Ea_p[2]))], Player, 40, 33)
+	print entity_asset["Player"]["position"][0]+"_"+entity_asset["Player"]["position"][1]+"_"+str(entity_asset["Player"]["position"][2])#--------------------------------------------------------------print
+	E.show_entity(entity_asset["Player"][str(entity_asset["Player"]["position"][0]+"_"+entity_asset["Player"]["position"][1]+"_"+str(entity_asset["Player"]["position"][2]))], Player, 40, 33)
 	lastTime["dt"] = time.time()
 
 	#restoration couleur
@@ -150,7 +147,7 @@ def Interact():
 		#recuperation evenement clavier
 		return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
 
-	global Menu, Player, Ea_p, player_move
+	global Menu, Player, player_move
 	if isData() :
 		c = sys.stdin.read(1)
 		if c == '\x1b': # \x1b = esp
@@ -160,11 +157,11 @@ def Interact():
 		elif c == "j":
 			Move.Player.direction("Left")
 		elif c == "i":
-            Move.Player.fire_angle(45)
+			Move.Player.fire_angle(45)
 		elif c == "k":
 			Move.Player.fire_angle(-45)
 		if c == "d":
-			Move.Player.stand("Run")
+			Move().player.stand("Run")
 			Player["x"]+=1
 			player_move = True
 		elif c == "q":
@@ -176,15 +173,13 @@ def Interact():
 			Player["Vy"]-=5
 			player_move = True
 		elif c == "s" and player_move == False:
+			Move.Player.stand("Wait")
 			player_move = True
 	else:
 		if player_move == False:
-			Ea_p=["Wait",Ea_p[1],Ea_p[2]]
-
-#_____MOVE_________________________________________________________________________
-def Move():
-	global Player,Entity, game_border,entity_asset, Ea_p
-	#_____HIT BOX__________________________________________________________________
+			entity_asset["Player"]["position"]=["Wait",entity_asset["Player"]["position"][1],entity_asset["Player"]["position"][2]]
+class Hitbox:
+	global Player,Entity, game_border,entity_asset
 	def hit_box_simple(asset,entity):
 		y=len(asset)
 		a=0
@@ -193,25 +188,32 @@ def Move():
 		x= a/(i+1)
 		hit_box_entity=[entity["x"],entity["x"]+x,entity["y"], entity["y"]+y]# plage de l'hitbox de l'asset (point en haut a gauche puit en bas a doite)
 		return(hit_box_entity)
-	def Player():
-        def direction(view):
-            Ea_p=[Ea_p[0],view,Ea_p[2]]
-        def fire_angle(num):
-            if Ea_p[2]+num in [-90,-45,0,45,90]
-                Ea_p=[Ea_p[0],Ea_p[1],Ea_p[2]+num]
-        def stand(stand):
-            if player_move == False:
-                Ea_p=[stand,Ea_p[1],Ea_p[2]]
-		a=10
-		Player["Vy"] = a*Player["Speed"] + Player["Vy"]
-		Y=Player["Vy"]*Player["Speed"]+Player["y"]
-		hitP=hit_box_simple(Ea_p,Player)
-		if hitP[3] >= game_border[3]:
-			Player["vy"]= 0
-		else:
-			Player["Y"]=Y
-	Player()
-	return()
+#_____MOVE_________________________________________________________________________
+class Move:
+	def __init__(self):
+		self.player = self.Player()
+	global Player,Entity, game_border,entity_asset
+	#_____HIT BOX__________________________________________________________________
+	class Player:
+		def direction(view):
+			entity_asset["Player"]["position"]=[entity_asset["Player"]["position"][0],view,entity_asset["Player"]["position"][2]]
+		def fire_angle(num):
+			if entity_asset["Player"]["position"][2]+num in [-90,-45,0,45,90]:
+				entity_asset["Player"]["position"]=[entity_asset["Player"]["position"][0],entity_asset["Player"]["position"][1],entity_asset["Player"]["position"][2]+num]
+
+		def stand(stand):
+			if player_move == False:
+				entity_asset["Player"]["position"]=[stand,entity_asset["Player"]["position"][1],entity_asset["Player"]["position"][2]]
+
+		def Gravity():
+			a=10
+			Player["Vy"] = a*Player["Speed"] + Player["Vy"]
+			Y=Player["Vy"]*Player["Speed"]+Player["y"]
+			hitP=hit_box_simple(entity_asset["Player"]["position"],Player)
+			if hitP[3] >= game_border[3]:
+				Player["vy"]= 0
+			else:
+				Player["Y"]=Y
 
 #_____RUN_________________________________________________________________________
 def Run():
@@ -219,8 +221,8 @@ def Run():
 	#Loop
 	while True:
 		Interact()
-		Time_game()
-        Game
+		TimeGame()
+		#Game()
 	return()
 
 #____Start___________________________________________________________________________

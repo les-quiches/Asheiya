@@ -238,3 +238,6 @@ def quitGame():
 
 	termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
 	sys.exit()
+
+
+#poulet frie de très bon gout

@@ -24,7 +24,7 @@ def create_entity(Name, Type, X, Y, Vx, Vy,Life, Armor, Speed, LastTime, Asset,A
     return(Entity)
 
 def create_asset(filename):
-    global nFile #sert a faire changer les assets, pas adaptable du tout, à modifiers
+    global nFile #sert a faire changer les assets, pas adaptable du tout, a modifier
 
     ca=dict()
     ca["Asset"]= []

@@ -4,7 +4,7 @@ import os
 import files
 f =files
 
-def create_wd(filename):
+def create_window(filename):
     wd = dict()
     wd["window"]=[]
     myfile=f.OPEN_FILE_XML(filename)
@@ -14,7 +14,7 @@ def create_wd(filename):
         wd["window"].append(y)
     return(wd)
 
-def show_wd(doc):
+def show_window(doc):
 	#couleur fond
 	sys.stdout.write("\033[40m")
 	#couleur white
@@ -53,3 +53,8 @@ def show(doc, X, Y, color_bg, color_txt,open_doc ="0"):
     37, 47 : gris.
 
 """
+
+#____Jeux de Test________________________________________________________________
+if (__name__=="__main__"):
+    window = create_window("Windows.txt")
+    show_window(window)

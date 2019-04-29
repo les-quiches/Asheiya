@@ -40,7 +40,7 @@ def create_asset(filename):
 
 #_____Move______________________________________________________________________
 def move_entity(Entity,x,y):
-    Entity["x"]+=x
+    Entity["x"]+=2*x
     Entity["y"]+=y
     Entity["LastTime"]=time.time()
     return(Entity)

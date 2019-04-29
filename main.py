@@ -8,131 +8,126 @@ import tty
 
 #My module
 import background
-B=background
 import entity
-E=entity
-import AI
+import shootingmob
+import character
 
 #interaction clavier
-old_settings = termios.tcgetattr(sys.stdin)
+oldSettings = termios.tcgetattr(sys.stdin)
 
-#My var
+
+#Globals 
+
 window= None
-TimeStep = None
-lastTime = {}
-player_move =False
-game_border=[]
+timeStep = None
+timeIni = None
+gameBorder=[]
+allEntity= {}
 
-#asset
-entity_asset = {}
-window= None
+player = None
+menu = None
 
-Entity= {}
 
-#entity type
-Player = None
-Mob = None
-Boon = None
 
-Menu = None
-#asset Asheiya
-#on le metra dans Init
-Asheiya_asset=[
-"Run_Right_0", "Run_Right_45", "Run_Right_90",  "Run_Right_-45", "Run_Right_-90",
- "Run_Left_0", "Run_Left_45", "Run_Left_90", "Run_Left_-45", "Run_Left_-90",
-"Wait_Right_0", "Wait_Right_45", "Wait_Right_90", "Wait_Right_-45", "Wait_Right_-90",
- "Wait_Left_0", "Wait_Left_45", "Wait_Left_90", "Wait_Left_-45", "Wait_Left_-90",
-]
-Projectile_Asset=[
-"Gun_Horizontal","Gun_Slach","Gun_UnSlash","Gun_Vertical"
-]
+
 
 #______INIT________________________________________________________________________
-def Init():
-	global window, TimeStep, lastTime, Menu, Player, entity_asset, game_border, Entity
-#time
-	TimeStep = 0.05 #seconde (0.05 equivaux a 20 img seconde)
-	Entity["Projectile"]={}
 
-	entity_asset["Projectile"]={}
-	entity_asset["Player"]={}
+def Init(): 	#initialisation des variables
+	global window, timeStep, timeIni, gameBorder, allEntity, player, menu
 
-	lastTime["dt"] = time.time()
-	lastTime["2s"] = time.time()
-	lastTime["Player"] = time.time()
-	lastTime["Gun"] = time.time()
+	asheiyaAsset=[
+	"Run_Right_0", "Run_Right_45", "Run_Right_90",  "Run_Right_-45", "Run_Right_-90",
+ 	"Run_Left_0", "Run_Left_45", "Run_Left_90", "Run_Left_-45", "Run_Left_-90",
+	"Wait_Right_0", "Wait_Right_45", "Wait_Right_90", "Wait_Right_-45", "Wait_Right_-90",
+ 	"Wait_Left_0", "Wait_Left_45", "Wait_Left_90", "Wait_Left_-45", "Wait_Left_-90",
+	]
+
+	projectileAsset=[
+	"Gun_Horizontal","Gun_Slach","Gun_UnSlash","Gun_Vertical"
+	]	
+
+	timeStep = 0.01 # en secondes -> 10 images par secondes
+	timeIni = time.time()
+
+	allEntity["projectile"]=[] #gere les tirs de Asheiya et des ennemis
+	allEntity["mobs"]=[] #gere Asheiya, les boss, et autres mobs
+	allEntity["stage"]=[] #gere les bonus, plateforme pieges et autres
+	
 	#start menu
-	Menu = "Quiche"
+	menu="quiche"
 
-	#asset bg
-	window = B.create_wd("Windows.txt")
 
-	B.show_wd(window)
-	# interaction clavier
+	#asset background
+	window=background.create_window("Windows.txt")
+
+	#interaction clavier
 	tty.setcbreak(sys.stdin.fileno())
 
-	#Player
-	entity_asset["Player"]["position"] = ["Wait","Right",0]
-	X_player = 20
-	Y_player = 37
-	Vx_player = 0
-	Vy_player = 0
-	life_player = 18
-	armor_player =25
-	speed_player = 0.1 #deplaxcement pas seconde
-	Player = E.create_entity("Asheiya Briceval", "Player", X_player, Y_player,Vy_player,Vy_player, life_player, armor_player, speed_player)
-	for Asheiya_doc in ["Run_Right_0","Wait_Right_0","Run_Left_0","Wait_Left_0","Run_Right_45","Wait_Right_45"]:# a terme on utilisera "Asheiya_asset" ou un constructeur de txt
-		entity_asset["Player"][Asheiya_doc]=E.create_asset("Asheiya/Asset/" + Asheiya_doc + ".txt") #chargement Asset
-	print entity_asset
+	#on concoit le joueur
+	xPlayer = 20
+	yPlayer = 37
+	vxPlayer = 0
+	vyPlayer = 0
+	lifePlayer = 18
+	armorPlayer =25
+	speedPlayer = 0.07 #deplaxcement pas seconde
+	lastTime = time.time() #moment d'apparition, permettra de gerer l'affichage
+	assetPlayer = {}
+	assetPlayer["position"]=["Wait","Right",0] #correspond a sa representation : course/attente, orientation, position du bras
+	for Asheiya_doc in asheiyaAsset :
+		assetPlayer[Asheiya_doc]=entity.create_asset("Asheiya/Asset/" + Asheiya_doc + ".txt") #chargement Asset
+	player = entity.create_entity(
+		"Asheiya Briceval", 
+		"player",
+		xPlayer,yPlayer,vxPlayer,vyPlayer,lifePlayer,armorPlayer,speedPlayer,lastTime,assetPlayer
+		)
+	assetShot = {}
+	for Shot_doc in ["Gun_Horizontal","Gun_Slash","Gun_UnSlash","Gun_Vertical"] :
+		assetShot[Shot_doc] =entity.create_asset("Projectile/"+Shot_doc+".txt") 
+	shotDelay = 3
+	shootingmob.create_shooting_mob(player,assetShot,shotDelay)
 
-	#Projectile
-	for Projectile_doc in ["Gun_Horizontal","Gun_Slach","Gun_UnSlash","Gun_Vertical"]:
-		entity_asset["Projectile"][Projectile_doc]=E.create_asset("Projectile/" + Projectile_doc + ".txt")
-
-	#windows
+	allEntity["mobs"].append(player)
+	#definition de la fenetre de jeu
 	x=0
 	y=0
 	xmax=90
 	ymax=42
-	game_border=[x,y,xmax,ymax]
-	#effacer la console
+	gameBorder=[x,y,xmax,ymax]
+
+	#on efface la console
 	sys.stdout.write("\033[1;1H")
 	sys.stdout.write("\033[2J")
 	return()
 
-def TimeGame():
-	global TimeStep, lastTime, player_move, entity_asset,Entity, Player
-	if time.time() >= lastTime["dt"] + TimeStep:
-		Show()
-	if time.time() >= lastTime["2s"] + 2:
-		lastTime["2s"]=time.time()
-	if time.time() >= lastTime["Gun"]:
-		#X_projectile, Y_projectile,Vx_projectile = truc chian a faire pour determiner ou est l'arme pour faire partir le projectile depuit l'arme
-		X_projectile=Player["x"]
-		Y_projectile = Player["y"]
-		Vx_projectile =1
-		Vy_projectile = 0
-		Entity["Projectile"]["Player"]=E.create_entity("", "Projectile", X_projectile, Y_projectile,Vx_projectile,Vy_projectile, Life=1, Armor=0, Speed=0.1)
-		lastTime["Gun"]=time.time()
-	if time.time() >= lastTime["Player"] + Player["Speed"]:
-		player_move = False
-		Move()
-		lastTime["Player"]=time.time()
 
-class Windows():
-	print "lol"
-	#sa sera des fonction pour afficher dans les fenetres a droite (le texte)
-def Randoms_Entity():
-	global Entity
-	#creation entity de facon aleatoire genre les pics qui tombe du plafon ou montre random et des fonctoin autour de l'allea et des entiter
-#______SHOW________________________________________________________________________
-def Show():
-	global window, TimeStep, lastTime, Menu, Player, entity_asset
+#______Show________________________________________________________________________
+
+def Show() :
+	global window, timeStep, timeIni, gameBorder, allEntity, player, menu
+
+
 	#Show Frame
-	B.show_wd(window)
-	print entity_asset["Player"]["position"][0]+"_"+entity_asset["Player"]["position"][1]+"_"+str(entity_asset["Player"]["position"][2])#--------------------------------------------------------------print
-	E.show_entity(entity_asset["Player"][str(entity_asset["Player"]["position"][0]+"_"+entity_asset["Player"]["position"][1]+"_"+str(entity_asset["Player"]["position"][2]))], Player, 40, 33)
-	lastTime["dt"] = time.time()
+	background.show_window(window)
+
+	for shot in allEntity["projectile"] :
+		asset = shot["Asset"]
+		color_bg = 40 #noir
+		color_txt = 33 #jaune
+		entity.show_entity(asset,shot,color_bg,color_txt)
+
+	for ent in allEntity["mobs"] :
+		if ent["Type"]=="player": 
+			asset =entity.create_asset(character.get_asset_doc(ent))
+			color_bg = 40 #noir
+			color_txt = 31 #rouge
+		else :
+			asset = entity.create_asset(ent["Asset"])
+			color_bg = 40
+			color_txt = 33
+		entity.show_entity(asset,ent,color_bg,color_txt)
+	timeIni = time.time()
 
 	#restoration couleur
 	sys.stdout.write("\033[37m")
@@ -142,102 +137,135 @@ def Show():
 	sys.stdout.write("\033[1;1H\n")
 	return
 
+#______Time_game________________________________________________________________________
+
+
+def Time_game(): #va rediriger sur les differentes fonctions selon leurs frequences
+	global window, timeStep, timeIni, gameBorder, allEntity, player, menu
+
+	for bullet in allEntity["projectile"] :
+		if time.time()>bullet["Speed"]+bullet["LastTime"] :
+			bullet = entity.move_entity(bullet,bullet["Vx"],bullet["Vy"])
+			#inserer gestion de collision ici qui provient du module entity avec en param allEntity
+
+
+
+	for mob in allEntity["mobs"] :
+		if (time.time()>mob["Speed"]+mob["LastTime"]) and (mob["Vx"]!=0 or mob["Vy"]!=0) :
+			mob = entity.move_entity(mob,mob["Vx"],mob["Vy"])
+
+			#inserer gestion de collision ici qui provient du module entity avec en param allEntity
+
+		if (shootingmob.is_shooting_mob(mob)) :
+			if time.time()>mob["shotDelay"]+mob["lastShot"] :	
+				#on fait tirer si le mob est un mob qui tir
+				shootingmob.shoot(mob, len(allEntity["projectile"]))
+
+	if time.time()>player["LastTime"]+player["Speed"]:
+		Interact()
+
+	if time.time()>player["LastTime"]+0.3 :
+		player = character.switch_stand(player,"Wait")
+		#on remet le joueur en position d'attente s'il fait rien
+
+	if time.time()>timeIni+timeStep:
+		Show()
+
+
 #______INTERACT________________________________________________________________________
 def Interact():
+
 	def isData():
 		#recuperation evenement clavier
 		return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
 
-	global Menu, Player, player_move
+	global player, menu
 	if isData() :
 		c = sys.stdin.read(1)
-		if c == '\x1b': # \x1b = esp
-			quitGame()
+
+		if c == '\x1b': # \x1b = esc
+			Quit_game()
+
 		if c == "l":
-			Move.Player.direction("Right")
+			player = character.switch_orientation(player,"Right")
+			player = character.switch_stand(player,"Wait")
+
 		elif c == "j":
-			Move.Player.direction("Left")
+			player = character.switch_orientation(player,"Left")
+			player = character.switch_stand(player,"Wait")
+
 		elif c == "i":
-			Move.Player.fire_angle(45)
+			player = character.switch_fire_angle(player,45)
+			player = character.switch_stand(player,"Wait")
+
 		elif c == "k":
-			Move.Player.fire_angle(-45)
-		if c == "d":
-			Move().player.stand("Run")
-			Player["x"]+=1
-			player_move = True
+			player = character.switch_fire_angle(player,-45)
+			player = character.switch_stand(player,"Wait")
+
+
+		elif c == "d":
+			player = character.switch_stand(player,"Run")
+			player = entity.move_entity(player,1,0)
+
 		elif c == "q":
-			Move.Player.stand("Run")
-			Player["x"]+=(-1)
-			player_move = True
-		elif c == "z" and player_move == False and Player["Vy"] == 0:#_________________________Vy______ bug possible multi jump si utilisateur rapuit sur le bouton de saut a l'apoger de sont saut
-			Move.Player.stand("Wait")
-			Player["Vy"]-=5
-			player_move = True
-		elif c == "s" and player_move == False:
-			Move.Player.stand("Wait")
-			player_move = True
-	else:
-		if player_move == False:
-			entity_asset["Player"]["position"]=["Wait",entity_asset["Player"]["position"][1],entity_asset["Player"]["position"][2]]
-class Hitbox:
-	global Player,Entity, game_border,entity_asset
-	def hit_box_simple(asset,entity):
-		y=len(asset)
-		a=0
-		for i in asset:
-			a+=len(asset[i])
-		x= a/(i+1)
-		hit_box_entity=[entity["x"],entity["x"]+x,entity["y"], entity["y"]+y]# plage de l'hitbox de l'asset (point en haut a gauche puit en bas a doite)
-		return(hit_box_entity)
-#_____MOVE_________________________________________________________________________
-class Move:
-	def __init__(self):
-		self.player = self.Player()
-	global Player,Entity, game_border,entity_asset
-	#_____HIT BOX__________________________________________________________________
-	class Player:
-		def direction(view):
-			entity_asset["Player"]["position"]=[entity_asset["Player"]["position"][0],view,entity_asset["Player"]["position"][2]]
-		def fire_angle(num):
-			if entity_asset["Player"]["position"][2]+num in [-90,-45,0,45,90]:
-				entity_asset["Player"]["position"]=[entity_asset["Player"]["position"][0],entity_asset["Player"]["position"][1],entity_asset["Player"]["position"][2]+num]
+			player = character.switch_stand(player,"Run")
+			player = entity.move_entity(player,-1,0)
 
-		def stand(stand):
-			if player_move == False:
-				entity_asset["Player"]["position"]=[stand,entity_asset["Player"]["position"][1],entity_asset["Player"]["position"][2]]
+	# 	elif c == "z" and player_move == False and Player["Vy"] == 0:#_________________________Vy______ bug possible multi jump si utilisateur rapuit sur le bouton de saut a l'apoger de sont saut
+	# 		Move.Player.stand("Wait")
+	# 		Player["Vy"]-=5
+	# 		player_move = True
+	# 	elif c == "s" and player_move == False:
+	# 		Move.Player.stand("Wait")
+	# 		player_move = True
 
-		def Gravity():
-			a=10
-			Player["Vy"] = a*Player["Speed"] + Player["Vy"]
-			Y=Player["Vy"]*Player["Speed"]+Player["y"]
-			hitP=hit_box_simple(entity_asset["Player"]["position"],Player)
-			if hitP[3] >= game_border[3]:
-				Player["vy"]= 0
-			else:
-				Player["Y"]=Y
+	termios.tcflush(sys.stdin.fileno(),termios.TCIFLUSH) #on vide le buffer d'entree
 
-#_____RUN_________________________________________________________________________
+
+
+
+
+#########Boucle de simulation#########__________________________________________________
 def Run():
 	Init()
-	#Loop
+	#Infinite Loop
 	while True:
-		Interact()
-		TimeGame()
+		Time_game()
 		#Game()
 	return()
 
-#____Start___________________________________________________________________________
-Run()
-quitGame()
-#____END___________________________________________________________________________
-def quitGame():
 
+#______Quit_Game________________________________________________________________________
+
+def Quit_game():
 	#restoration parametres terminal
-	global old_settings
+	global oldSettings
 
-	#couleur white
+	sys.stdout.write("\033[1;1H")
+	sys.stdout.write("\033[2J")
+
+		#couleur white
 	sys.stdout.write("\033[37m")
 	sys.stdout.write("\033[40m")
 
-	termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
+
+	termios.tcsetattr(sys.stdin, termios.TCSADRAIN, oldSettings)
+
+	A = time.time()
+	while time.time()<A+1 :
+		None
+	print "Game exited successfully"
+
 	sys.exit()
+
+
+
+
+
+
+
+
+
+#____Jeux de Test________________________________________________________________
+if (__name__=="__main__"):
+	Run()

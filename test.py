@@ -1,23 +1,30 @@
-import sys
-import select
-
-import tty
-
-def isData():
-	#recuperation evenement clavier
-	return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
 
 
-def Init():
-    tty.setcbreak(sys.stdin.fileno())
+# player = {}
 
-def Interact():
-    if isData():
-        print sys.stdin.read(1)
+# def pouletTest() :
+# 	# import myglobals
 
-def Run():
-    while True:
-        Interact()
+# 	player["life"] = 3
 
-Init()
-Run()
+# 	print player
+
+# def pouletfrie() :
+# 	import myglobals
+# 	player["life"]+=1
+# 	print player
+
+# pouletTest()
+# print player
+# pouletfrie()
+# print player
+# pouletTest()
+# print player
+
+test = {"poulet" : 45, "toronto" : "cille"}
+tist = {"poulet" : 22}
+dick = {"aha": test, "oho" :tist}
+
+for i in dick :
+	for j in i : 
+		print j

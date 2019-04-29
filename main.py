@@ -12,6 +12,7 @@ B=background
 import entity
 E=entity
 import AI
+
 #interaction clavier
 old_settings = termios.tcgetattr(sys.stdin)
 
@@ -21,6 +22,7 @@ TimeStep = None
 lastTime = {}
 player_move =False
 game_border=[]
+
 #asset
 entity_asset = {}
 window= None
@@ -126,7 +128,6 @@ def Randoms_Entity():
 #______SHOW________________________________________________________________________
 def Show():
 	global window, TimeStep, lastTime, Menu, Player, entity_asset
-
 	#Show Frame
 	B.show_wd(window)
 	print entity_asset["Player"]["position"][0]+"_"+entity_asset["Player"]["position"][1]+"_"+str(entity_asset["Player"]["position"][2])#--------------------------------------------------------------print

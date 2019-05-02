@@ -2,6 +2,9 @@ import sys
 import os
 import time
 
+import pdb
+
+
 import files
 f=files
 
@@ -13,7 +16,7 @@ def create_entity(Name, Type, X, Y, Vx, Vy,Life, Armor, Speed, LastTime, Asset,A
     Entity["Type"]= Type
     Entity["x"]= X
     Entity["y"]= Y
-    Entity["Vx"]= Vy
+    Entity["Vx"]= Vx
     Entity["Vy"]= Vy
     Entity["Life"]= Life
     Entity["Armor"]= Armor
@@ -24,8 +27,8 @@ def create_entity(Name, Type, X, Y, Vx, Vy,Life, Armor, Speed, LastTime, Asset,A
     return(Entity)
 
 def create_asset(filename):
-    global nFile #sert a faire changer les assets, pas adaptable du tout, a modifier
-
+    global nFile #sert a faire changer les assets, pas adaptable du tout, a modifier   - afair
+                #faire un dictionnaire global nFile? et recuperer dans le filename la cle du dictionnaire
     ca=dict()
     ca["Asset"]= []
     myfile= f.OPEN_FILE_XML(filename)
@@ -50,6 +53,10 @@ def tp_entity(Entity,x,y):
     Entity["y"]=y
     return(Entity)
 
+def gravity(Entity) :  #-afair
+    None
+    return (Entity)
+
 #_____Show______________________________________________________________________
 def show_entity(doc,Entity, color_bg, color_txt):
 
@@ -71,8 +78,6 @@ def show_entity(doc,Entity, color_bg, color_txt):
     return
 
 
-
-
 #____Jeux de Test________________________________________________________________
 if (__name__=="__main__"):
     Name = "Asheiya"
@@ -92,10 +97,14 @@ if (__name__=="__main__"):
     player = create_entity(Name,Type,X,Y,Vx,Vy,Life,Armor,Speed, LastTime, Asset)
     # print player.keys()
 
-    show_entity(create_asset("Asheiya/Asset/Run_Right_0.txt"),player,40,33)
-    print player["Asset"]["Run_Right_0"]
-    show_entity(create_asset("Asheiya/Asset/Run_Right_0.txt"),player,40,33)
-    print player["Asset"]["Run_Right_0"]
+    # show_entity(create_asset("Asheiya/Asset/Run_Right_0.txt"),player,40,33)
+    # print player["Asset"]["Run_Right_0"]
+    # show_entity(create_asset("Asheiya/Asset/Run_Right_0.txt"),player,40,33)
+    # print player["Asset"]["Run_Right_0"]
+    print player["x"], player["y"]
+    tp_entity(player, 10, 12)
+    # pdb.set_trace()
+    print player["x"], player["y"]
 
 
 

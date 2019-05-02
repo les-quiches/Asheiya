@@ -4,6 +4,8 @@ import select
 import time
 import termios
 
+import pdb
+
 import tty
 
 #My module
@@ -26,7 +28,7 @@ allEntity= {}
 
 player = None
 menu = None
-
+manche = None #permet de gerer la manche et si c'est la premiere boucle de la manche
 
 
 
@@ -34,7 +36,7 @@ menu = None
 #______INIT________________________________________________________________________
 
 def Init(): 	#initialisation des variables
-	global window, timeStep, timeIni, gameBorder, allEntity, player, menu
+	global window, timeStep, timeIni, gameBorder, allEntity, player, menu, manche
 
 	asheiyaAsset=[
 	"Run_Right_0", "Run_Right_45", "Run_Right_90",  "Run_Right_-45", "Run_Right_-90",
@@ -55,7 +57,8 @@ def Init(): 	#initialisation des variables
 	allEntity["stage"]=[] #gere les bonus, plateforme pieges et autres
 	
 	#start menu
-	menu="quiche"
+	menu="startMenu"
+	manche = 10 #1 pour premiere manche, 0 pour le nb de fois qu'on est passe dans la boucle
 
 
 	#asset background
@@ -65,8 +68,8 @@ def Init(): 	#initialisation des variables
 	tty.setcbreak(sys.stdin.fileno())
 
 	#on concoit le joueur
-	xPlayer = 20
-	yPlayer = 37
+	xPlayer = 0
+	yPlayer = 0
 	vxPlayer = 0
 	vyPlayer = 0
 	lifePlayer = 18
@@ -100,6 +103,68 @@ def Init(): 	#initialisation des variables
 	sys.stdout.write("\033[1;1H")
 	sys.stdout.write("\033[2J")
 	return()
+
+
+
+def Init_Manche(): #pour initialiser chaque manche
+	#-afaire
+	global manche, menu, player
+
+	if manche == 10 :
+		player = entity.tp_entity(player,20,37)
+		manche = 11
+
+	return
+
+
+#______Game________________________________________________________________________
+def Game(): #gere les evennements du jeu, definit le contexte 
+	global menu, player, manche
+	if menu=="startMenu" :
+		#animation de demarage + elements loristiques et tout
+		menu = "menuManche1" #a integrer dans la derniere fonction qui sera appele par startMenu -afair
+	if menu == "menuManche1" and manche == 10 :
+		Init_Manche()
+
+	if player["Life"] = 0 :
+		None
+		# afair
+	return
+
+
+
+#______Time_game________________________________________________________________________
+def Time_game(): #va rediriger sur les differentes fonctions selon leurs frequences
+	global window, timeStep, timeIni, gameBorder, allEntity, player, menu
+
+	for bullet in allEntity["projectile"] :
+		if time.time()>bullet["Speed"]+bullet["LastTime"] :
+			bullet = entity.move_entity(bullet,bullet["Vx"],bullet["Vy"])
+			#inserer gestion de collision ici qui provient du module entity avec en param allEntity - afaire
+
+
+
+	for mob in allEntity["mobs"] :
+		if (time.time()>mob["Speed"]+mob["LastTime"]) and (mob["Vx"]!=0 or mob["Vy"]!=0) :
+			mob = entity.move_entity(mob,mob["Vx"],mob["Vy"])
+
+			#inserer gestion de collision ici qui provient du module entity avec en param allEntity - afaire
+
+		if (shootingmob.is_shooting_mob(mob)) :
+			if time.time()>mob["shotDelay"]+mob["lastShot"] :	
+				#on fait tirer si le mob est un mob qui tir
+				shootingmob.shoot(mob, len(allEntity["projectile"]))
+
+	if time.time()>player["LastTime"]+player["Speed"]:
+		Interact()
+
+	if time.time()>player["LastTime"]+0.3 :
+		player = character.switch_stand(player,"Wait")
+		#on remet le joueur en position d'attente s'il fait rien
+
+	if time.time()>timeIni+timeStep:
+		# gestion de la gravite, rajouter dans Entity dans MoveX/MoveY ? - afaire
+		Show()
 
 
 #______Show________________________________________________________________________
@@ -137,40 +202,6 @@ def Show() :
 	sys.stdout.write("\033[1;1H\n")
 	return
 
-#______Time_game________________________________________________________________________
-
-
-def Time_game(): #va rediriger sur les differentes fonctions selon leurs frequences
-	global window, timeStep, timeIni, gameBorder, allEntity, player, menu
-
-	for bullet in allEntity["projectile"] :
-		if time.time()>bullet["Speed"]+bullet["LastTime"] :
-			bullet = entity.move_entity(bullet,bullet["Vx"],bullet["Vy"])
-			#inserer gestion de collision ici qui provient du module entity avec en param allEntity
-
-
-
-	for mob in allEntity["mobs"] :
-		if (time.time()>mob["Speed"]+mob["LastTime"]) and (mob["Vx"]!=0 or mob["Vy"]!=0) :
-			mob = entity.move_entity(mob,mob["Vx"],mob["Vy"])
-
-			#inserer gestion de collision ici qui provient du module entity avec en param allEntity
-
-		if (shootingmob.is_shooting_mob(mob)) :
-			if time.time()>mob["shotDelay"]+mob["lastShot"] :	
-				#on fait tirer si le mob est un mob qui tir
-				shootingmob.shoot(mob, len(allEntity["projectile"]))
-
-	if time.time()>player["LastTime"]+player["Speed"]:
-		Interact()
-
-	if time.time()>player["LastTime"]+0.3 :
-		player = character.switch_stand(player,"Wait")
-		#on remet le joueur en position d'attente s'il fait rien
-
-	if time.time()>timeIni+timeStep:
-		Show()
-
 
 #______INTERACT________________________________________________________________________
 def Interact():
@@ -179,47 +210,52 @@ def Interact():
 		#recuperation evenement clavier
 		return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
 
-	global player, menu
+	global player, menu, manche
+
 	if isData() :
 		c = sys.stdin.read(1)
 
 		if c == '\x1b': # \x1b = esc
 			Quit_game()
 
-		if c == "l":
-			player = character.switch_orientation(player,"Right")
-			player = character.switch_stand(player,"Wait")
+		if (manche%10) == 1 : #on est en jeu
 
-		elif c == "j":
-			player = character.switch_orientation(player,"Left")
-			player = character.switch_stand(player,"Wait")
+			if c == "l":
+				player = character.switch_orientation(player,"Right")
+				player = character.switch_stand(player,"Wait")
 
-		elif c == "i":
-			player = character.switch_fire_angle(player,45)
-			player = character.switch_stand(player,"Wait")
+			elif c == "j":
+				player = character.switch_orientation(player,"Left")
+				player = character.switch_stand(player,"Wait")
 
-		elif c == "k":
-			player = character.switch_fire_angle(player,-45)
-			player = character.switch_stand(player,"Wait")
+			elif c == "i":
+				player = character.switch_fire_angle(player,45)
+				player = character.switch_stand(player,"Wait")
+
+			elif c == "k":
+				player = character.switch_fire_angle(player,-45)
+				player = character.switch_stand(player,"Wait")
 
 
-		elif c == "d":
-			player = character.switch_stand(player,"Run")
-			player = entity.move_entity(player,1,0)
+			elif c == "d":
+				player = character.switch_stand(player,"Run")
+				player = entity.move_entity(player,1,0)
 
-		elif c == "q":
-			player = character.switch_stand(player,"Run")
-			player = entity.move_entity(player,-1,0)
+			elif c == "q":
+				player = character.switch_stand(player,"Run")
+				player = entity.move_entity(player,-1,0)
 
-	# 	elif c == "z" and player_move == False and Player["Vy"] == 0:#_________________________Vy______ bug possible multi jump si utilisateur rapuit sur le bouton de saut a l'apoger de sont saut
-	# 		Move.Player.stand("Wait")
-	# 		Player["Vy"]-=5
-	# 		player_move = True
-	# 	elif c == "s" and player_move == False:
-	# 		Move.Player.stand("Wait")
-	# 		player_move = True
+		# 	elif c == "z" and player_move == False and Player["Vy"] == 0:#_________________________Vy______ bug possible multi jump si utilisateur rapuit sur le bouton de saut a l'apoger de sont saut
+		# 		Move.Player.stand("Wait")
+		# 		Player["Vy"]-=5
+		# 		player_move = True
+		# 	elif c == "s" and player_move == False:
+		# 		Move.Player.stand("Wait")
+		# 		player_move = True
+		# -afaire
 
 	termios.tcflush(sys.stdin.fileno(),termios.TCIFLUSH) #on vide le buffer d'entree
+
 
 
 
@@ -230,9 +266,9 @@ def Run():
 	Init()
 	#Infinite Loop
 	while True:
+		Game()
 		Time_game()
-		#Game()
-	return()
+	return
 
 
 #______Quit_Game________________________________________________________________________
@@ -255,6 +291,8 @@ def Quit_game():
 	while time.time()<A+1 :
 		None
 	print "Game exited successfully"
+
+	# -afaire : supprimer les fichiers compiler?
 
 	sys.exit()
 

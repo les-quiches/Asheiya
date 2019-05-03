@@ -1,9 +1,56 @@
 import entity
+import shootingmob
+
+
+#____Create_______________________________
+def create_character(ent) :
+    ent["jump"] = 0
+    return ent
+
+
+#____Position_Gun________________________
+def position_gun(assetPosition):
+    if(assetPosition[1]=="Left"):
+        if(assetPosition[2]=="0"):
+            x=
+            y=
+        elif(assetPosition[2]=="45"):
+            x=
+            y=
+        elif(assetPosition[2]=="90"):
+            x=
+            y=
+        elif(assetPosition[2]=="-45"):
+            x=0
+            y=2
+        elif(assetPosition[2]=="-90"):
+
+    elif(assetPosition[1]=="Right"):
+        if(assetPosition[2]=="0"):
+            x=
+            y=
+        elif(assetPosition[2]=="45"):
+            x=
+            y=
+        elif(assetPosition[2]=="90"):
+            x=4
+            y=0
+        elif(assetPosition[2]=="-45"):
+            x=5
+            y=2
+        elif(assetPosition[2]=="-90"):
+            x=
+            y=
+    postion = [x,y]
+
+
+#____Get________________________________________________
 
 def get_asset_doc(player): #recupere le nom du fichier de l'asset correspondant a la position actuelle du joueur
 	asset = "Asheiya/Asset/" + str(player["Asset"]["position"][0]+"_"+player["Asset"]["position"][1]+"_"+str(player["Asset"]["position"][2]))+".txt"
 	return asset
 
+#____Switch_____________________________________________________
 def switch_orientation(player, orientation) :
 	assert type(orientation) is str
 	assert orientation in ["Right", "Left"]

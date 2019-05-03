@@ -2,8 +2,6 @@ import sys
 import os
 import time
 
-import pdb
-
 
 import files
 f=files
@@ -65,6 +63,7 @@ def gravity(Entity) :  #-afair
     else :
         Entity["Vy"]=1
     return (Entity)
+
 
 #_____Get______________________________________________________________________
 

@@ -99,8 +99,9 @@ def Init(): 	#initialisation des variables
 	shotDelay = 3
 	player = shootingmob.create_shooting_mob(player,assetShot,shotDelay)
 
-
 	allEntity["mobs"].append(player)
+
+
 	#definition de la fenetre de jeu
 	x=0
 	y=0
@@ -202,7 +203,6 @@ def Show() :
 
 
 	#Show Frame
-	background.show_window(window)
 	background.show_pos(assetGameZone["Zone_"+str(assetGameZone["NumZone"])],0,0,40,37)
 	for shot in allEntity["projectile"] :
 		asset = shot["Asset"]
@@ -287,6 +287,13 @@ def Interact():
 
 
 
+#_______Collision________________________________________________________
+def collision(ent) :
+	global player, allEntity, gameBorder
+	# -afair
+	return
+
+
 
 
 
@@ -298,6 +305,8 @@ def Run():
 		Game()
 		Time_game()
 	return
+
+
 
 
 #______Quit_Game________________________________________________________________________

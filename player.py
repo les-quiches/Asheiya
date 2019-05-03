@@ -1,5 +1,15 @@
+import shootingmob
+import entity
+
+def create_player(ent) :
+    ent["jump"] = 0
+    return ent
+
+
+
+
 #____Position_Gun________________________
-def Position_Gun(asset):
+def position_gun(asset): 
     if(asset[1]=="Left"):
         if(asset[2]=="0"):
             x=
@@ -32,3 +42,8 @@ def Position_Gun(asset):
             x=
             y=
         postion = [x,y]
+
+
+#____Jeux de Test________________________________________________________________
+if (__name__=="__main__"):
+    None

@@ -141,7 +141,6 @@ def Game(): #gere les evennements du jeu, definit le contexte
 			None
 			# on le fait disparaitre du jeu -afair
 
-
 	return
 
 

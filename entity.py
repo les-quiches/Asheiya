@@ -24,6 +24,7 @@ def create_entity(Name, Type, X, Y, Vx, Vy,Life, Armor, Speed, LastTime, Asset,A
     Entity["LastTime"]=LastTime
     Entity["Asset"]= Asset
     Entity["AI"]=AI
+    Entity["Jump"] = 0
     return(Entity)
 
 def create_asset(filename):
@@ -53,8 +54,15 @@ def tp_entity(Entity,x,y):
     Entity["y"]=y
     return(Entity)
 
+def jump(Entity):
+    Entity["Jump"] = 9
+    return Entity
+
 def gravity(Entity) :  #-afair
-    None
+    if Entity["Jump"]>=1 :
+        Entity["Jump"]-=1
+    else :
+        Entity["Vy"]=1
     return (Entity)
 
 #_____Get______________________________________________________________________

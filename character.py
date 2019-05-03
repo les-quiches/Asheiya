@@ -1,46 +1,41 @@
 import entity
 import shootingmob
 
-
-#____Create_______________________________
-def create_character(ent) :
-    ent["jump"] = 0
-    return ent
-
-
 #____Position_Gun________________________
 def position_gun(assetPosition):
     if(assetPosition[1]=="Left"):
         if(assetPosition[2]=="0"):
-            x=
-            y=
+            x=0
+            y=1
         elif(assetPosition[2]=="45"):
-            x=
-            y=
+            x=0
+            y=0
         elif(assetPosition[2]=="90"):
-            x=
-            y=
+            x=0
+            y=0
         elif(assetPosition[2]=="-45"):
             x=0
             y=2
         elif(assetPosition[2]=="-90"):
+        	x=1
+        	y=2
 
     elif(assetPosition[1]=="Right"):
         if(assetPosition[2]=="0"):
-            x=
-            y=
+            x=6
+            y=1
         elif(assetPosition[2]=="45"):
-            x=
-            y=
+            x=5
+            y=0
         elif(assetPosition[2]=="90"):
-            x=4
+            x=5
             y=0
         elif(assetPosition[2]=="-45"):
             x=5
             y=2
         elif(assetPosition[2]=="-90"):
-            x=
-            y=
+            x=3
+            y=2
     postion = [x,y]
 
 

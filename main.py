@@ -89,7 +89,8 @@ def Init(): 	#initialisation des variables
 	for Shot_doc in ["Gun_Horizontal","Gun_Slash","Gun_UnSlash","Gun_Vertical"] :
 		assetShot[Shot_doc] =entity.create_asset("Projectile/"+Shot_doc+".txt") 
 	shotDelay = 3
-	shootingmob.create_shooting_mob(player,assetShot,shotDelay)
+	player = shootingmob.create_shooting_mob(player,assetShot,shotDelay)
+
 
 	allEntity["mobs"].append(player)
 	#definition de la fenetre de jeu
@@ -102,11 +103,11 @@ def Init(): 	#initialisation des variables
 	#on efface la console
 	sys.stdout.write("\033[1;1H")
 	sys.stdout.write("\033[2J")
-	return()
+	return
 
 
 
-def Init_Manche(): #pour initialiser chaque manche
+def Init_manche(): #pour initialiser chaque manche
 	#-afaire
 	global manche, menu, player
 
@@ -124,7 +125,7 @@ def Game(): #gere les evennements du jeu, definit le contexte
 		#animation de demarage + elements loristiques et tout
 		menu = "menuManche1" #a integrer dans la derniere fonction qui sera appele par startMenu -afair
 	if menu == "menuManche1" and manche == 10 :
-		Init_Manche()
+		Init_manche()
 
 	#gestion des fins de manches
 	if not(entity.is_alive(player)):
@@ -158,15 +159,17 @@ def Time_game(): #va rediriger sur les differentes fonctions selon leurs frequen
 
 	for mob in allEntity["mobs"] :
 		if (time.time()>mob["Speed"]+mob["LastTime"]) and (mob["Vx"]!=0 or mob["Vy"]!=0) :
+			mob = entity.gravity(mob)
+			#inserer gestion de collision ici qui provient du module entity avec en param allEntity - afair
 			mob = entity.move_entity(mob,mob["Vx"],mob["Vy"])
 
-			#inserer gestion de collision ici qui provient du module entity avec en param allEntity - afaire
 
 		if (shootingmob.is_shooting_mob(mob)) :
 			if time.time()>mob["shotDelay"]+mob["lastShot"] :	
 				#on fait tirer si le mob est un mob qui tir
 				shootingmob.shoot(mob, len(allEntity["projectile"]))
 
+	#on gere les deplacements du joueur
 	if time.time()>player["LastTime"]+player["Speed"]:
 		Interact()
 
@@ -257,10 +260,11 @@ def Interact():
 				player = character.switch_stand(player,"Run")
 				player = entity.move_entity(player,-1,0)
 
-		# 	elif c == "z" and player_move == False and Player["Vy"] == 0:#_________________________Vy______ bug possible multi jump si utilisateur rapuit sur le bouton de saut a l'apoger de sont saut
-		# 		Move.Player.stand("Wait")
-		# 		Player["Vy"]-=5
-		# 		player_move = True
+			elif c == "z" and player["Jump"]==0 :
+				player = character.switch_stand(player, "Wait")
+				player = entity.jump(player)
+				player["Vy"]=-1
+
 		# 	elif c == "s" and player_move == False:
 		# 		Move.Player.stand("Wait")
 		# 		player_move = True

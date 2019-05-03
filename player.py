@@ -1,34 +1,35 @@
 #____Position_Gun________________________
-def Position_Gun(asset):
-    if(asset[1]=="Left"):
-        if(asset[2]=="0"):
+def position_gun(assetPosition):
+    if(assetPosition[1]=="Left"):
+        if(assetPosition[2]=="0"):
             x=
             y=
-        elif(asset[2]=="45"):
+        elif(assetPosition[2]=="45"):
             x=
             y=
-        elif(asset[2]=="90"):
+        elif(assetPosition[2]=="90"):
             x=
             y=
-        elif(asset[2]=="-45"):
-            x=
-            y=
-        elif(asset[2]=="-90"):
+        elif(assetPosition[2]=="-45"):
+            x=0
+            y=2
+        elif(assetPosition[2]=="-90"):
 
-    elif(asset[1]=="Right"):
-        if(asset[2]=="0"):
+    elif(assetPosition[1]=="Right"):
+        if(assetPosition[2]=="0"):
             x=
             y=
-        elif(asset[2]=="45"):
+        elif(assetPosition[2]=="45"):
             x=
             y=
-        elif(asset[2]=="90"):
+        elif(assetPosition[2]=="90"):
+            x=4
+            y=0
+        elif(assetPosition[2]=="-45"):
+            x=5
+            y=2
+        elif(assetPosition[2]=="-90"):
             x=
             y=
-        elif(asset[2]=="-45"):
-            x=
-            y=
-        elif(asset[2]=="-90"):
-            x=
-            y=
-        postion = [x,y]
+    postion = [x,y]
+    return(position)

@@ -3,40 +3,43 @@ import shootingmob
 
 #____Position_Gun________________________
 def position_gun(assetPosition):
+    x=0
+    y=0
     if(assetPosition[1]=="Left"):
-        if(assetPosition[2]=="0"):
+        if(assetPosition[2]==0):
             x=0
             y=1
-        elif(assetPosition[2]=="45"):
+        elif(assetPosition[2]==45):
             x=0
             y=0
-        elif(assetPosition[2]=="90"):
+        elif(assetPosition[2]==90):
             x=0
             y=0
-        elif(assetPosition[2]=="-45"):
+        elif(assetPosition[2]==-45):
             x=0
             y=2
-        elif(assetPosition[2]=="-90"):
-        	x=1
-        	y=2
+        elif(assetPosition[2]==-90):
+            x=1
+            y=2
 
     elif(assetPosition[1]=="Right"):
-        if(assetPosition[2]=="0"):
+        if(assetPosition[2]==0):
             x=6
             y=1
-        elif(assetPosition[2]=="45"):
+        elif(assetPosition[2]==45):
             x=5
             y=0
-        elif(assetPosition[2]=="90"):
+        elif(assetPosition[2]==90):
             x=5
             y=0
-        elif(assetPosition[2]=="-45"):
+        elif(assetPosition[2]==-45):
             x=5
             y=2
-        elif(assetPosition[2]=="-90"):
+        elif(assetPosition[2]==-90):
             x=3
             y=2
     postion = [x,y]
+    return postion
 
 
 #____Get________________________________________________
@@ -58,7 +61,7 @@ def switch_fire_angle(player, fireAngle) :
 	angle = player["Asset"]["position"][2] + fireAngle
 	if angle>=90 :
 		angle = 90
-	elif angle<=-90: 
+	elif angle<=-90:
 		angle = -90
 	player["Asset"]["position"][2]=angle
 	return player

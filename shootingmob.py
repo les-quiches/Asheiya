@@ -13,7 +13,7 @@ def is_shooting_mob(mob) :
 		return False
 
 def shoot(mob , nb) :
-	#a faire
+	#-afair
 	#mob : le mob qui tir
 	#nb : le "numero" du tir
 

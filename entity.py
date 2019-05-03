@@ -57,6 +57,14 @@ def gravity(Entity) :  #-afair
     None
     return (Entity)
 
+#_____Get______________________________________________________________________
+
+def is_alive(Entity) :
+    if Entity["Life"]==0 :
+        return False
+    else :
+        return True
+
 #_____Show______________________________________________________________________
 def show_entity(doc,Entity, color_bg, color_txt):
 

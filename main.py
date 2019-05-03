@@ -119,16 +119,29 @@ def Init_Manche(): #pour initialiser chaque manche
 
 #______Game________________________________________________________________________
 def Game(): #gere les evennements du jeu, definit le contexte 
-	global menu, player, manche
+	global menu, player, manche, allEntity
 	if menu=="startMenu" :
 		#animation de demarage + elements loristiques et tout
 		menu = "menuManche1" #a integrer dans la derniere fonction qui sera appele par startMenu -afair
 	if menu == "menuManche1" and manche == 10 :
 		Init_Manche()
 
-	if player["Life"] = 0 :
+	#gestion des fins de manches
+	if not(entity.is_alive(player)):
 		None
-		# afair
+		# -afair
+
+	#gestion des cadavres
+	for mob in allEntity["mobs"] : 
+		if not(entity.is_alive(mob)):
+			None
+			# on le fait disparaitre du jeu -afair
+	for bullet in allEntity["projectile"]:
+		if not(entity.is_alive(bullet)):
+			None
+			# on le fait disparaitre du jeu -afair
+
+
 	return
 
 

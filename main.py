@@ -192,14 +192,14 @@ def Show() :
 	for shot in allEntity["projectile"] :
 		asset = shot["Asset"]
 		color_bg = 40 #noir
-		color_txt = 33 #jaune
+		color_txt = 31 #rouge
 		entity.show_entity(asset,shot,color_bg,color_txt)
 
 	for ent in allEntity["mobs"] :
 		if ent["Type"]=="player": 
 			asset =entity.create_asset(character.get_asset_doc(ent))
 			color_bg = 40 #noir
-			color_txt = 31 #rouge
+			color_txt = 33 #jaune
 		else :
 			asset = entity.create_asset(ent["Asset"])
 			color_bg = 40

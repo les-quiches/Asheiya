@@ -43,10 +43,11 @@ def create_asset(filename):
     return(ca)
 
 #_____Move______________________________________________________________________
-def move_entity(Entity,x,y):
+def move_entity(Entity,x,y, isGravity=False):
     Entity["x"]+=2*x
     Entity["y"]+=y
-    Entity["LastTime"]=time.time()
+    if not(isGravity) :
+        Entity["LastTime"]=time.time()
     return(Entity)
 
 def tp_entity(Entity,x,y):

@@ -20,6 +20,10 @@ def shoot(mob , nb) :
 	# -> cre une entite
 	return
 
+
+
+
+#___Jeux de test_______________________________________________
 if (__name__=="__main__"):
     Name = "Asheiya"
     Type = "Player"

@@ -23,6 +23,7 @@ oldSettings = termios.tcgetattr(sys.stdin)
 window= None
 timeStep = None
 timeIni = None
+timeGravity = None
 gameBorder=[]
 allEntity= {}
 
@@ -36,7 +37,7 @@ manche = None #permet de gerer la manche et si c'est la premiere boucle de la ma
 #______INIT________________________________________________________________________
 
 def Init(): 	#initialisation des variables
-	global window, assetGameZone, timeStep, timeIni, gameBorder, allEntity, player, menu, manche
+	global window, assetGameZone, timeStep, timeIni, timeGravity, gameBorder, allEntity, player, menu, manche
 
 	asheiyaAsset=[
 	"Run_Right_0", "Run_Right_45", "Run_Right_90",  "Run_Right_-45", "Run_Right_-90",
@@ -52,8 +53,9 @@ def Init(): 	#initialisation des variables
 	"Gun_Horizontal","Gun_Slach","Gun_UnSlash","Gun_Vertical"
 	]
 
-	timeStep = 0.01 # en secondes -> 10 images par secondes
+	timeStep = 0.01 # en secondes -> 100 images par secondes
 	timeIni = time.time()
+	timeGravity = time.time()
 
 	allEntity["projectile"]=[] #gere les tirs de Asheiya et des ennemis
 	allEntity["mobs"]=[] #gere Asheiya, les boss, et autres mobs
@@ -154,18 +156,22 @@ def Game(): #gere les evennements du jeu, definit le contexte
 
 #______Time_game________________________________________________________________________
 def Time_game(): #va rediriger sur les differentes fonctions selon leurs frequences
-	global window, timeStep, timeIni, gameBorder, allEntity, player, menu
+	global window, timeStep, timeIni, gameBorder, allEntity, player, menu, timeGravity
 
 	for bullet in allEntity["projectile"] :
 		if time.time()>bullet["Speed"]+bullet["LastTime"] :
 			bullet = entity.move_entity(bullet,bullet["Vx"],bullet["Vy"])
 			#inserer gestion de collision ici qui provient du module entity avec en param allEntity - afaire
 
-
+	#gestion de la gravite
+	if time.time()>timeGravity + 0.08 :
+		for mob in allEntity["mobs"] :
+			mob = entity.gravity(mob)
+			entity.move_entity(mob,0,1,True)
+		timeGravity = time.time()
 
 	for mob in allEntity["mobs"] :
 		if (time.time()>mob["Speed"]+mob["LastTime"]) and (mob["Vx"]!=0 or mob["Vy"]!=0) :
-			mob = entity.gravity(mob)
 			#inserer gestion de collision ici qui provient du module entity avec en param allEntity - afair
 			mob = entity.move_entity(mob,mob["Vx"],mob["Vy"])
 
@@ -175,11 +181,12 @@ def Time_game(): #va rediriger sur les differentes fonctions selon leurs frequen
 				#on fait tirer si le mob est un mob qui tir
 				shootingmob.shoot(mob, len(allEntity["projectile"]))
 
+
 	#on gere les deplacements du joueur
 	if time.time()>player["LastTime"]+player["Speed"]:
 		Interact()
 
-	if time.time()>player["LastTime"]+0.3 :
+	if time.time()>player["LastTime"]+0.03 :
 		player = character.switch_stand(player,"Wait")
 		#on remet le joueur en position d'attente s'il fait rien
 

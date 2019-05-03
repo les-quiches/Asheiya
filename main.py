@@ -26,6 +26,7 @@ timeIni = None
 timeGravity = None
 gameBorder=[]
 allEntity= {}
+color={}
 
 player = None
 menu = None
@@ -37,7 +38,10 @@ manche = None #permet de gerer la manche et si c'est la premiere boucle de la ma
 #______INIT________________________________________________________________________
 
 def Init(): 	#initialisation des variables
-	global window, assetGameZone, timeStep, timeIni, timeGravity, gameBorder, allEntity, player, menu, manche
+	global color, window, assetGameZone, timeStep, timeIni, timeGravity, gameBorder, allEntity, player, menu, manche
+
+	color["txt"]={"Black":30, "Red":31,"Green":32,"Yellow":33,"Blue":34,"Pink":35,"Cyan":36,"White":37}
+	color["background"]={"Black":40, "Red":41,"Green":42,"Yellow":43,"Blue":44,"Pink":45,"Cyan":46,"White":47}
 
 	asheiyaAsset=[
 	"Run_Right_0", "Run_Right_45", "Run_Right_90",  "Run_Right_-45", "Run_Right_-90",
@@ -199,26 +203,26 @@ def Time_game(): #va rediriger sur les differentes fonctions selon leurs frequen
 #______Show________________________________________________________________________
 
 def Show() :
-	global window, timeStep, timeIni, gameBorder, allEntity, player, menu, assetGameZone
+	global window, timeStep, timeIni, gameBorder, allEntity, player, menu, assetGameZone, color
 
 
 	#Show Frame
-	background.show_pos(assetGameZone["Zone_"+str(assetGameZone["NumZone"])],0,0,40,37)
+	background.show_pos(assetGameZone["Zone_"+str(assetGameZone["NumZone"])],0,0,color["background"]["Black"],color["txt"]["White"])
 	for shot in allEntity["projectile"] :
 		asset = shot["Asset"]
-		color_bg = 40 #noir
-		color_txt = 31 #rouge
+		color_bg = color["background"]["Black"]#noir
+		color_txt = color["txt"]["Red"] #rouge
 		entity.show_entity(asset,shot,color_bg,color_txt)
 
 	for ent in allEntity["mobs"] :
 		if ent["Type"]=="player":
 			asset =entity.create_asset(character.get_asset_doc(ent))
-			color_bg = 40 #noir
-			color_txt = 33 #jaune
+			color_bg = color["background"]["Black"] #noir
+			color_txt = color["txt"]["Yellow"]#jaune
 		else :
 			asset = entity.create_asset(ent["Asset"])
-			color_bg = 40
-			color_txt = 33
+			color_bg = color["background"]["Black"]
+			color_txt = color["txt"]["Yellow"]
 		entity.show_entity(asset,ent,color_bg,color_txt)
 	timeIni = time.time()
 

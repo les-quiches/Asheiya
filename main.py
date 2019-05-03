@@ -18,7 +18,7 @@ import character
 oldSettings = termios.tcgetattr(sys.stdin)
 
 
-#Globals 
+#Globals
 
 window= None
 timeStep = None
@@ -36,7 +36,7 @@ manche = None #permet de gerer la manche et si c'est la premiere boucle de la ma
 #______INIT________________________________________________________________________
 
 def Init(): 	#initialisation des variables
-	global window, timeStep, timeIni, gameBorder, allEntity, player, menu, manche
+	global window, assetGameZone, timeStep, timeIni, gameBorder, allEntity, player, menu, manche
 
 	asheiyaAsset=[
 	"Run_Right_0", "Run_Right_45", "Run_Right_90",  "Run_Right_-45", "Run_Right_-90",
@@ -45,9 +45,12 @@ def Init(): 	#initialisation des variables
  	"Wait_Left_0", "Wait_Left_45", "Wait_Left_90", "Wait_Left_-45", "Wait_Left_-90",
 	]
 
+	gameZone=[
+	"Zone_1",
+	]
 	projectileAsset=[
 	"Gun_Horizontal","Gun_Slach","Gun_UnSlash","Gun_Vertical"
-	]	
+	]
 
 	timeStep = 0.01 # en secondes -> 10 images par secondes
 	timeIni = time.time()
@@ -55,7 +58,7 @@ def Init(): 	#initialisation des variables
 	allEntity["projectile"]=[] #gere les tirs de Asheiya et des ennemis
 	allEntity["mobs"]=[] #gere Asheiya, les boss, et autres mobs
 	allEntity["stage"]=[] #gere les bonus, plateforme pieges et autres
-	
+
 	#start menu
 	menu="startMenu"
 	manche = 10 #1 pour premiere manche, 0 pour le nb de fois qu'on est passe dans la boucle
@@ -63,7 +66,10 @@ def Init(): 	#initialisation des variables
 
 	#asset background
 	window=background.create_window("Windows.txt")
-
+	assetGameZone={}
+	for GameZone_doc in gameZone :
+		assetGameZone[GameZone_doc]=background.create_window("GameZone/" + GameZone_doc + ".txt")
+	assetGameZone["NumZone"]=1
 	#interaction clavier
 	tty.setcbreak(sys.stdin.fileno())
 
@@ -81,13 +87,13 @@ def Init(): 	#initialisation des variables
 	for Asheiya_doc in asheiyaAsset :
 		assetPlayer[Asheiya_doc]=entity.create_asset("Asheiya/Asset/" + Asheiya_doc + ".txt") #chargement Asset
 	player = entity.create_entity(
-		"Asheiya Briceval", 
+		"Asheiya Briceval",
 		"player",
 		xPlayer,yPlayer,vxPlayer,vyPlayer,lifePlayer,armorPlayer,speedPlayer,lastTime,assetPlayer
 		)
 	assetShot = {}
 	for Shot_doc in ["Gun_Horizontal","Gun_Slash","Gun_UnSlash","Gun_Vertical"] :
-		assetShot[Shot_doc] =entity.create_asset("Projectile/"+Shot_doc+".txt") 
+		assetShot[Shot_doc] =entity.create_asset("Projectile/"+Shot_doc+".txt")
 	shotDelay = 3
 	player = shootingmob.create_shooting_mob(player,assetShot,shotDelay)
 
@@ -119,7 +125,7 @@ def Init_manche(): #pour initialiser chaque manche
 
 
 #______Game________________________________________________________________________
-def Game(): #gere les evennements du jeu, definit le contexte 
+def Game(): #gere les evennements du jeu, definit le contexte
 	global menu, player, manche, allEntity
 	if menu=="startMenu" :
 		#animation de demarage + elements loristiques et tout
@@ -133,7 +139,7 @@ def Game(): #gere les evennements du jeu, definit le contexte
 		# -afair
 
 	#gestion des cadavres
-	for mob in allEntity["mobs"] : 
+	for mob in allEntity["mobs"] :
 		if not(entity.is_alive(mob)):
 			None
 			# on le fait disparaitre du jeu -afair
@@ -165,7 +171,7 @@ def Time_game(): #va rediriger sur les differentes fonctions selon leurs frequen
 
 
 		if (shootingmob.is_shooting_mob(mob)) :
-			if time.time()>mob["shotDelay"]+mob["lastShot"] :	
+			if time.time()>mob["shotDelay"]+mob["lastShot"] :
 				#on fait tirer si le mob est un mob qui tir
 				shootingmob.shoot(mob, len(allEntity["projectile"]))
 
@@ -185,12 +191,12 @@ def Time_game(): #va rediriger sur les differentes fonctions selon leurs frequen
 #______Show________________________________________________________________________
 
 def Show() :
-	global window, timeStep, timeIni, gameBorder, allEntity, player, menu
+	global window, timeStep, timeIni, gameBorder, allEntity, player, menu, assetGameZone
 
 
 	#Show Frame
 	background.show_window(window)
-
+	background.show_pos(assetGameZone["Zone_"+str(assetGameZone["NumZone"])],0,0,40,37)
 	for shot in allEntity["projectile"] :
 		asset = shot["Asset"]
 		color_bg = 40 #noir
@@ -198,7 +204,7 @@ def Show() :
 		entity.show_entity(asset,shot,color_bg,color_txt)
 
 	for ent in allEntity["mobs"] :
-		if ent["Type"]=="player": 
+		if ent["Type"]=="player":
 			asset =entity.create_asset(character.get_asset_doc(ent))
 			color_bg = 40 #noir
 			color_txt = 33 #jaune

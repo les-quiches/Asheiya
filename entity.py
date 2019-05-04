@@ -41,11 +41,12 @@ def create_asset(filename):
     return(ca)
 
 #_____Move______________________________________________________________________
-def move_entity(Entity,x,y, isGravity=False):
-    Entity["x"]+=2*x
-    Entity["y"]+=y
-    if not(isGravity) :
-        Entity["LastTime"]=time.time()
+def move_entity(Entity,x,y,willCollide=False,isGravity=False):
+    if not(willCollide):
+        Entity["x"]+=2*x
+        Entity["y"]+=y
+        if not(isGravity) :
+            Entity["LastTime"]=time.time()
     return(Entity)
 
 def tp_entity(Entity,x,y):
@@ -57,12 +58,37 @@ def jump(Entity):
     Entity["Jump"] = 9
     return Entity
 
-def gravity(Entity) :  #-afair
+def gravity(Entity,onTheGround=False) :  #-afair
     if Entity["Jump"]>=1 :
         Entity["Jump"]-=1
-    else :
+    elif(not(onTheGround)):
         Entity["Vy"]=1
     return (Entity)
+
+
+#____collision___________________
+
+def hit_box_simple(asset,entity):
+    y=len(asset)
+    a=0
+    for i in asset:
+        a+=len(asset[i])
+    x= a/(i+1)
+    hit_box_entity=[entity["x"], entity["y"], entity["x"]+x, entity["y"]+y]# plage de l'hitbox de l'asset (point en haut a gauche puit en bas a doite)
+    return(hit_box_entity)
+
+def feet(entity) :
+    # feet = [hit_box_simple(entity["Asset"],entity)[2],hit_box_simple(entity["Asset"],entity)[3]] # -afair pas sur de mon coup pour le entity["Asset"]
+    return 
+
+def is_ground_beneath(pos,gameBorder,walls) :
+    # -afair : test si en dessous de pos il y a ou pas une plateforme et renvoie True or False en consequence
+    return True
+
+def collision(ent, allEntity, gameBorder, walls, x=None, y=None) : #x et y correspondent aux prochaines positions, utiles seulement pour le joueur sinon on recupere via entity
+    # -afair : reperer tout d'abord si ia pas de collisions avec les murs, puis ensuite les collisions possibles
+    #           avec les entites proches, en recuperant les hit_box des entites PROCHES SEULEMENT
+    return False
 
 
 #_____Get______________________________________________________________________

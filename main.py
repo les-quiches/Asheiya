@@ -21,11 +21,15 @@ oldSettings = termios.tcgetattr(sys.stdin)
 #Globals
 
 window= None
+gameBorder=[]
+walls=None #-afair : grille representant le jeu
+
 timeStep = None
 timeIni = None
 timeGravity = None
-gameBorder=[]
+
 allEntity= {}
+
 color={}
 
 player = None
@@ -122,10 +126,11 @@ def Init(): 	#initialisation des variables
 
 def Init_manche(): #pour initialiser chaque manche
 	#-afaire
-	global manche, menu, player
+	global manche, menu, player, walls
 
 	if manche == 10 :
 		player = entity.tp_entity(player,20,37)
+		# walls =  -afair 
 		manche = 11
 
 	return
@@ -161,24 +166,32 @@ def Game(): #gere les evennements du jeu, definit le contexte
 
 #______Time_game________________________________________________________________________
 def Time_game(): #va rediriger sur les differentes fonctions selon leurs frequences
-	global window, timeStep, timeIni, gameBorder, allEntity, player, menu, timeGravity
+	global window, timeStep, timeIni, gameBorder,walls, allEntity, player, menu, timeGravity
 
 	for bullet in allEntity["projectile"] :
 		if time.time()>bullet["Speed"]+bullet["LastTime"] :
 			bullet = entity.move_entity(bullet,bullet["Vx"],bullet["Vy"])
-			#inserer gestion de collision ici qui provient du module entity avec en param allEntity - afaire
+			log = shootingmob.hit(bullet,allEntity["mobs"],gameBorder,walls) #- afair walls est le tableau representant la map
+			if log[1]:#une entite a etait touche
+				None #blesser la dite entite
+			if log[0]:#il y a eu collision
+				None #detruire la balle
+			#inserer gestion de collision ici qui provient du module entity avec en param allEntity - afair
 
 	#gestion de la gravite
 	if time.time()>timeGravity + 0.08 :
 		for mob in allEntity["mobs"] :
-			mob = entity.gravity(mob)
-			entity.move_entity(mob,0,1,True)
+			onTheGround = entity.is_ground_beneath(entity.feet(mob),gameBorder,walls) #-afair test s'il y a une plateforme en dessous
+			mob = entity.gravity(mob,onTheGround)
+			entity.move_entity(mob,0,1,onTheGround,True)
 		timeGravity = time.time()
 
 	for mob in allEntity["mobs"] :
 		if (time.time()>mob["Speed"]+mob["LastTime"]) and (mob["Vx"]!=0 or mob["Vy"]!=0) :
 			#inserer gestion de collision ici qui provient du module entity avec en param allEntity - afair
-			mob = entity.move_entity(mob,mob["Vx"],mob["Vy"])
+			#va etre la collision la plus complique a gerer  celle avec les entites et avec les walls -afair
+			willCollide = entity.collision(mob,allEntity["mobs"],gameBorder,walls) # -afair
+			mob = entity.move_entity(mob,mob["Vx"],mob["Vy"],willCollide)
 
 
 		if (shootingmob.is_shooting_mob(mob)) :
@@ -251,7 +264,6 @@ def Interact():
 			Quit_game()
 
 		if (manche%10) == 1 : #on est en jeu
-
 			if c == "l":
 				player = character.switch_orientation(player,"Right")
 				player = character.switch_stand(player,"Wait")
@@ -269,6 +281,7 @@ def Interact():
 				player = character.switch_stand(player,"Wait")
 
 
+			# /!\ dans toute cette zone, gerer les collisions avant les deplacements avec entity.collide -afair
 			elif c == "d":
 				player = character.switch_stand(player,"Run")
 				player = entity.move_entity(player,1,0)
@@ -285,17 +298,10 @@ def Interact():
 		# 	elif c == "s" and player_move == False:
 		# 		Move.Player.stand("Wait")
 		# 		player_move = True
-		# -afaire
+		# -afaire on fait descendre de la plateforme si c'est sur une plateforme
 
 	termios.tcflush(sys.stdin.fileno(),termios.TCIFLUSH) #on vide le buffer d'entree
 
-
-
-#_______Collision________________________________________________________
-def collision(ent) :
-	global player, allEntity, gameBorder
-	# -afair
-	return
 
 
 

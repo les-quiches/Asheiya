@@ -40,6 +40,8 @@ def show_pos(doc, X, Y, color_bg, color_txt):
 			sys.stdout.write(doc["window"][y][x])
 
 
+
+
 """ txt  bg
     30, 40 : noir ;
     31, 41 : rouge ;

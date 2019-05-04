@@ -17,8 +17,20 @@ def shoot(mob , nb) :
 	#mob : le mob qui tir
 	#nb : le "numero" du tir
 
-	# -> cre une entite
+	# -> cre une entite de type bullet -> definir les carac d'une balle
 	return
+
+def hit(bullet, entities , gameBorder, walls ) : 
+    #entities c'est toutes les enttites qui peuvent bouffer la balle
+    #gameBorder c'est les bords de la map pour tester si la balle sort
+    #walls c'est le tableau double entree representant la map ou il y a toutes les plateformes "_" ""immuables""
+    None
+    # -afair : les tests de collisions
+    is_hit = False #test si la balle touche quelquechose
+    hit_entity=False  #test si la balle touche une entite ou pas
+    entity = None #l'entite touche (le nom) le cas echeant
+    log = (is_hit, hit_entity,entity) #pour tout renvoyer  
+    return(log)
 
 
 

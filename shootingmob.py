@@ -1,10 +1,13 @@
 import entity
 
 def create_shooting_mob(mobToBe, assetShot, shotDelay, lastShot=0) :
+    # -afair les degats de la balle tirer
 	mobToBe["assetShot"] = assetShot
 	mobToBe["shotDelay"] = shotDelay
 	mobToBe["lastShot"] = lastShot
 	return mobToBe
+
+#-afair les entites de types bullet
 
 def is_shooting_mob(mob) :
 	if "assetShot" in mob :

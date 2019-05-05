@@ -70,7 +70,7 @@ def Init(): 	#initialisation des variables
 	allEntity["stage"]=[] #gere les bonus, plateforme pieges et autres
 
 	#start menu
-	menu="startMenu"
+	menu="start"
 	manche = 10 #1 pour premiere manche, 0 pour le nb de fois qu'on est passe dans la boucle
 
 
@@ -106,6 +106,8 @@ def Init(): 	#initialisation des variables
 		assetShot[Shot_doc] =entity.create_asset("Projectile/"+Shot_doc+".txt")
 	shotDelay = 3
 	player = shootingmob.create_shooting_mob(player,assetShot,shotDelay)
+	spowerSpeed = 1 #toutes les secondes on augmente de 1 la charge du super
+	player = character.create_character(player , spowerSpeed)
 
 	allEntity["mobs"].append(player)
 
@@ -133,32 +135,68 @@ def Init_manche(): #pour initialiser chaque manche
 		# walls =  -afair 
 		manche = 11
 
+	if manche == 20 :
+		None
+		#initialiser la deuxieme manche
+
 	return
 
 
 #______Game________________________________________________________________________
 def Game(): #gere les evennements du jeu, definit le contexte
 	global menu, player, manche, allEntity
-	if menu=="startMenu" :
+
+	#gestion de debut de manche
+
+	if menu=="start" :
 		#animation de demarage + elements loristiques et tout
-		menu = "menuManche1" #a integrer dans la derniere fonction qui sera appele par startMenu -afair
-	if menu == "menuManche1" and manche == 10 :
+		menu = "manche" #a integrer dans la derniere fonction qui sera appele par startMenu -afair
+
+	if menu == "manche" and (manche%10 == 0) : #on est dans une mancge non initialise
 		Init_manche()
 
-	#gestion des fins de manches
-	if not(entity.is_alive(player)):
-		None
-		# -afair
+
+	#gestion de l'ultime
+	if player["spowerDelay"]<=0 :
+		player=character.powerOff(player) #si le joueur n'a plus de temps d'ultime, il n'est pas entrain de l'utiliser
+		player["spowerDelay"]=0
+
 
 	#gestion des cadavres
-	for mob in allEntity["mobs"] :
-		if not(entity.is_alive(mob)):
+	if menu == "manche" :
+		for mob in allEntity["mobs"] :
+			if not(entity.is_alive(mob)):
+				None
+				# on le fait disparaitre du jeu, on le supprimer des listes -afair 
+		for bullet in allEntity["projectile"]:
+			if not(entity.is_alive(bullet)):
+				None
+				# on le fait disparaitre du jeu -afair
+
+		# #gestion des fins de manches
+
+		# if not(entity.is_alive(boss)) :
+		# 	menu = "transition"
+		# 	#-afair, gerer suivant la valeur de manche
+		if not(entity.is_alive(player)):
+			menu = "youLose"
+			# -afair
+
+	if menu == "transition" :
+		manche +=9 #on passe a la manche suivante
+		if manche >= 40 :
+			#-afair
+			menu = "youWin"
+		else :
 			None
-			# on le fait disparaitre du jeu -afair
-	for bullet in allEntity["projectile"]:
-		if not(entity.is_alive(bullet)):
-			None
-			# on le fait disparaitre du jeu -afair
+			#afficher les resultats de la manche precedente,
+			#-afair, appeler les fonctions, puis derniere fonction appeler fait passer menu a manche
+
+	elif menu == "youLose" :
+		# -afair : afficher ecran de defaite attendre confirmation puis :
+		Quit_game()
+
+
 
 	return
 
@@ -171,12 +209,11 @@ def Time_game(): #va rediriger sur les differentes fonctions selon leurs frequen
 	for bullet in allEntity["projectile"] :
 		if time.time()>bullet["Speed"]+bullet["LastTime"] :
 			bullet = entity.move_entity(bullet,bullet["Vx"],bullet["Vy"])
-			log = shootingmob.hit(bullet,allEntity["mobs"],gameBorder,walls) #- afair walls est le tableau representant la map
+			log = shootingmob.hit(bullet,allEntity["mobs"],gameBorder,walls) # -afair walls est le tableau representant la map
 			if log[1]:#une entite a etait touche
 				None #blesser la dite entite
 			if log[0]:#il y a eu collision
 				None #detruire la balle
-			#inserer gestion de collision ici qui provient du module entity avec en param allEntity - afair
 
 	#gestion de la gravite
 	if time.time()>timeGravity + 0.08 :
@@ -197,7 +234,7 @@ def Time_game(): #va rediriger sur les differentes fonctions selon leurs frequen
 		if (shootingmob.is_shooting_mob(mob)) :
 			if time.time()>mob["shotDelay"]+mob["lastShot"] :
 				#on fait tirer si le mob est un mob qui tir
-				shootingmob.shoot(mob, len(allEntity["projectile"]))
+				shootingmob.shoot(mob, len(allEntity["projectile"])) #-afair
 
 
 	#on gere les deplacements du joueur
@@ -208,8 +245,15 @@ def Time_game(): #va rediriger sur les differentes fonctions selon leurs frequen
 		player = character.switch_stand(player,"Wait")
 		#on remet le joueur en position d'attente s'il fait rien
 
+	#gestion de l'ultime
+	if time.time()>player["spowerLastTime"]+player["spowerSpeed"] and player["spowerCharge"]<=60 :
+		if (player["spowerOn"] and player["spowerDelay"]>0) :
+			player = character.cooldown_ult(player)
+		else : 
+			player = character.charge_ult(player)
+			player["spowerLastTime"] = time.time()
+
 	if time.time()>timeIni+timeStep:
-		# gestion de la gravite, rajouter dans Entity dans MoveX/MoveY ? - afaire
 		Show()
 
 
@@ -223,8 +267,8 @@ def Show() :
 	background.show_pos(assetGameZone["Zone_"+str(assetGameZone["NumZone"])],0,0,color["background"]["Black"],color["txt"]["White"])
 	for shot in allEntity["projectile"] :
 		asset = shot["Asset"]
-		color_bg = color["background"]["Black"]#noir
-		color_txt = color["txt"]["Red"] #rouge
+		color_bg = color["background"]["Black"]
+		color_txt = color["txt"]["Red"]
 		entity.show_entity(asset,shot,color_bg,color_txt)
 
 	for ent in allEntity["mobs"] :
@@ -263,42 +307,63 @@ def Interact():
 		if c == '\x1b': # \x1b = esc
 			Quit_game()
 
-		if (manche%10) == 1 : #on est en jeu
-			if c == "l":
-				player = character.switch_orientation(player,"Right")
-				player = character.switch_stand(player,"Wait")
+		if ((manche%10)==1 and menu=="manche") : #on est en jeu
 
-			elif c == "j":
-				player = character.switch_orientation(player,"Left")
-				player = character.switch_stand(player,"Wait")
+			if (c == "/n" and player["spowerCharge"]>=60) : #-afair : si on appuie sur espace on balance l'ultime
+				player["spowerCharge"]=0
+				player["spowerDelay"]=4
+				player["spowerOn"]=True
+				
 
-			elif c == "i":
-				player = character.switch_fire_angle(player,45)
-				player = character.switch_stand(player,"Wait")
+			if not(player["spowerOn"]):	
+				if c == "l":
+					player = character.switch_orientation(player,"Right")
+					player = character.switch_stand(player,"Wait")
 
-			elif c == "k":
-				player = character.switch_fire_angle(player,-45)
-				player = character.switch_stand(player,"Wait")
+				elif c == "j":
+					player = character.switch_orientation(player,"Left")
+					player = character.switch_stand(player,"Wait")	
+
+				elif c == "i":
+					player = character.switch_fire_angle(player,45)
+					player = character.switch_stand(player,"Wait")
+
+				elif c == "k":
+					player = character.switch_fire_angle(player,-45)
+					player = character.switch_stand(player,"Wait")
 
 
-			# /!\ dans toute cette zone, gerer les collisions avant les deplacements avec entity.collide -afair
-			elif c == "d":
-				player = character.switch_stand(player,"Run")
-				player = entity.move_entity(player,1,0)
+				# /!\ dans toute cette zone, gerer les collisions avant les deplacements avec entity.collide -afair
+				elif c == "d":
+					player = character.switch_stand(player,"Run")
+					player = entity.move_entity(player,1,0)
 
-			elif c == "q":
-				player = character.switch_stand(player,"Run")
-				player = entity.move_entity(player,-1,0)
+				elif c == "q":
+					player = character.switch_stand(player,"Run")
+					player = entity.move_entity(player,-1,0)
 
-			elif c == "z" and player["Jump"]==0 :
-				player = character.switch_stand(player, "Wait")
-				player = entity.jump(player)
-				player["Vy"]=-1
+				elif c == "z" and player["Jump"]==0 :
+					player = character.switch_stand(player, "Wait")
+					player = entity.jump(player)
+					player["Vy"]=-1
 
-		# 	elif c == "s" and player_move == False:
-		# 		Move.Player.stand("Wait")
-		# 		player_move = True
-		# -afaire on fait descendre de la plateforme si c'est sur une plateforme
+				# 	elif c == "s" and player_move == False:
+				# 		Move.Player.stand("Wait")
+				# 		player_move = True
+				# -afair on fait descendre de la plateforme si c'est sur une plateforme
+			else : 
+				None
+				#-afair : gestion des interactions lorsque l'on est en ulti
+
+		if menu in ["youLose", "youWin" , "transition"] : #-afair, si on est dans un menu textuel
+		#deplacer le pointeur suivant l'endroit
+		#passer a la suite si c'est une transitioin, quitte le jeu si c'est une fin de jeu
+			if c=="z":
+				None
+			elif c=="s" :
+				None
+			elif c=="d" :
+				None
 
 	termios.tcflush(sys.stdin.fileno(),termios.TCIFLUSH) #on vide le buffer d'entree
 
@@ -314,6 +379,7 @@ def Run():
 	while True:
 		Game()
 		Time_game()
+	Quit_game()
 	return
 
 
@@ -340,7 +406,7 @@ def Quit_game():
 		None
 	print "Game exited successfully"
 
-	# -afaire : supprimer les fichiers compiler?
+	# -afair : supprimer les fichiers compiler?
 
 	sys.exit()
 

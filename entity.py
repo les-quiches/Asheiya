@@ -6,7 +6,7 @@ import time
 import files
 f=files
 
-nFile = 0
+nFile = 0 #-afair, amliorer le fonctionnement des assets
 #_____Create____________________________________________________________________
 def create_entity(Name, Type, X, Y, Vx, Vy,Life, Armor, Speed, LastTime, Asset,AI = None):
     Entity=dict()
@@ -58,7 +58,7 @@ def jump(Entity):
     Entity["Jump"] = 9
     return Entity
 
-def gravity(Entity,onTheGround=False) :  #-afair
+def gravity(Entity,onTheGround=False) :
     if Entity["Jump"]>=1 :
         Entity["Jump"]-=1
     elif(not(onTheGround)):
@@ -77,7 +77,7 @@ def hit_box_simple(asset,entity):
     hit_box_entity=[entity["x"], entity["y"], entity["x"]+x, entity["y"]+y]# plage de l'hitbox de l'asset (point en haut a gauche puit en bas a doite)
     return(hit_box_entity)
 
-def feet(entity) :
+def feet(entity) :#renvoi les "pieds" de l'entite
     # feet = [hit_box_simple(entity["Asset"],entity)[2],hit_box_simple(entity["Asset"],entity)[3]] # -afair pas sur de mon coup pour le entity["Asset"]
     return 
 
@@ -88,6 +88,16 @@ def is_ground_beneath(pos,gameBorder,walls) :
 def collision(ent, allEntity, gameBorder, walls, x=None, y=None) : #x et y correspondent aux prochaines positions, utiles seulement pour le joueur sinon on recupere via entity
     # -afair : reperer tout d'abord si ia pas de collisions avec les murs, puis ensuite les collisions possibles
     #           avec les entites proches, en recuperant les hit_box des entites PROCHES SEULEMENT
+
+    #pos["x"] et pos["y"] les FUTURS positions de l'entite
+    if (x != None or y!=None):
+        None
+        #ca veut dire quon gere le deplacement du joueur, donc la position en prendre en compte c'est ent[x]+x
+    else : 
+        None
+        #on gere une entite programme, donc on prend en compte ent[x]+ent[Vx]
+    #on recupere pos -> avec X Y les positions a tester
+    #on regarde dans Walls/allentity/gameBorder si ia pas de collisions
     return False
 
 

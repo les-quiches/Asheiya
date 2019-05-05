@@ -1,5 +1,31 @@
 import entity
 import shootingmob
+import time
+
+
+
+def create_character(ent, spowerSpeed):
+	ent["spowerCharge"] = 0 #la barre de chargement de l'ultime
+	ent["spowerOn"]=False #est-ce que le pouvoir est actif
+	ent["spowerDelay"] = 0 #pendant combien de temps on est encore en ult
+	ent["spowerLastTime"] = time.time() #derniere fois qu'on a charge l'ultime
+	ent["spowerSpeed"] = spowerSpeed #vitesse de chargement de l'ultime
+	return ent
+
+
+
+#____Ultime______________________________
+def charge_ult(player) :
+	player["spowerCharge"]+=1
+	return player
+
+def cooldown_ult(player) :
+	player["spowerDelay"]-=1
+	return player
+
+def powerOff(player) :
+	player["spowerOn"]=False
+	return player
 
 #____Position_Gun________________________
 def position_gun(assetPosition):

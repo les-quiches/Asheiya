@@ -97,7 +97,9 @@ def switch_stand(player, stand):
 	player["Asset"]["position"][0]=stand
 	return player
 
-
+def get_asset(entity_to_get_asset):
+	asset = entity_to_get_asset["Asset"][entity_to_get_asset["Asset"]["position"][0]+"_"+entity_to_get_asset["Asset"]["position"][1]+"_"+str(entity_to_get_asset["Asset"]["position"][2])]
+	return(asset)
 
 #____Jeux de Test________________________________________________________________
 if (__name__=="__main__"):

@@ -130,7 +130,7 @@ def Init_manche(): #pour initialiser chaque manche
 
 	if manche == 10 :
 		player = entity.tp_entity(player,20,37)
-		# walls =  -afair 
+		# walls =  -afair
 		manche = 11
 
 	return
@@ -229,7 +229,7 @@ def Show() :
 
 	for ent in allEntity["mobs"] :
 		if ent["Type"]=="player":
-			asset =entity.create_asset(character.get_asset_doc(ent))
+			asset = character.get_asset(player)
 			color_bg = color["background"]["Black"] #noir
 			color_txt = color["txt"]["Yellow"]#jaune
 		else :

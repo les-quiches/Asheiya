@@ -35,9 +35,7 @@ def create_asset(filename):
     FrameMax=len(frame)
     for i in frame:
 		ca["Asset"].append(i.split("\n"))
-
-    nFile=(nFile+1)%FrameMax
-    ca["FrameNb"]= nFile
+    ca["FrameNb"]= 0
     return(ca)
 
 #_____Move______________________________________________________________________
@@ -79,7 +77,7 @@ def hit_box_simple(asset,entity):
 
 def feet(entity) :
     # feet = [hit_box_simple(entity["Asset"],entity)[2],hit_box_simple(entity["Asset"],entity)[3]] # -afair pas sur de mon coup pour le entity["Asset"]
-    return 
+    return
 
 def is_ground_beneath(pos,gameBorder,walls) :
     # -afair : test si en dessous de pos il y a ou pas une plateforme et renvoie True or False en consequence
@@ -94,7 +92,7 @@ def collision(ent, allEntity, gameBorder, walls, x=None, y=None) : #x et y corre
 #_____Get______________________________________________________________________
 
 def is_alive(Entity) :
-    if Entity["Life"]==0 :
+    if Entity["Life"]<=0 :
         return False
     else :
         return True
@@ -110,7 +108,10 @@ def show_entity(doc,Entity, color_bg, color_txt):
     sys.stdout.write("\033["+str(color_txt)+"m")
 
     Frame=doc["FrameNb"]
-
+    if doc["FrameNb"]+1 < len(doc["Asset"]):
+        doc["FrameNb"]+=1
+    else:
+        doc["FrameNb"]=0
     for j in range(0,len(doc["Asset"][Frame])):
         s="\033["+str(Y+j)+";"+str(X)+"H"
         sys.stdout.write(s)
@@ -147,6 +148,3 @@ if (__name__=="__main__"):
     tp_entity(player, 10, 12)
     # pdb.set_trace()
     print player["x"], player["y"]
-
-
-

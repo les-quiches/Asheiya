@@ -10,9 +10,13 @@ import tty
 
 #My module
 import background
+
 import entity
-import shootingmob
+import shootingent
+import movingent
+import livingent
 import character
+import boon
 
 #interaction clavier
 oldSettings = termios.tcgetattr(sys.stdin)
@@ -86,27 +90,33 @@ def Init(): 	#initialisation des variables
 	#on concoit le joueur
 	xPlayer = 0
 	yPlayer = 0
-	vxPlayer = 0
-	vyPlayer = 0
-	lifePlayer = 18
-	armorPlayer =25
-	speedPlayer = 0.07 #deplaxcement pas seconde
-	lastTime = time.time() #moment d'apparition, permettra de gerer l'affichage
 	assetPlayer = {}
 	assetPlayer["position"]=["Wait","Right",0] #correspond a sa representation : course/attente, orientation, position du bras
 	for Asheiya_doc in asheiyaAsset :
 		assetPlayer[Asheiya_doc]=entity.create_asset("Asheiya/Asset/" + Asheiya_doc + ".txt") #chargement Asset
-	player = entity.create_entity(
-		"Asheiya Briceval",
-		"player",
-		xPlayer,yPlayer,vxPlayer,vyPlayer,lifePlayer,armorPlayer,speedPlayer,lastTime,assetPlayer
-		)
+
+	player = entity.create_entity("Asheiya Briceval","player",xPlayer,yPlayer,assetPlayer)
+
+	vxPlayer = 0
+	vyPlayer = 0
+	speedPlayer = 0.07 #deplaxcement pas seconde
+	lastTime = time.time() #moment d'apparition, permettra de gerer l'affichage
+	player = movingent.create_moving_ent(player,vxPlayer,vyPlayer,speedPlayer,lastTime)
+
+	lifePlayer = 18
+	armorPlayer =25
+	player = livingent.create_living_ent(player,lifePlayer,armorPlayer)
+
+	damage = 5
 	assetShot = {}
 	for Shot_doc in ["Gun_Horizontal","Gun_Slash","Gun_UnSlash","Gun_Vertical"] :
 		assetShot[Shot_doc] =entity.create_asset("Projectile/"+Shot_doc+".txt")
 	shotDelay = 3
-	player = shootingmob.create_shooting_mob(player,assetShot,shotDelay)
+
+	player = shootingent.create_shooting_ent(player,damage,assetShot,shotDelay)
+
 	spowerSpeed = 1 #toutes les secondes on augmente de 1 la charge du super
+
 	player = character.create_character(player , spowerSpeed)
 
 	allEntity["mobs"].append(player)
@@ -131,7 +141,7 @@ def Init_manche(): #pour initialiser chaque manche
 	global manche, menu, player, walls
 
 	if manche == 10 :
-		player = entity.tp_entity(player,20,37)
+		player = movingent.tp_entity(player,20,37)
 		# walls =  -afair
 		manche = 11
 
@@ -165,20 +175,20 @@ def Game(): #gere les evennements du jeu, definit le contexte
 	#gestion des cadavres
 	if menu == "manche" :
 		for mob in allEntity["mobs"] :
-			if not(entity.is_alive(mob)):
+			if not(livingent.is_alive(mob)):
 				None
 				# on le fait disparaitre du jeu, on le supprimer des listes -afair 
 		for bullet in allEntity["projectile"]:
-			if not(entity.is_alive(bullet)):
+			if not(livingent.is_alive(bullet)):
 				None
 				# on le fait disparaitre du jeu -afair
 
 		# #gestion des fins de manches
 
-		# if not(entity.is_alive(boss)) :
+		# if not(livingent.is_alive(boss)) :
 		# 	menu = "transition"
 		# 	#-afair, gerer suivant la valeur de manche
-		if not(entity.is_alive(player)):
+		if not(livingent.is_alive(player)):
 			menu = "youLose"
 			# -afair
 
@@ -208,8 +218,8 @@ def Time_game(): #va rediriger sur les differentes fonctions selon leurs frequen
 
 	for bullet in allEntity["projectile"] :
 		if time.time()>bullet["Speed"]+bullet["LastTime"] :
-			bullet = entity.move_entity(bullet,bullet["Vx"],bullet["Vy"])
-			log = shootingmob.hit(bullet,allEntity["mobs"],gameBorder,walls) # -afair walls est le tableau representant la map
+			bullet = movingent.move_entity(bullet,bullet["Vx"],bullet["Vy"])
+			log = shootingent.hit(bullet,allEntity["mobs"],gameBorder,walls) # -afair walls est le tableau representant la map
 			if log[1]:#une entite a etait touche
 				None #blesser la dite entite
 			if log[0]:#il y a eu collision
@@ -219,22 +229,22 @@ def Time_game(): #va rediriger sur les differentes fonctions selon leurs frequen
 	if time.time()>timeGravity + 0.08 :
 		for mob in allEntity["mobs"] :
 			onTheGround = entity.is_ground_beneath(entity.feet(mob),gameBorder,walls) #-afair test s'il y a une plateforme en dessous
-			mob = entity.gravity(mob,onTheGround)
-			entity.move_entity(mob,0,1,onTheGround,True)
+			mob = movingent.gravity(mob,onTheGround)
+			movingent.move_entity(mob,0,1,onTheGround,True)
 		timeGravity = time.time()
 
 	for mob in allEntity["mobs"] :
 		if (time.time()>mob["Speed"]+mob["LastTime"]) and (mob["Vx"]!=0 or mob["Vy"]!=0) :
 			#inserer gestion de collision ici qui provient du module entity avec en param allEntity - afair
 			#va etre la collision la plus complique a gerer  celle avec les entites et avec les walls -afair
-			willCollide = entity.collision(mob,allEntity["mobs"],gameBorder,walls) # -afair
-			mob = entity.move_entity(mob,mob["Vx"],mob["Vy"],willCollide)
+			willCollide = movingent.collision(mob,allEntity["mobs"],gameBorder,walls) # -afair
+			mob = movingent.move_entity(mob,mob["Vx"],mob["Vy"],willCollide)
 
 
-		if (shootingmob.is_shooting_mob(mob)) :
+		if (shootingent.is_shooting_ent(mob)) :
 			if time.time()>mob["shotDelay"]+mob["lastShot"] :
 				#on fait tirer si le mob est un mob qui tir
-				shootingmob.shoot(mob, len(allEntity["projectile"])) #-afair
+				shootingent.shoot(mob, len(allEntity["projectile"])) #-afair
 
 
 	#on gere les deplacements du joueur
@@ -333,18 +343,18 @@ def Interact():
 					player = character.switch_stand(player,"Wait")
 
 
-				# /!\ dans toute cette zone, gerer les collisions avant les deplacements avec entity.collide -afair
+				# /!\ dans toute cette zone, gerer les collisions avant les deplacements avec movingent.collision -afair
 				elif c == "d":
 					player = character.switch_stand(player,"Run")
-					player = entity.move_entity(player,1,0)
+					player = movingent.move_entity(player,1,0)
 
 				elif c == "q":
 					player = character.switch_stand(player,"Run")
-					player = entity.move_entity(player,-1,0)
+					player = movingent.move_entity(player,-1,0)
 
 				elif c == "z" and player["Jump"]==0 :
 					player = character.switch_stand(player, "Wait")
-					player = entity.jump(player)
+					player = movingent.jump(player)
 					player["Vy"]=-1
 
 				# 	elif c == "s" and player_move == False:
@@ -405,8 +415,6 @@ def Quit_game():
 	while time.time()<A+1 :
 		None
 	print "Game exited successfully"
-
-	# -afair : supprimer les fichiers compiler?
 
 	sys.exit()
 

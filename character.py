@@ -1,9 +1,8 @@
 import entity
-import shootingmob
 import time
 
 
-
+#_____Create____________________________________________________________________
 def create_character(ent, spowerSpeed):
 	ent["spowerCharge"] = 0 #la barre de chargement de l'ultime
 	ent["spowerOn"]=False #est-ce que le pouvoir est actif

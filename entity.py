@@ -1,6 +1,7 @@
 #-*- coding:utf-8 -*
 import sys
 import os
+import character
 
 
 import files
@@ -114,6 +115,25 @@ def hit_box_simple(asset,entity):
     return(hit_box_entity)
 
 def feet(entity) :#renvoi les "pieds" de l'entite
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de donné la position des pieds d'un asset
+
+    PARAM
+    =====
+
+    @param entity: Entite dont on veut obtenir l'asset
+    @type entity: dict
+
+
+    RETOUR
+    ======
+
+    @return : renvoi la position des pied de l'entité
+    @rtype : list
+    """
     # feet = [hit_box_simple(entity["Asset"],entity)[2],hit_box_simple(entity["Asset"],entity)[3]] # -afair pas sur de mon coup pour le entity["Asset"]
     return
 
@@ -123,8 +143,33 @@ def is_ground_beneath(pos,gameBorder,walls) :
 
 
 #_____Show______________________________________________________________________
-def show_entity(doc,Entity, color_bg, color_txt):
+def show_entity(Entity, color_bg, color_txt):
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet d'afficher l'asset d'un entité
 
+    PARAM
+    =====
+
+    @param Entity : Entitée
+    @type Entity :dict
+
+    @param color_bg : Couleur du backgound
+    @type color_bg :int
+
+    @param color_txt : Couleur de l'asset
+    @type color_txt :int
+
+    RETOUR
+    ======
+		Sans retour
+    """
+    if "character" in Entity["Type"]:
+        asset = character.get_asset(Entity)
+    else:
+        asset = Entity["Asset"]
     X=Entity["x"]+1
     Y=Entity["y"]+1
     #couleur fond
@@ -132,15 +177,15 @@ def show_entity(doc,Entity, color_bg, color_txt):
 	#couleur texte
     sys.stdout.write("\033["+str(color_txt)+"m")
 
-    Frame=doc["FrameNb"]
-    if doc["FrameNb"]+1 < len(doc["Asset"]):
-        doc["FrameNb"]+=1
+    Frame=asset["FrameNb"]
+    if asset["FrameNb"]+1 < len(asset["Asset"]):
+        asset["FrameNb"]+=1
     else:
-        doc["FrameNb"]=0
-    for j in range(0,len(doc["Asset"][Frame])):
+        asset["FrameNb"]=0
+    for j in range(0,len(asset["Asset"][Frame])):
         s="\033["+str(Y+j)+";"+str(X)+"H"
         sys.stdout.write(s)
-        sys.stdout.write(doc["Asset"][Frame][j])
+        sys.stdout.write(asset["Asset"][Frame][j])
         sys.stdout.write("\n")
 
     return

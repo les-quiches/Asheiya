@@ -221,7 +221,7 @@ def Game():
 		for mob in allEntity["mobs"] :
 			if not(livingent.is_alive(mob)):
 				None
-				# on le fait disparaitre du jeu, on le supprimer des listes -afair 
+				# on le fait disparaitre du jeu, on le supprimer des listes -afair
 		for bullet in allEntity["projectile"]:
 			if not(livingent.is_alive(bullet)):
 				None
@@ -318,7 +318,7 @@ def Time_game():
 	if time.time()>player["spowerLastTime"]+player["spowerSpeed"] and player["spowerCharge"]<=60 :
 		if (player["spowerOn"] and player["spowerDelay"]>0) :
 			player = character.cooldown_ult(player)
-		else : 
+		else :
 			player = character.charge_ult(player)
 			player["spowerLastTime"] = time.time()
 
@@ -349,21 +349,19 @@ def Show() :
 	#Show Frame
 	background.show_pos(assetGameZone["Zone_"+str(assetGameZone["NumZone"])],0,0,color["background"]["Black"],color["txt"]["White"])
 	for shot in allEntity["projectile"] :
-		asset = shot["Asset"]
 		color_bg = color["background"]["Black"]
 		color_txt = color["txt"]["Red"]
-		entity.show_entity(asset,shot,color_bg,color_txt)
+		entity.show_entity(shot,color_bg,color_txt)
 
 	for ent in allEntity["mobs"] :
 		if "character" in ent["Type"]:
-			asset = character.get_asset(player)
 			color_bg = color["background"]["Black"] #noir
 			color_txt = color["txt"]["Yellow"]#jaune
 		else :
-			asset = entity.create_asset(ent["Asset"])
+			#asset = entity.create_asset(ent["Asset"])
 			color_bg = color["background"]["Black"]
 			color_txt = color["txt"]["Yellow"]
-		entity.show_entity(asset,ent,color_bg,color_txt)
+		entity.show_entity(ent,color_bg,color_txt)
 	timeIni = time.time()
 
 	#restoration couleur
@@ -411,16 +409,16 @@ def Interact():
 				player["spowerCharge"]=0
 				player["spowerDelay"]=4
 				player["spowerOn"]=True
-				
 
-			if not(player["spowerOn"]):	
+
+			if not(player["spowerOn"]):
 				if c == "l":
 					player = character.switch_orientation(player,"Right")
 					player = character.switch_stand(player,"Wait")
 
 				elif c == "j":
 					player = character.switch_orientation(player,"Left")
-					player = character.switch_stand(player,"Wait")	
+					player = character.switch_stand(player,"Wait")
 
 				elif c == "i":
 					player = character.switch_fire_angle(player,45)
@@ -449,7 +447,7 @@ def Interact():
 				# 		Move.Player.stand("Wait")
 				# 		player_move = True
 				# -afair on fait descendre de la plateforme si c'est sur une plateforme
-			else : 
+			else :
 				None
 				#-afair : gestion des interactions lorsque l'on est en ulti
 

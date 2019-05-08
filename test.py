@@ -1,3 +1,5 @@
+#-*- coding:utf-8 -*
+
 import entity
 
 void_collision = "0"

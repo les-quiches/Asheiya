@@ -1,3 +1,5 @@
+#-*- coding:utf-8 -*
+
 import sys
 import os
 
@@ -69,7 +71,7 @@ def show_pos(doc, X, Y, color_bg, color_txt):
     G{classtree}
     DESCRIPTION
     ===========
-        Permet d'afficher un fenetre a des coordonnés précise
+        Permet d'afficher un fenetre a des coordonnés précises
 
     PARAM
     =====

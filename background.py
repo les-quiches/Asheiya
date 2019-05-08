@@ -5,6 +5,27 @@ import files
 f =files
 
 def create_window(filename):
+
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de créer une fenetre
+
+    PARAM
+    =====
+
+    @param filename: Chemin d'acces du fichier
+    @type filename : str
+
+
+    RETOUR
+    ======
+
+    @return ca  : Tableau représentant la fenetre
+    @rtype ca : list
+    """
+
     wd = dict()
     wd["window"]=[]
     myfile=f.OPEN_FILE_XML(filename)
@@ -15,6 +36,22 @@ def create_window(filename):
     return(wd)
 
 def show_window(doc):
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet d'afficher la fenetre principal
+
+    PARAM
+    =====
+
+    @param doc : Tableau représentant la fennetre principal
+    @type doc : list
+
+    RETOUR
+    ======
+		Sans retour
+    """
 	#couleur fond
 	sys.stdout.write("\033[40m")
 	#couleur white
@@ -28,6 +65,34 @@ def show_window(doc):
 			sys.stdout.write(doc["window"][y][x])
 
 def show_pos(doc, X, Y, color_bg, color_txt):
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet d'afficher un fenetre a des coordonnés précise
+
+    PARAM
+    =====
+
+    @param doc : Tableau représentant la fenetre
+    @type doc : list
+
+    @param X: coordonnés x où installer la fenetre
+    @type X: int
+
+    @param Y: coordonnés y où installer la fenetre
+    @type Y: int
+
+    @param color_bg : Couleur du backgound
+    @type color_bg :int
+
+    @param color_txt : Couleur des characters
+    @type color_txt :int
+
+    RETOUR
+    ======
+		Sans retour
+    """
     #couleur fond
     sys.stdout.write("\033["+str(color_bg)+"m")
 	#couleur white

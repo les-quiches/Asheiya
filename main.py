@@ -46,6 +46,21 @@ manche = None #permet de gerer la manche et si c'est la premiere boucle de la ma
 #______INIT________________________________________________________________________
 
 def Init(): 	#initialisation des variables
+"""
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Initialise les variables globales et la fenetre de jeu.
+
+    PARAM
+    =====
+    	Sans parametre
+
+    RETOUR
+    ======
+    	Sans retour
+
+"""
 	global color, window, assetGameZone, timeStep, timeIni, timeGravity, gameBorder, allEntity, player, menu, manche
 
 	color["txt"]={"Black":30, "Red":31,"Green":32,"Yellow":33,"Blue":34,"Pink":35,"Cyan":36,"White":37}
@@ -136,7 +151,21 @@ def Init(): 	#initialisation des variables
 
 
 
-def Init_manche(): #pour initialiser chaque manche
+def Init_manche():
+"""
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Initialise chaque manche : placement du joueur, environnement, ennemies.
+
+    PARAM
+    =====
+		Sans parametre
+
+    RETOUR
+    ======
+	    Sans retour
+"""
 	#-afaire
 	global manche, menu, player, walls
 
@@ -146,14 +175,30 @@ def Init_manche(): #pour initialiser chaque manche
 		manche = 11
 
 	if manche == 20 :
-		None
 		#initialiser la deuxieme manche
+		manche = 21
 
 	return
 
 
 #______Game________________________________________________________________________
-def Game(): #gere les evennements du jeu, definit le contexte
+def Game():
+"""
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Gere les evennements du jeu : prends des decisions en fonction des informations.
+        Redirige vers differentes fonctions et change le contexte des autres fonctions.
+        Gere la dynamique et l'adaptabilite des autres fonctions.
+
+    PARAM
+    =====
+		Sans parametre.
+
+    RETOUR
+    ======
+		Sans retour.
+"""
 	global menu, player, manche, allEntity
 
 	#gestion de debut de manche
@@ -213,7 +258,22 @@ def Game(): #gere les evennements du jeu, definit le contexte
 
 
 #______Time_game________________________________________________________________________
-def Time_game(): #va rediriger sur les differentes fonctions selon leurs frequences
+def Time_game():
+"""
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Gere toutes les actions a effectuer avec une certaine frequence.
+        Effectue des protocoles en fonction de leur frequence.
+
+    PARAM
+    =====
+		Sans parametre
+
+    RETOUR
+    ======
+		Sans retour
+"""
 	global window, timeStep, timeIni, gameBorder,walls, allEntity, player, menu, timeGravity
 
 	for bullet in allEntity["projectile"] :
@@ -270,6 +330,20 @@ def Time_game(): #va rediriger sur les differentes fonctions selon leurs frequen
 #______Show________________________________________________________________________
 
 def Show() :
+"""
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Gere l'affichage du jeu. Gere le retour utilisateur.
+
+    PARAM
+    =====
+		Sans parametre
+
+    RETOUR
+    ======
+		Sans retour
+"""
 	global window, timeStep, timeIni, gameBorder, allEntity, player, menu, assetGameZone, color
 
 
@@ -304,6 +378,21 @@ def Show() :
 
 #______INTERACT________________________________________________________________________
 def Interact():
+"""
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Gere les entrees claviers.
+        Reagit en fonction des demandes de l'utilisateur.
+
+    PARAM
+    =====
+		Sans parametre
+
+    RETOUR
+    ======
+		Sans retour
+"""
 
 	def isData():
 		#recuperation evenement clavier
@@ -384,6 +473,23 @@ def Interact():
 
 #########Boucle de simulation#########__________________________________________________
 def Run():
+"""
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Protocol principal.
+        Protocol lancee lors de l'execution du jeu.
+        Redirige vers les autres protocol primordiaux.
+        Contient la boucle de simulation.
+
+    PARAM
+    =====
+		Sans parametre
+
+    RETOUR
+    ======
+		Sans retour
+"""
 	Init()
 	#Infinite Loop
 	while True:
@@ -398,7 +504,21 @@ def Run():
 #______Quit_Game________________________________________________________________________
 
 def Quit_game():
-	#restoration parametres terminal
+"""
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Quitte le jeu proprement.
+        Après une pause d'une seconde, remet en place le fonctionnement naturel du terminal.
+
+    PARAM
+    =====
+		Sans param
+
+    RETOUR
+    ======
+		Sans retour
+"""
 	global oldSettings
 
 	sys.stdout.write("\033[1;1H")

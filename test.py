@@ -38,3 +38,26 @@ if (__name__=="__main__"):
 	print asset_test["Asset"][0]
 	d=  hit_box_complex_entity_can_take_damage(asset_test["Asset"][0])
 	print d
+
+
+
+
+
+
+
+	"""
+	    G{classtree}
+	    DESCRIPTION
+	    ===========
+	        BLablabblublou
+
+	    PARAM
+	    =====
+	    @param var : poulet
+	    @type var : type(var)
+
+	    RETOUR
+	    ======
+	    @return :  un bon repas
+	    @rtype : type(return)
+	"""

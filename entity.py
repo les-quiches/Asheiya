@@ -1,5 +1,6 @@
+#-*- coding:utf-8 -*
 import sys
-import os   
+import os
 
 
 import files
@@ -7,6 +8,38 @@ f=files
 
 #_____Create____________________________________________________________________
 def create_entity(Name, Type, X, Y, Asset, AI = None):
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de créer une entitée
+
+    PARAMETRES
+    ==========
+        Name
+        ----
+            Chaine de caractère représentant le Nom de l'entitée
+
+        Type
+        ----
+            Chaine de caractère représentant le Type de l'entitée
+
+        X
+        -
+            Entier représentant la postion initial absolut sur l'axe x
+
+        Y
+        -
+            Entier représentant la postion initial absolut sur l'axe y
+
+        Asset
+        -----
+            Dictionnaire où est/sont stoqués le(s) asset(s) de l'entiter
+
+        AI
+        --
+            
+    """
     Entity=dict()
     Entity["Name"]= Name
     Entity["Type"]= Type
@@ -17,7 +50,21 @@ def create_entity(Name, Type, X, Y, Asset, AI = None):
     return(Entity)
 
 def create_asset(filename):
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de créer un asset
 
+    PARAMETRES
+    ==========
+        filename
+        --------
+            Adresse du fichier
+    RETURN
+    ======
+        Retourne un asset sous forme de tableau
+    """
     ca=dict()
     ca["Asset"]= []
     myfile= f.OPEN_FILE_XML(filename)

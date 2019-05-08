@@ -28,7 +28,7 @@ def cooldown_ult(player) :
 	player["spowerDelay"]-=1
 	return player
 
-def powerOff(player) :
+def power_off(player) :
 	player["spowerOn"]=False
 	return player
 

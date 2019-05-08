@@ -37,7 +37,7 @@ def create_entity(Name, X, Y, Asset, AI = None):
     RETOUR
     ======
 
-    @return Entity : Entite créé
+    @return Entity : Entité créée
     @rtype : dict
 
     """

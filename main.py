@@ -46,7 +46,7 @@ manche = None #permet de gerer la manche et si c'est la premiere boucle de la ma
 #______INIT________________________________________________________________________
 
 def Init(): 	#initialisation des variables
-"""
+	"""
     G{classtree}
     DESCRIPTION
     ===========
@@ -59,8 +59,7 @@ def Init(): 	#initialisation des variables
     RETOUR
     ======
     	Sans retour
-
-"""
+	"""
 	global color, window, assetGameZone, timeStep, timeIni, timeGravity, gameBorder, allEntity, player, menu, manche
 
 	color["txt"]={"Black":30, "Red":31,"Green":32,"Yellow":33,"Blue":34,"Pink":35,"Cyan":36,"White":37}
@@ -110,7 +109,7 @@ def Init(): 	#initialisation des variables
 	for Asheiya_doc in asheiyaAsset :
 		assetPlayer[Asheiya_doc]=entity.create_asset("Asheiya/Asset/" + Asheiya_doc + ".txt") #chargement Asset
 
-	player = entity.create_entity("Asheiya Briceval","player",xPlayer,yPlayer,assetPlayer)
+	player = entity.create_entity("Asheiya Briceval",xPlayer,yPlayer,assetPlayer)
 
 	vxPlayer = 0
 	vyPlayer = 0
@@ -152,7 +151,7 @@ def Init(): 	#initialisation des variables
 
 
 def Init_manche():
-"""
+	"""
     G{classtree}
     DESCRIPTION
     ===========
@@ -165,7 +164,7 @@ def Init_manche():
     RETOUR
     ======
 	    Sans retour
-"""
+	"""
 	#-afaire
 	global manche, menu, player, walls
 
@@ -183,7 +182,7 @@ def Init_manche():
 
 #______Game________________________________________________________________________
 def Game():
-"""
+	"""
     G{classtree}
     DESCRIPTION
     ===========
@@ -198,7 +197,7 @@ def Game():
     RETOUR
     ======
 		Sans retour.
-"""
+	"""
 	global menu, player, manche, allEntity
 
 	#gestion de debut de manche
@@ -259,7 +258,7 @@ def Game():
 
 #______Time_game________________________________________________________________________
 def Time_game():
-"""
+	"""
     G{classtree}
     DESCRIPTION
     ===========
@@ -273,7 +272,7 @@ def Time_game():
     RETOUR
     ======
 		Sans retour
-"""
+	"""
 	global window, timeStep, timeIni, gameBorder,walls, allEntity, player, menu, timeGravity
 
 	for bullet in allEntity["projectile"] :
@@ -330,7 +329,7 @@ def Time_game():
 #______Show________________________________________________________________________
 
 def Show() :
-"""
+	"""
     G{classtree}
     DESCRIPTION
     ===========
@@ -343,7 +342,7 @@ def Show() :
     RETOUR
     ======
 		Sans retour
-"""
+	"""
 	global window, timeStep, timeIni, gameBorder, allEntity, player, menu, assetGameZone, color
 
 
@@ -356,7 +355,7 @@ def Show() :
 		entity.show_entity(asset,shot,color_bg,color_txt)
 
 	for ent in allEntity["mobs"] :
-		if ent["Type"]=="player":
+		if "character" in ent["Type"]:
 			asset = character.get_asset(player)
 			color_bg = color["background"]["Black"] #noir
 			color_txt = color["txt"]["Yellow"]#jaune
@@ -378,7 +377,7 @@ def Show() :
 
 #______INTERACT________________________________________________________________________
 def Interact():
-"""
+	"""
     G{classtree}
     DESCRIPTION
     ===========
@@ -392,7 +391,7 @@ def Interact():
     RETOUR
     ======
 		Sans retour
-"""
+	"""
 
 	def isData():
 		#recuperation evenement clavier
@@ -473,7 +472,7 @@ def Interact():
 
 #########Boucle de simulation#########__________________________________________________
 def Run():
-"""
+	"""
     G{classtree}
     DESCRIPTION
     ===========
@@ -489,7 +488,7 @@ def Run():
     RETOUR
     ======
 		Sans retour
-"""
+	"""
 	Init()
 	#Infinite Loop
 	while True:
@@ -504,12 +503,12 @@ def Run():
 #______Quit_Game________________________________________________________________________
 
 def Quit_game():
-"""
+	"""
     G{classtree}
     DESCRIPTION
     ===========
         Quitte le jeu proprement.
-        Après une pause d'une seconde, remet en place le fonctionnement naturel du terminal.
+        Apres une pause d'une seconde, remet en place le fonctionnement naturel du terminal.
 
     PARAM
     =====
@@ -518,7 +517,7 @@ def Quit_game():
     RETOUR
     ======
 		Sans retour
-"""
+	"""
 	global oldSettings
 
 	sys.stdout.write("\033[1;1H")

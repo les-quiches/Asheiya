@@ -45,19 +45,19 @@ if (__name__=="__main__"):
 
 
 
-	"""
-	    G{classtree}
-	    DESCRIPTION
-	    ===========
-	        BLablabblublou
+"""
+	G{classtree}
+	DESCRIPTION
+	===========
+		BLablabblublou
 
-	    PARAM
-	    =====
-	    @param var : poulet
-	    @type var : type(var)
+	PARAM
+	=====
+	@param var : poulet
+	@type var : type(var)
 
-	    RETOUR
-	    ======
-	    @return :  un bon repas
-	    @rtype : type(return)
+	RETOUR
+	======
+	@return :  un bon repas
+	@rtype : type(return)
 	"""

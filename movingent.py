@@ -4,12 +4,15 @@ import time
 
 #_____Create____________________________________________________________________
 def create_moving_ent(Entity, Vx, Vy,Speed, LastTime):
-	Entity["Vx"]= Vx
-	Entity["Vy"]= Vy
-	Entity["Speed"]=Speed
-	Entity["LastTime"]=LastTime
-	Entity["Jump"] = 0
-	return Entity
+    assert type(Entity) is dict
+    assert "entity" in Entity["Type"]
+    Entity["Vx"]= Vx
+    Entity["Vy"]= Vy
+    Entity["Speed"]=Speed
+    Entity["LastTime"]=LastTime
+    Entity["Jump"] = 0
+    Entity["Type"].append("movingEnt")
+    return Entity
 
 
 #_____Move______________________________________________________________________
@@ -59,11 +62,10 @@ def collision(ent, allEntity, gameBorder, walls, x=None, y=None) : #x et y corre
 #____Jeux de Test________________________________________________________________
 if (__name__=="__main__"):
     Name = "Asheiya"
-    Type = "Player"
     X = 20
     Y = 37
     Asset = {}
     Asset["position"]=["Wait","Right",0]
     for Asheiya_doc in ["Run_Right_0","Wait_Right_0","Run_Left_0","Wait_Left_0","Run_Right_45","Wait_Right_45"]:# a terme on utilisera "Asheiya_asset" ou un constructeur de txt
         Asset[Asheiya_doc]=entity.create_asset("Asheiya/Asset/" + Asheiya_doc + ".txt") #chargement Asset
-    player = entity.create_entity(Name,Type,X,Y,Asset)
+    player = entity.create_entity(Name,X,Y,Asset)

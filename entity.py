@@ -7,7 +7,7 @@ import files
 f=files
 
 #_____Create____________________________________________________________________
-def create_entity(Name, Type, X, Y, Asset, AI = None):
+def create_entity(Name, X, Y, Asset, AI = None):
     """
     G{classtree}
     DESCRIPTION
@@ -18,10 +18,7 @@ def create_entity(Name, Type, X, Y, Asset, AI = None):
     =====
 
     @param Name : Designation de l'entite, correspond au nom de l'entite dans l'Histoire (Lore)
-    @type Name : string
-
-    @param Type : represente le type de l'entite (player, boss, boonCreator, boon, bullet, [...])
-    @type Type : string
+    @type Name : str
 
     @param  X : position sur l'axe x de l'entite
     @type X : int
@@ -33,18 +30,19 @@ def create_entity(Name, Type, X, Y, Asset, AI = None):
     @type Asset : dict
 
     @param IA : si l'entite est automatiquement controle, chemin d'acces vers le fichier qui la controle
-    @type IA : string
+    @type IA : str
 
     RETOUR
     ======
 
-    @return Entity : Entiter créer
+    @return Entity : Entite créé
     @rtype : dict
 
     """
     Entity=dict()
     Entity["Name"]= Name
-    Entity["Type"]= Type
+    Entity["Type"]= []
+    Entity["Type"].append("entity")
     Entity["x"]= X
     Entity["y"]= Y
     Entity["Asset"]= Asset
@@ -89,7 +87,7 @@ def hit_box_simple(asset,entity):
     G{classtree}
     DESCRIPTION
     ===========
-        Permet de donné l'hitbox  d'un asset
+        Permet de donné l'hitbox simplifiee d'un asset
 
     PARAM
     =====
@@ -97,14 +95,14 @@ def hit_box_simple(asset,entity):
     @param asset: Tableau représentant un asset
     @type asset : list
 
-    @param entity:
-    @type entity:
+    @param entity: Entite dont on veut obtenir l'asset
+    @type entity: dict
 
 
     RETOUR
     ======
 
-    @return   : 
+    @return   : quatre positions correspondants aux valeurs extremes des contours de l'entite. Permet de positionner les quatre coins.
     @rtype : list
     """
     y=len(asset)
@@ -151,13 +149,12 @@ def show_entity(doc,Entity, color_bg, color_txt):
 #____Jeux de Test________________________________________________________________
 if (__name__=="__main__"):
     Name = "Asheiya"
-    Type = "Player"
     X = 20
     Y = 37
     Asset = {}
     Asset["position"]=["Wait","Right",0]
     for Asheiya_doc in ["Run_Right_0","Wait_Right_0","Run_Left_0","Wait_Left_0","Run_Right_45","Wait_Right_45"]:# a terme on utilisera "Asheiya_asset" ou un constructeur de txt
         Asset[Asheiya_doc]=create_asset("Asheiya/Asset/" + Asheiya_doc + ".txt") #chargement Asset
-    player = create_entity(Name,Type,X,Y,Asset)
+    player = create_entity(Name,X,Y,Asset)
 
     print player

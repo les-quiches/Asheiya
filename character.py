@@ -3,13 +3,17 @@ import time
 
 
 #_____Create____________________________________________________________________
-def create_character(ent, spowerSpeed):
-	ent["spowerCharge"] = 0 #la barre de chargement de l'ultime
-	ent["spowerOn"]=False #est-ce que le pouvoir est actif
-	ent["spowerDelay"] = 0 #pendant combien de temps on est encore en ult
-	ent["spowerLastTime"] = time.time() #derniere fois qu'on a charge l'ultime
-	ent["spowerSpeed"] = spowerSpeed #vitesse de chargement de l'ultime
-	return ent
+def create_character(Entity, spowerSpeed):
+	assert type(Entity) is dict
+	assert "entity" in Entity["Type"]
+
+	Entity["spowerCharge"] = 0 #la barre de chargement de l'ultime
+	Entity["spowerOn"]=False #est-ce que le pouvoir est actif
+	Entity["spowerDelay"] = 0 #pendant combien de temps on est encore en ult
+	Entity["spowerLastTime"] = time.time() #derniere fois qu'on a charge l'ultime
+	Entity["spowerSpeed"] = spowerSpeed #vitesse de chargement de l'ultime
+	Entity["Type"].append("character")
+	return Entity
 
 
 
@@ -103,7 +107,6 @@ def get_asset(entity_to_get_asset):
 #____Jeux de Test________________________________________________________________
 if (__name__=="__main__"):
 	Name = "Asheiya"
-	Type = "Player"
 	X = 0
 	Y = 0
 	Vx = 0
@@ -116,9 +119,10 @@ if (__name__=="__main__"):
 	Asset["position"]=["Run","Right",0]
 	for Asheiya_doc in ["Run_Right_0","Wait_Right_0","Run_Left_0","Wait_Left_0","Run_Right_45","Wait_Right_45"]:# a terme on utilisera "Asheiya_asset" ou un constructeur de txt
 		Asset[Asheiya_doc]=entity.create_asset("Asheiya/Asset/" + Asheiya_doc + ".txt") #chargement Asset
-	player = entity.create_entity(Name,Type,X,Y,Vx,Vy,Life,Armor,Speed, LastTime, Asset)
+	player = entity.create_entity(Name,X,Y, Asset)
+	player = create_character(player, 3)
 
-	print get_asset_doc(player)
+	# print get_asset_doc(player)
 	# player = switch_stand(player, "Run")
 	# print player
 	# player = switch_orientation(player,"Left")

@@ -1,13 +1,15 @@
 import entity
 
 #_____Create____________________________________________________________________
-def create_shooting_ent(mobToBe, damage, assetShot, shotDelay, lastShot=0) :
-    # -afair les degats de la balle tirer
-    mobToBe["damage"] = damage
-    mobToBe["assetShot"] = assetShot
-    mobToBe["shotDelay"] = shotDelay
-    mobToBe["lastShot"] = lastShot
-    return mobToBe
+def create_shooting_ent(Entity, damage, assetShot, shotDelay, lastShot=0) :
+    assert type(Entity) is dict
+    assert "entity" in Entity["Type"]
+    Entity["damage"] = damage
+    Entity["assetShot"] = assetShot
+    Entity["shotDelay"] = shotDelay
+    Entity["lastShot"] = lastShot
+    Entity["Type"].append("shootingEnt")
+    return Entity
 
 #-afair les entites de types bullet
 
@@ -47,11 +49,10 @@ def hit(bullet, entities , gameBorder, walls ) :
 #____Jeux de Test________________________________________________________________
 if (__name__=="__main__"):
     Name = "Asheiya"
-    Type = "Player"
     X = 20
     Y = 37
     Asset = {}
     Asset["position"]=["Wait","Right",0]
     for Asheiya_doc in ["Run_Right_0","Wait_Right_0","Run_Left_0","Wait_Left_0","Run_Right_45","Wait_Right_45"]:# a terme on utilisera "Asheiya_asset" ou un constructeur de txt
         Asset[Asheiya_doc]=entity.create_asset("Asheiya/Asset/" + Asheiya_doc + ".txt") #chargement Asset
-    player = entity.create_entity(Name,Type,X,Y,Asset)
+    player = entity.create_entity(Name,X,Y,Asset)

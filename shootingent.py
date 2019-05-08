@@ -2,6 +2,37 @@ import entity
 
 #_____Create____________________________________________________________________
 def create_shooting_ent(Entity, damage, assetShot, shotDelay, lastShot=0) :
+
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet d'ajouter les parametres de projectile tiré a une entite
+
+    PARAM
+    =====
+
+    @param Entity: Entiter a modifier
+    @type Entity : dict
+
+    @param damage: Damage du projectile
+    @type damage : int
+
+    @param assetShot :Asset du projectile
+    @type assetShot :list
+
+    @param shotDelay : temps entre chaque projectile
+    @type shotDelay :int
+
+    @param lastShot : représdente le dernier tire
+    @type  :int
+
+    RETOUR
+    ======
+
+    @return ca  : une Entiter de type projectile tiré
+    @rtype ca :def
+    """
     assert type(Entity) is dict
     assert "entity" in Entity["Type"]
     Entity["damage"] = damage
@@ -15,6 +46,23 @@ def create_shooting_ent(Entity, damage, assetShot, shotDelay, lastShot=0) :
 
 #_____Accesseur____________________________________________________________________
 def is_shooting_ent(mob) :
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de vérifier si il possède un asset
+
+    PARAM
+    =====
+
+    @param mob:
+    @type mob : dict
+
+
+    RETOUR
+    ======
+        Sans retour
+    """
 	if "assetShot" in mob :
 		return True
 	else :
@@ -23,14 +71,59 @@ def is_shooting_ent(mob) :
 
 #_____Action____________________________________________________________________
 def shoot(mob , nb) :
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de vérifier si il possède un asset
+
+    PARAM
+    =====
+
+    @param mob:
+    @type mob : dict
+
+    @param nb: numéro du tire
+    @type nb: long
+
+    RETOUR
+
+    @return ca  : une Entiter de type projectile tiré
+    @rtype ca :def
+    """
 	#-afair
 	#mob : le mob qui tir
 	#nb : le "numero" du tir
-
 	# -> cre une entite de type bullet -> definir les carac d'une balle
 	return
 
-def hit(bullet, entities , gameBorder, walls ) : 
+def hit(bullet, entities , gameBorder, walls ) :
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de vérifier si il possède un asset
+
+    PARAM
+    =====
+
+    @param entities:
+    @type entities : dict
+
+    @param bullet:
+    @type lullet:
+
+    @param gameBorder:  Zone de l'ecran ou le joueur peu se mouvoir
+    @type gameBorder : list
+
+    @param walls: dictionnaire ou sont réparti tout les mur, plateformes
+    @type wall: dict
+
+    RETOUR
+
+    @return log  : donné renvoyer si la balle touche quelquechose, si la balle touche une entite ou pas et l'entité si toucher
+    @rtype log : tuple
+    """
     #entities c'est toutes les enttites qui peuvent bouffer la balle
     #gameBorder c'est les bords de la map pour tester si la balle sort
     #walls c'est le tableau double entree representant la map ou il y a toutes les plateformes "_" ""immuables""
@@ -39,7 +132,7 @@ def hit(bullet, entities , gameBorder, walls ) :
     is_hit = False #test si la balle touche quelquechose
     hit_entity=False  #test si la balle touche une entite ou pas
     entity = None #l'entite touche (le nom) le cas echeant
-    log = (is_hit, hit_entity,entity) #pour tout renvoyer  
+    log = (is_hit, hit_entity,entity) #pour tout renvoyer
     return(log)
 
 

@@ -14,15 +14,18 @@ def create_entity(Name, Type, X, Y, Asset, AI = None):
     ===========
         Permet de créer une entitee basique.
 
+    PARAM
+    =====
+
     @param Name : Designation de l'entite, correspond au nom de l'entite dans l'Histoire (Lore)
     @type Name : string
-    
+
     @param Type : represente le type de l'entite (player, boss, boonCreator, boon, bullet, [...])
     @type Type : string
 
     @param  X : position sur l'axe x de l'entite
     @type X : int
-    
+
     @param  Y : position sur l'axe Y de l'entite
     @type Y : int
 
@@ -31,11 +34,12 @@ def create_entity(Name, Type, X, Y, Asset, AI = None):
 
     @param IA : si l'entite est automatiquement controle, chemin d'acces vers le fichier qui la controle
     @type IA : string
-    
+
     RETOUR
     ======
 
-    @return :  None
+    @return Entity : Entiter créer
+    @rtype : dict
 
     """
     Entity=dict()
@@ -55,14 +59,18 @@ def create_asset(filename):
     ===========
         Permet de créer un asset
 
-    PARAMETRES
-    ==========
-        filename
-        --------
-            Adresse du fichier
-    RETURN
+    PARAM
+    =====
+
+    @param filename: Chemin d'acces du fichier
+    @type filename : str
+
+
+    RETOUR
     ======
-        Retourne un asset sous forme de tableau
+
+    @return ca  : Tableau représentant un asset
+    @rtype ca : list
     """
     ca=dict()
     ca["Asset"]= []
@@ -77,6 +85,28 @@ def create_asset(filename):
 #____collision___________________
 
 def hit_box_simple(asset,entity):
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de donné l'hitbox  d'un asset
+
+    PARAM
+    =====
+
+    @param asset: Tableau représentant un asset
+    @type asset : list
+
+    @param entity:
+    @type entity:
+
+
+    RETOUR
+    ======
+
+    @return   : 
+    @rtype : list
+    """
     y=len(asset)
     a=0
     for i in asset:

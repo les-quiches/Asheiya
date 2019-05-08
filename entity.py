@@ -12,33 +12,31 @@ def create_entity(Name, Type, X, Y, Asset, AI = None):
     G{classtree}
     DESCRIPTION
     ===========
-        Permet de créer une entitée
+        Permet de créer une entitee basique.
 
-    PARAMETRES
-    ==========
-        Name
-        ----
-            Chaine de caractère représentant le Nom de l'entitée
+    @param Name : Designation de l'entite, correspond au nom de l'entite dans l'Histoire (Lore)
+    @type Name : string
+    
+    @param Type : represente le type de l'entite (player, boss, boonCreator, boon, bullet, [...])
+    @type Type : string
 
-        Type
-        ----
-            Chaine de caractère représentant le Type de l'entitée
+    @param  X : position sur l'axe x de l'entite
+    @type X : int
+    
+    @param  Y : position sur l'axe Y de l'entite
+    @type Y : int
 
-        X
-        -
-            Entier représentant la postion initial absolut sur l'axe x
+    @param Asset : variables contenant toutes les representations de l'entite
+    @type Asset : dict
 
-        Y
-        -
-            Entier représentant la postion initial absolut sur l'axe y
+    @param IA : si l'entite est automatiquement controle, chemin d'acces vers le fichier qui la controle
+    @type IA : string
+    
+    RETOUR
+    ======
 
-        Asset
-        -----
-            Dictionnaire où est/sont stoqués le(s) asset(s) de l'entiter
+    @return :  None
 
-        AI
-        --
-            
     """
     Entity=dict()
     Entity["Name"]= Name
@@ -47,6 +45,7 @@ def create_entity(Name, Type, X, Y, Asset, AI = None):
     Entity["y"]= Y
     Entity["Asset"]= Asset
     Entity["AI"]=AI
+
     return(Entity)
 
 def create_asset(filename):

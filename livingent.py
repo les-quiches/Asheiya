@@ -1,7 +1,33 @@
+#-*- coding:utf-8 -*
 import entity
 
 #_____Create____________________________________________________________________
 def create_living_ent(Entity,Life, Armor) :
+    """
+    G{classtree}
+        DESCRIPTION
+    ===========
+        Permet d'ajouter les parametres de vie à une entité
+
+    PARAM
+    =====
+
+    @param Entity: Entite que l'on veux déplacé
+    @type Entity: dict
+
+    @param Life: Vie max de l'entité
+    @type  Life: int
+
+    @param Armor: Armure max de l'entité
+    @type  Armor: int
+
+
+    RETOUR
+    ======
+
+    @return Entity : Entity de type vivante
+    @rtype Entity :dict
+    """
     assert type(Entity) is dict
     assert "entity" in Entity["Type"]
 
@@ -15,6 +41,24 @@ def create_living_ent(Entity,Life, Armor) :
 #_____Get______________________________________________________________________
 
 def is_alive(Entity) :
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de vérifier si l'entité est en vie
+
+    PARAM
+    =====
+
+    @param Entity: Entity a tester
+    @type Entity : dict
+
+
+    RETOUR
+    ======
+    @return : Une information booléenne
+    @rtype :bool
+    """
     if Entity["Life"]<=0 :
         return False
     else :

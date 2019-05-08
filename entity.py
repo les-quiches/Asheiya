@@ -138,6 +138,29 @@ def feet(entity) :#renvoi les "pieds" de l'entite
     return
 
 def is_ground_beneath(pos,gameBorder,walls) :
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+
+
+    PARAM
+    =====
+
+    @param pos :
+    @type pos :
+
+    @param gameBorder:  Zone de l'ecran ou le joueur peu se mouvoir
+    @type gameBorder : list
+
+    @param walls :
+    @type walls :
+
+    RETOUR
+    ======
+    @return : Une information booléenne
+    @rtype :bool
+    """
     # -afair : test si en dessous de pos il y a ou pas une plateforme et renvoie True or False en consequence
     return True
 

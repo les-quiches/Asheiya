@@ -31,7 +31,7 @@ def create_window(filename):
     wd = dict()
     wd["window"]=[]
     myfile=f.OPEN_FILE_XML(filename)
-    doc = f.SPLIT_LINES(myfile) # axe y
+    doc =myfile.splitlines() # axe y
     for x in doc:# axe x
         y = list(x)
         wd["window"].append(y)

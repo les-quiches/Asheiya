@@ -6,6 +6,36 @@ import time
 
 #_____Create____________________________________________________________________
 def create_moving_ent(Entity, Vx, Vy,Speed, LastTime):
+    """
+    G{classtree}
+        DESCRIPTION
+    ===========
+        Permet d'ajouter les parametres de déplacement à une entité
+
+    PARAM
+    =====
+
+    @param Entity: Entite que l'on veux déplacé
+    @type Entity: dict
+
+    @param vx: déplacement sur x que l'on veux appliqué à l'entité
+    @type  vx: int
+
+    @param vy: déplacement sur y que l'on veux appliqué à l'entité
+    @type  vy: int
+
+    @param Speed: vitesse du joueur
+    @type Speed: : int
+
+    @param LastTime:
+    @type LastTime :int
+
+    RETOUR
+    ======
+
+    @return Entity : Entity de type déplaçable
+    @rtype Entity :dict
+    """
     assert type(Entity) is dict
     assert "entity" in Entity["Type"]
     Entity["Vx"]= Vx
@@ -19,6 +49,37 @@ def create_moving_ent(Entity, Vx, Vy,Speed, LastTime):
 
 #_____Move______________________________________________________________________
 def move_entity(Entity,x,y,willCollide=False,isGravity=False):
+
+    """
+    G{classtree}
+        DESCRIPTION
+    ===========
+        Permet de déplacé une entité
+
+    PARAM
+    =====
+
+    @param Entity: Entite que l'on veux déplacé
+    @type Entity: dict
+
+    @param x: déplacement sur x que l'on veux appliqué à l'entité
+    @type  x: int
+
+    @param y: déplacement sur y que l'on veux appliqué à l'entité
+    @type  y: int
+
+    @param willCollide:
+    @type willCollide : bool
+
+    @param isGravity:
+    @type isGravity : bool
+
+    RETOUR
+    ======
+
+    @return Entity : Entity déplacer
+    @rtype Entity :dict
+    """
     if not(willCollide):
         Entity["x"]+=2*x
         Entity["y"]+=y
@@ -27,23 +88,117 @@ def move_entity(Entity,x,y,willCollide=False,isGravity=False):
     return(Entity)
 
 def tp_entity(Entity,x,y):
+    """
+    G{classtree}
+        DESCRIPTION
+    ===========
+        Permet de déplacé une entité
+
+    PARAM
+    =====
+
+    @param Entity: Entite que l'on veux déplacé
+    @type Entity: dict
+
+    @param x: postion sur x où on veut déplacé l'entité
+    @type  x: int
+
+    @param y: postion sur y où on veut déplacé l'entité
+    @type  y: int
+
+    RETOUR
+    ======
+
+    @return Entity : Entity déplacer
+    @rtype Entity :dict
+    """
     Entity["x"]=x
     Entity["y"]=y
     return(Entity)
 
 def jump(Entity):
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de démarée un saut d'une entité
+
+    PARAM
+    =====
+
+    @param Entity: Entite que l'on veux faire sauté
+    @type Entity: dict
+
+    RETOUR
+    ======
+
+    @return Entity : Entity d'on le saut est modifié
+    @rtype Entity :dict
+    """
     Entity["Jump"] = 9
     return Entity
 
 def gravity(Entity,onTheGround=False) :
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet d'aplique une 'graviter' a une Entitée
+
+    PARAM
+    =====
+    @param Entity: Entite que l'on veux applique notre gravité
+    @type Entity: dict
+
+    @param onTheGround: précisé si l'entiter est déjà au sol
+    @type  onTheGround: bool
+
+    RETOUR
+    ======
+
+    @return Entity : Entity déplacer
+    @rtype Entity :dict
+    """
     if Entity["Jump"]>=1 :
         Entity["Jump"]-=1
     elif(not(onTheGround)):
         Entity["Vy"]=1
     return (Entity)
 
-#_____Collision______________________________________________________________________   
+#_____Collision______________________________________________________________________
 def collision(ent, allEntity, gameBorder, walls, x=None, y=None) : #x et y correspondent aux prochaines positions, utiles seulement pour le joueur sinon on recupere via entity
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de détecté une collision
+
+    PARAM
+    =====
+    @param ent: entiter que l'on veux tester si il y a eu une collision
+    @type ent:dict
+
+    @param allEntity: toute les entity qui pourrais etre en collision
+    @type allEntity: dict
+
+    @param gameBorder:  Zone de l'ecran ou le joueur peu se mouvoir
+    @type gameBorder : list
+
+    @param walls: dictionnaire ou sont réparti tout les mur, plateformes
+    @type wall: dict
+
+    @param x: coordonnés x
+    @type x: int
+
+    @param y: coordonnés y
+    @type y: int
+
+    RETOUR
+    ======
+
+    @return collision : Renvoie l'information si il y a eu une collision
+    @rtype collision :bool
+    """
     # -afair : reperer tout d'abord si ia pas de collisions avec les murs, puis ensuite les collisions possibles
     #           avec les entites proches, en recuperant les hit_box des entites PROCHES SEULEMENT
 
@@ -51,7 +206,7 @@ def collision(ent, allEntity, gameBorder, walls, x=None, y=None) : #x et y corre
     if (x != None or y!=None):
         None
         #ca veut dire quon gere le deplacement du joueur, donc la position en prendre en compte c'est ent[x]+x
-    else : 
+    else :
         None
         #on gere une entite programme, donc on prend en compte ent[x]+ent[Vx]
     #on recupere pos -> avec X Y les positions a tester

@@ -9,7 +9,7 @@ def create_living_ent(Entity,Life, Armor) :
     DESCRIPTION
     ===========
         Complète une entité pour qu'elle puisse recevoir des dégâts.
-        Les living_entity sont détruitent et éliminé lorsqu'elles n'ont plus vie.
+        Les living_entity sont détruitent et éliminé lorsqu'elles n'ont plus de vie.
 
     PARAM
     =====

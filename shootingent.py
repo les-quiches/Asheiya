@@ -57,13 +57,14 @@ def is_shooting_ent(mob) :
     PARAM
     =====
 
-    @param mob:
+    @param mob: mob a tester
     @type mob : dict
 
 
     RETOUR
     ======
-        Sans retour
+    @return : Une information booléenne
+    @rtype :bool
     """
 	if "assetShot" in mob :
 		return True

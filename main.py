@@ -214,7 +214,7 @@ def Game():
 
 	#gestion de l'ultime
 	if player["spowerDelay"]<=0 :
-		player=character.powerOff(player) #si le joueur n'a plus de temps d'ultime, il n'est pas entrain de l'utiliser
+		player=character.power_off(player) #si le joueur n'a plus de temps d'ultime, il n'est pas entrain de l'utiliser
 		player["spowerDelay"]=0
 
 

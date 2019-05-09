@@ -116,8 +116,7 @@ def Init(): 	#initialisation des variables
 	vxPlayer = 0
 	vyPlayer = 0
 	speedPlayer = 0.07 #deplaxcement pas seconde
-	lastTime = time.time() #moment d'apparition, permettra de gerer l'affichage
-	player = movingent.create_moving_ent(player,vxPlayer,vyPlayer,speedPlayer,lastTime)
+	player = movingent.create_moving_ent(player,vxPlayer,vyPlayer,speedPlayer)
 
 	lifePlayer = 18
 	armorPlayer =25
@@ -303,9 +302,9 @@ def Time_game():
 
 
 		if (shootingent.is_shooting_ent(mob)) :
-			if time.time()>mob["shotDelay"]+mob["lastShot"] :
+			if time.time()>mob["shotDelay"]+mob["lastShot"][0] :
 				#on fait tirer si le mob est un mob qui tir
-				shootingent.shoot(mob, len(allEntity["projectile"])) #-afair
+				shootingent.shoot(mob) #-afair
 
 
 	#on gere les deplacements du joueur
@@ -433,11 +432,13 @@ def Interact():
 
 				# /!\ dans toute cette zone, gerer les collisions avant les deplacements avec movingent.collision -afair
 				elif c == "d":
-					player = character.switch_stand(player,"Run")
+					if not(player["Jump"]) : #-afair : si on est en saut on bouge pas les pieds, fonctionne pas actuellement
+						player = character.switch_stand(player,"Run")
 					player = movingent.move_entity(player,1,0)
 
 				elif c == "q":
-					player = character.switch_stand(player,"Run")
+					if not(player["Jump"]) : 
+						player = character.switch_stand(player,"Run")
 					player = movingent.move_entity(player,-1,0)
 
 				elif c == "z" and player["Jump"]==0 :

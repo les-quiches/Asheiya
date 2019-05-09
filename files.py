@@ -11,7 +11,6 @@ import os
 
 
 def OPEN_FILE_JSON(filename):
-def is_ground_beneath(pos,gameBorder,walls) :
     """
     G{classtree}
     DESCRIPTION

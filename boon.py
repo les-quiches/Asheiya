@@ -19,12 +19,12 @@ def create_boon(Entity,Bonus,Value) :
 	@param Bonus : le type de bonus (lifeUp, armorUp, damageUp, speedUp, [...])
 	@type Bonus : str
 
-	@param Value : la puissance du bonus, la quantite modifie lorsqu'on le recupere
+	@param Value : la puissance du bonus, la quantite modifié lorsqu'on le recupère
 	@type Value : int/float
 
 	RETOUR
 	======
-	@return : la nouvelle entite cree correspondant a l'ancienne mais avec le type boon en plus
+	@return : la nouvelle entite créée, correspondant a l'ancienne mais avec le type boon en plus
 	@rtype : dict
 	"""
 	assert type(Entity) is dict

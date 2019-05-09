@@ -55,23 +55,23 @@ def show_window(doc):
 		Sans retour
     """
 	#couleur fond
-	sys.stdout.write("\033[40m")
-	#couleur white
-	sys.stdout.write("\033[37m")
-	#goto
-	for y in range(0,len(doc["window"])):
-		for x in range(0,len(doc["window"][y])):
-			s="\033["+str(y+1)+";"+str(x+1)+"H"
-			sys.stdout.write(s)
-			#affiche
-			sys.stdout.write(doc["window"][y][x])
+    sys.stdout.write("\033[40m")
+    #couleur white
+    sys.stdout.write("\033[37m")
+    #goto
+    for y in range(0,len(doc["window"])):
+        for x in range(0,len(doc["window"][y])):
+          s="\033["+str(y+1)+";"+str(x+1)+"H"
+          sys.stdout.write(s)
+          #affiche
+          sys.stdout.write(doc["window"][y][x])
 
 def show_pos(doc, X, Y, color_bg, color_txt):
     """
     G{classtree}
     DESCRIPTION
     ===========
-        Permet d'afficher un fenetre a des coordonnés précises
+        Permet d'afficher un fenetre a des coordonnées précises
 
     PARAM
     =====
@@ -79,16 +79,16 @@ def show_pos(doc, X, Y, color_bg, color_txt):
     @param doc : Tableau représentant la fenetre
     @type doc : list
 
-    @param X: coordonnés x où installer la fenetre
+    @param X: coordonnée x où installer la fenetre
     @type X: int
 
-    @param Y: coordonnés y où installer la fenetre
+    @param Y: coordonnée y où installer la fenetre
     @type Y: int
 
     @param color_bg : Couleur du backgound
     @type color_bg :int
 
-    @param color_txt : Couleur des characters
+    @param color_txt : Couleur des caractères
     @type color_txt :int
 
     RETOUR

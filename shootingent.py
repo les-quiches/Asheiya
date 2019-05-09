@@ -1,33 +1,34 @@
 #-*- coding:utf-8 -*
 
 import entity
+import time
 
 #_____Create____________________________________________________________________
-def create_shooting_ent(Entity, damage, assetShot, shotDelay, lastShot=0) :
+def create_shooting_ent(Entity, damage, assetShot, shotDelay, lastShot=[time.time(),0]) :
 
     """
     G{classtree}
     DESCRIPTION
     ===========
-        Permet d'ajouter les parametres de projectile tiré a une entite
+        Ajoute à une entité la possibilité de tirer
 
     PARAM
     =====
 
-    @param Entity: Entiter a modifier
+    @param Entity: Entité a modifier
     @type Entity : dict
 
-    @param damage: Damage du projectile
+    @param damage: Dommages du projectile
     @type damage : int
 
     @param assetShot :Asset du projectile
     @type assetShot :list
 
-    @param shotDelay : temps entre chaque projectile
+    @param shotDelay : temps entre chaque tir
     @type shotDelay :int
 
-    @param lastShot : représdente le dernier tire
-    @type  :int
+    @param lastShot : représente le dernier tir (le moment du tir, et le numéro du tir)
+    @type  : list
 
     RETOUR
     ======
@@ -47,89 +48,85 @@ def create_shooting_ent(Entity, damage, assetShot, shotDelay, lastShot=0) :
 #-afair les entites de types bullet
 
 #_____Accesseur____________________________________________________________________
-def is_shooting_ent(mob) :
+def is_shooting_ent(Entity) :
     """
     G{classtree}
     DESCRIPTION
     ===========
-        Permet de vérifier si il possède un asset
+        Permet de vérifier si l'entité est une entité capable de tirer
 
     PARAM
     =====
 
-    @param mob: mob a tester
-    @type mob : dict
+    @param Entité: Entité a tester
+    @type Entité : dict
 
 
     RETOUR
     ======
-    @return : Une information booléenne
+    @return : True si l'entité est capable de tirer, False sinon.
     @rtype :bool
     """
-	if "assetShot" in mob :
-		return True
-	else :
-		return False
+    if "shootingEnt" in Entity["Type"] :
+        return True
+    else :
+        return False
 
 
 #_____Action____________________________________________________________________
-def shoot(mob , nb) :
+def shoot(Entity) :
     """
     G{classtree}
     DESCRIPTION
     ===========
-        Permet de vérifier si il possède un asset
+        Permet de faire tirer une entité
 
     PARAM
     =====
 
-    @param mob:
-    @type mob : dict
+    @param Entity: l'entité qui va tirer
+    @type Entity : dict
 
-    @param nb: numéro du tire
-    @type nb: long
 
     RETOUR
 
-    @return ca  : une Entiter de type projectile tiré
-    @rtype ca :def
+    @return ca  : une Entité correspondant au projectile tiré
+    @rtype ca : dict
     """
+    assert type(Entity) is dict
+    assert "shootingEnt" in Entity["Type"]
 	#-afair
-	#mob : le mob qui tir
-	#nb : le "numero" du tir
 	# -> cre une entite de type bullet -> definir les carac d'une balle
-	return
+    return
 
 def hit(bullet, entities , gameBorder, walls ) :
     """
     G{classtree}
     DESCRIPTION
     ===========
-        Permet de vérifier si il possède un asset
+        Permet de vérifier si un projectile rentre en collision avec quelquechose.
+        Si c'est le cas, prends des décisions en fonction de la nature de l'objet touché.
 
     PARAM
     =====
+    @param bullet: le projectile dont on chercher à savoir la collision
+    @type bullet: dict
 
-    @param entities:
-    @type entities : dict
+    @param entities: toute les entités du jeu
+    @type entities : list
 
-    @param bullet:
-    @type lullet:
 
     @param gameBorder:  Zone de l'ecran ou le joueur peu se mouvoir
     @type gameBorder : list
 
-    @param walls: dictionnaire ou sont réparti tout les mur, plateformes
-    @type wall: dict
+    @param walls: tableau ou sont réparti tout les mur, plateformes
+    @type wall: array
 
     RETOUR
 
-    @return log  : donné renvoyer si la balle touche quelquechose, si la balle touche une entite ou pas et l'entité si toucher
+    @return log  : contient trois informations comme suit : True si le projectile rentre en collision (False sinon), True si c'était une entité vivante(False sinon), l'identifiant de cette entité le cas échéant.
     @rtype log : tuple
     """
-    #entities c'est toutes les enttites qui peuvent bouffer la balle
-    #gameBorder c'est les bords de la map pour tester si la balle sort
-    #walls c'est le tableau double entree representant la map ou il y a toutes les plateformes "_" ""immuables""
     None
     # -afair : les tests de collisions
     is_hit = False #test si la balle touche quelquechose

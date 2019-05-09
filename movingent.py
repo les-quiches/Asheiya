@@ -5,7 +5,7 @@ import time
 
 
 #_____Create____________________________________________________________________
-def create_moving_ent(Entity, Vx, Vy,Speed, LastTime):
+def create_moving_ent(Entity, Vx, Vy,Speed, LastTime=time.time()):
     """
     G{classtree}
         DESCRIPTION
@@ -15,19 +15,19 @@ def create_moving_ent(Entity, Vx, Vy,Speed, LastTime):
     PARAM
     =====
 
-    @param Entity: Entite que l'on veux déplacé
+    @param Entity: Entité que l'on veux déplacé
     @type Entity: dict
 
-    @param vx: déplacement sur x que l'on veux appliqué à l'entité
+    @param vx: déplacement sur x que l'on veux appliquer à l'entité
     @type  vx: int
 
-    @param vy: déplacement sur y que l'on veux appliqué à l'entité
+    @param vy: déplacement sur y que l'on veux appliquer à l'entité
     @type  vy: int
 
     @param Speed: vitesse du joueur
     @type Speed: : int
 
-    @param LastTime:
+    @param LastTime: dernière fois que l'entité c'est déplacé
     @type LastTime :int
 
     RETOUR
@@ -54,30 +54,30 @@ def move_entity(Entity,x,y,willCollide=False,isGravity=False):
     G{classtree}
         DESCRIPTION
     ===========
-        Permet de déplacé une entité
+        Permet de déplacer une entité
 
     PARAM
     =====
 
-    @param Entity: Entite que l'on veux déplacé
+    @param Entity: Entite que l'on veux déplacer
     @type Entity: dict
 
-    @param x: déplacement sur x que l'on veux appliqué à l'entité
+    @param x: déplacement sur x que l'on veux appliquer à l'entité
     @type  x: int
 
-    @param y: déplacement sur y que l'on veux appliqué à l'entité
+    @param y: déplacement sur y que l'on veux appliquer à l'entité
     @type  y: int
 
-    @param willCollide:
+    @param willCollide: True si le déplacement va engendrer une collision, False sinon
     @type willCollide : bool
 
-    @param isGravity:
+    @param isGravity: True si le déplacement est dû à la gravité
     @type isGravity : bool
 
     RETOUR
     ======
 
-    @return Entity : Entity déplacer
+    @return Entity : Entité déplacé
     @rtype Entity :dict
     """
     if not(willCollide):
@@ -92,24 +92,24 @@ def tp_entity(Entity,x,y):
     G{classtree}
         DESCRIPTION
     ===========
-        Permet de déplacé une entité
+        Permet de déplacer une entité à une position précise
 
     PARAM
     =====
 
-    @param Entity: Entite que l'on veux déplacé
+    @param Entity: Entite que l'on veux déplacer
     @type Entity: dict
 
-    @param x: postion sur x où on veut déplacé l'entité
+    @param x: postion sur x où on veut déplacer l'entité
     @type  x: int
 
-    @param y: postion sur y où on veut déplacé l'entité
+    @param y: postion sur y où on veut déplacer l'entité
     @type  y: int
 
     RETOUR
     ======
 
-    @return Entity : Entity déplacer
+    @return Entity : Entité déplacé
     @rtype Entity :dict
     """
     Entity["x"]=x
@@ -121,18 +121,18 @@ def jump(Entity):
     G{classtree}
     DESCRIPTION
     ===========
-        Permet de démarée un saut d'une entité
+        Permet de démarer un saut d'une entité
 
     PARAM
     =====
 
-    @param Entity: Entite que l'on veux faire sauté
+    @param Entity: Entité que l'on veut faire sauter
     @type Entity: dict
 
     RETOUR
     ======
 
-    @return Entity : Entity d'on le saut est modifié
+    @return Entity : Entité entrain de sauter
     @rtype Entity :dict
     """
     Entity["Jump"] = 9
@@ -143,26 +143,28 @@ def gravity(Entity,onTheGround=False) :
     G{classtree}
     DESCRIPTION
     ===========
-        Permet d'aplique une 'graviter' a une Entitée
+        Permet d'aplique une gravité a une Entitée
 
     PARAM
     =====
-    @param Entity: Entite que l'on veux applique notre gravité
+    @param Entity: Entite à qui l'on veut appliquer notre gravitée
     @type Entity: dict
 
-    @param onTheGround: précisé si l'entiter est déjà au sol
+    @param onTheGround: True si l'entité est déjà au sol, False sinon
     @type  onTheGround: bool
 
     RETOUR
     ======
 
-    @return Entity : Entity déplacer
+    @return Entity : Entité soumise à une force gravitationelle
     @rtype Entity :dict
     """
     if Entity["Jump"]>=1 :
         Entity["Jump"]-=1
     elif(not(onTheGround)):
         Entity["Vy"]=1
+    if onTheGround==True : 
+        Entity["Jump"]=0
     return (Entity)
 
 #_____Collision______________________________________________________________________
@@ -171,14 +173,14 @@ def collision(ent, allEntity, gameBorder, walls, x=None, y=None) : #x et y corre
     G{classtree}
     DESCRIPTION
     ===========
-        Permet de détecté une collision
+        Permet de détecter une collision
 
     PARAM
     =====
-    @param ent: entiter que l'on veux tester si il y a eu une collision
+    @param ent: entité dont l'on veux tester si il y a une collision
     @type ent:dict
 
-    @param allEntity: toute les entity qui pourrais etre en collision
+    @param allEntity: toutes les entités qui pourrais etre en collision
     @type allEntity: dict
 
     @param gameBorder:  Zone de l'ecran ou le joueur peu se mouvoir
@@ -196,7 +198,7 @@ def collision(ent, allEntity, gameBorder, walls, x=None, y=None) : #x et y corre
     RETOUR
     ======
 
-    @return collision : Renvoie l'information si il y a eu une collision
+    @return collision : Renvoie True s'il y a une collision, False sinon.
     @rtype collision :bool
     """
     # -afair : reperer tout d'abord si ia pas de collisions avec les murs, puis ensuite les collisions possibles

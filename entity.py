@@ -89,7 +89,7 @@ def hit_box_simple(asset,entity):
     G{classtree}
     DESCRIPTION
     ===========
-        Permet de donné l'hitbox simplifiee d'un asset
+        Permet de donner l'hitbox simplifiée d'un asset
 
     PARAM
     =====
@@ -104,7 +104,7 @@ def hit_box_simple(asset,entity):
     RETOUR
     ======
 
-    @return   : quatre positions correspondants aux valeurs extremes des contours de l'entite. Permet de positionner les quatre coins.
+    @return : quatre positions correspondants aux valeurs extremes des contours de l'entite. Permet de positionner les quatre coins.
     @rtype : list
     """
     y=len(asset)
@@ -120,7 +120,7 @@ def feet(entity) :#renvoi les "pieds" de l'entite
     G{classtree}
     DESCRIPTION
     ===========
-        Permet de donné la position des pieds d'un asset
+        Permet de donner la position des pieds d'un asset
 
     PARAM
     =====
@@ -143,23 +143,23 @@ def is_ground_beneath(pos,gameBorder,walls) :
     G{classtree}
     DESCRIPTION
     ===========
-
+        Permet de savoir si il y a une plateforme solide sous la position Pos
 
     PARAM
     =====
 
-    @param pos :
-    @type pos :
+    @param pos : position de l'endroit où l'on veut savoir s'il y a une plateforme en dessous
+    @type pos : list
 
-    @param gameBorder:  Zone de l'ecran ou le joueur peu se mouvoir
+    @param gameBorder:  Zone de l'ecran ou le joueur peut se mouvoir
     @type gameBorder : list
 
-    @param walls :
-    @type walls :
+    @param walls : Ensemble des plateformes du jeu
+    @type walls : array
 
     RETOUR
     ======
-    @return : Une information booléenne
+    @return : True s'il y a bien un sol solide en dessous, False sinon.
     @rtype :bool
     """
     # -afair : test si en dessous de pos il y a ou pas une plateforme et renvoie True or False en consequence

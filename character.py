@@ -10,33 +10,34 @@ def create_character(Entity, spowerSpeed):
     G{classtree}
         DESCRIPTION
     ===========
-        Permet d'ajouter une capacite ultime a un entité
+        Permet d'ajouter une capacite ultime a une Entité
 
     PARAM
     =====
 
-    @param Entity: Entite que l'on veux ajouté une capacite ultime
+    @param Entity: Entité à qui l'on veux ajouter une capacité ultime
     @type Entity: dict
 
-    @param spowerSpeed: vitesse de chargement de l'ultim
+    @param spowerSpeed: vitesse de chargement de l'ultime
     @type  spowerSpeed: int
 
     RETOUR
     ======
 
-    @return Entity : Entity possédent une attaque ultime
+    @return Entity : Entity possédent une capacité ultime
     @rtype Entity :dict
     """
-	assert type(Entity) is dict
-	assert "entity" in Entity["Type"]
 
-	Entity["spowerCharge"] = 0 #la barre de chargement de l'ultime
-	Entity["spowerOn"]=False #est-ce que le pouvoir est actif
-	Entity["spowerDelay"] = 0 #pendant combien de temps on est encore en ult
-	Entity["spowerLastTime"] = time.time() #derniere fois qu'on a charge l'ultime
-	Entity["spowerSpeed"] = spowerSpeed #vitesse de chargement de l'ultime
-	Entity["Type"].append("character")
-	return Entity
+    assert type(Entity) is dict
+    assert "entity" in Entity["Type"]
+
+    Entity["spowerCharge"] = 0 #la barre de chargement de l'ultime
+    Entity["spowerOn"]=False #est-ce que le pouvoir est actif
+    Entity["spowerDelay"] = 0 #pendant combien de temps on est encore en ult
+    Entity["spowerLastTime"] = time.time() #derniere fois qu'on a charge l'ultime
+    Entity["spowerSpeed"] = spowerSpeed #vitesse de chargement de l'ultime
+    Entity["Type"].append("character")
+    return Entity
 
 
 
@@ -46,44 +47,44 @@ def charge_ult(player) :
     G{classtree}
         DESCRIPTION
     ===========
-        Permet de charger la capacité ultime de l'entité
+        Permet de charger la capacité ultime de l'Entité
 
     PARAM
     =====
 
-    @param player: Entite que l'on veux charger la capacite ultime
+    @param player: Entité dont l'on veux charger la capacite ultime
     @type player dict
 
     RETOUR
     ======
 
-    @return Entity : Entity avec la capacité charger
+    @return Entity : Entity avec la capacité chargée
     @rtype Entity :dict
     """
-	player["spowerCharge"]+=1
-	return player
+    player["spowerCharge"]+=1
+    return player
 
 def cooldown_ult(player) :
     """
     G{classtree}
         DESCRIPTION
     ===========
-        Permet de d'enlever du temps sur la recharge de la capacité ultime
+        Décroit le temps restant d'utilisation de la capacitée ultime.
 
     PARAM
     =====
 
-    @param player: Entite que l'on veux charger la capacite ultime
+    @param player: Entité entrain d'utiliser sa capacitée ultime
     @type player dict
 
     RETOUR
     ======
 
-    @return Entity : Entity avec du temps enlever sur la recharge de la capacité ultime
+    @return Entity : Entité avec le temps restant en ultime décrut.
     @rtype Entity :dict
     """
-	player["spowerDelay"]-=1
-	return player
+    player["spowerDelay"]-=1
+    return player
 
 
 def power_off(player) :
@@ -96,17 +97,17 @@ def power_off(player) :
     PARAM
     =====
 
-    @param player: Entite que l'on veux desactiver la capacité ultime
+    @param player: Entité à qui l'on veut desactiver la capacité ultime
     @type player dict
 
     RETOUR
     ======
 
-    @return Entity : Entity avec la capacité ultime desactiver
+    @return Entity : Entité avec la capacité ultime desactivé
     @rtype Entity :dict
     """
-	player["spowerOn"]=False
-	return player
+    player["spowerOn"]=False
+    return player
 
 #____Position_Gun________________________
 def position_gun(assetPosition):
@@ -114,7 +115,7 @@ def position_gun(assetPosition):
     G{classtree}
         DESCRIPTION
     ===========
-        Permet donnée la position de l'arme du joueur en fonction de sont asset
+        Permet de donner la position de l'arme du joueur en fonction de son asset
 
     PARAM
     =====
@@ -125,7 +126,7 @@ def position_gun(assetPosition):
     RETOUR
     ======
 
-    @return position: coordonnés position arme sur l'asset
+    @return position: coordonnés de la position de l'arme sur l'asset
     @rtype position: list
     """
     x=0
@@ -169,23 +170,23 @@ def position_gun(assetPosition):
 
 #____Get________________________________________________
 
-def get_asset_doc(player): #recupere le nom du fichier de l'asset correspondant a la position actuelle du joueur
+def get_asset_doc(player): #recupère le nom du fichier de l'asset correspondant a la position actuelle du joueur
     """
     G{classtree}
         DESCRIPTION
     ===========
-        Permet donnée l'asset du joueur
+        Permet de donner l'asset du joueur
 
     PARAM
     =====
 
-    @param player: entite du joueur
+    @param player: entité du joueur
     @type player:dict
 
     RETOUR
     ======
 
-    @return asset: Chemin d'acces de l'asset du joueur
+    @return asset: Chemin d'accès de l'asset du joueur
     @rtype asset: str
     """
     asset = "Asheiya/Asset/" + str(player["Asset"]["position"][0]+"_"+player["Asset"]["position"][1]+"_"+str(player["Asset"]["position"][2]))+".txt"
@@ -211,20 +212,20 @@ def switch_orientation(player, orientation) :
     RETOUR
     ======
 
-    @return player: joueur avec un orientation differentes
+    @return player: joueur avec un orientation différente
     @rtype player: dict
     """
-	assert type(orientation) is str
-	assert orientation in ["Right", "Left"]
-	player["Asset"]["position"][1]=orientation
-	return player
+    assert type(orientation) is str
+    assert orientation in ["Right", "Left"]
+    player["Asset"]["position"][1]=orientation
+    return player
 
 def switch_fire_angle(player, fireAngle) :
     """
     G{classtree}
         DESCRIPTION
     ===========
-        Permet changer l'angle de tire de l'asset du joueur
+        Permet changer l'angle de tir de l'asset du joueur
 
     PARAM
     =====
@@ -232,31 +233,31 @@ def switch_fire_angle(player, fireAngle) :
     @param player: entite du joueur
     @type player:dict
 
-    @param fireAngle: modification de l'angle de tire
+    @param fireAngle: modification de l'angle de tir
     @type fireAngle: int
 
     RETOUR
     ======
 
-    @return player: joueur avec angle de tire differentes
+    @return player: joueur avec angle de tir differente
     @rtype player: dict
     """
-	assert type(fireAngle) is int
-	assert fireAngle in [-45,45]
-	angle = player["Asset"]["position"][2] + fireAngle
-	if angle>=90 :
-		angle = 90
-	elif angle<=-90:
-		angle = -90
-	player["Asset"]["position"][2]=angle
-	return player
+    assert type(fireAngle) is int
+    assert fireAngle in [-45,45]
+    angle = player["Asset"]["position"][2] + fireAngle
+    if angle>=90 :
+        angle = 90
+    elif angle<=-90:
+        angle = -90
+    player["Asset"]["position"][2]=angle
+    return player
 
 def switch_stand(player, stand):
     """
     G{classtree}
         DESCRIPTION
     ===========
-        Permet changer l'action de l'asset du joueur
+        Permet changer la pose de l'asset du joueur
 
     PARAM
     =====
@@ -264,18 +265,18 @@ def switch_stand(player, stand):
     @param player: entite du joueur
     @type player:dict
 
-    @param stand: modification de la position
+    @param stand: modification de la pose
     @type stand: int
 
     RETOUR
     ======
 
-    @return player: joueur avec une action differentes
+    @return player: joueur avec une pose differente 
     @rtype player: dict
     """
-	assert stand in ["Wait","Run"]
-	player["Asset"]["position"][0]=stand
-	return player
+    assert stand in ["Wait","Run"]
+    player["Asset"]["position"][0]=stand
+    return player
 
 def get_asset(entity_to_get_asset):
     """
@@ -296,8 +297,8 @@ def get_asset(entity_to_get_asset):
     @return asset: Nom de fichier de l'asset de l'entité
     @rtype asset: str
     """
-	asset = entity_to_get_asset["Asset"][entity_to_get_asset["Asset"]["position"][0]+"_"+entity_to_get_asset["Asset"]["position"][1]+"_"+str(entity_to_get_asset["Asset"]["position"][2])]
-	return(asset)
+    asset = entity_to_get_asset["Asset"][entity_to_get_asset["Asset"]["position"][0]+"_"+entity_to_get_asset["Asset"]["position"][1]+"_"+str(entity_to_get_asset["Asset"]["position"][2])]
+    return(asset)
 
 #____Jeux de Test________________________________________________________________
 if (__name__=="__main__"):

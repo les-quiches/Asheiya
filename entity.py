@@ -84,37 +84,6 @@ def create_asset(filename):
 
 #____collision___________________
 
-def hit_box_simple(asset,entity):
-    """
-    G{classtree}
-    DESCRIPTION
-    ===========
-        Permet de donner l'hitbox simplifiée d'un asset
-
-    PARAM
-    =====
-
-    @param asset: Tableau représentant un asset
-    @type asset : list
-
-    @param entity: Entite dont on veut obtenir l'asset
-    @type entity: dict
-
-
-    RETOUR
-    ======
-
-    @return : quatre positions correspondants aux valeurs extremes des contours de l'entite. Permet de positionner les quatre coins.
-    @rtype : list
-    """
-    y=len(asset)
-    a=0
-    for i in asset:
-        a+=len(asset[i])
-    x= a/(i+1)
-    hit_box_entity=[entity["x"], entity["y"], entity["x"]+x, entity["y"]+y]# plage de l'hitbox de l'asset (point en haut a gauche puit en bas a doite)
-    return(hit_box_entity)
-
 def feet(entity) :#renvoi les "pieds" de l'entite
     """
     G{classtree}

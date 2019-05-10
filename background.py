@@ -28,13 +28,12 @@ def create_window(filename):
     @rtype ca : list
     """
 
-    wd = dict()
-    wd["window"]=[]
+    wd=[]
     myfile=f.OPEN_FILE_XML(filename)
     doc =myfile.splitlines() # axe y
     for x in doc:# axe x
         y = list(x)
-        wd["window"].append(y)
+        wd.append(y)
     return(wd)
 
 def show_window(doc):
@@ -52,19 +51,19 @@ def show_window(doc):
 
     RETOUR
     ======
-		Sans retour
+        Sans retour
     """
-	#couleur fond
+    #couleur fond
     sys.stdout.write("\033[40m")
     #couleur white
     sys.stdout.write("\033[37m")
     #goto
-    for y in range(0,len(doc["window"])):
-        for x in range(0,len(doc["window"][y])):
+    for y in range(0,len(doc)):
+        for x in range(0,len(doc[y])):
           s="\033["+str(y+1)+";"+str(x+1)+"H"
           sys.stdout.write(s)
           #affiche
-          sys.stdout.write(doc["window"][y][x])
+          sys.stdout.write(doc[y][x])
 
 def show_pos(doc, X, Y, color_bg, color_txt):
     """
@@ -93,18 +92,18 @@ def show_pos(doc, X, Y, color_bg, color_txt):
 
     RETOUR
     ======
-		Sans retour
+        Sans retour
     """
     #couleur fond
     sys.stdout.write("\033["+str(color_bg)+"m")
-	#couleur white
+    #couleur white
     sys.stdout.write("\033["+str(color_txt)+"m")
-    for y in range(0,len(doc["window"])):
-		for x in range(0,len(doc["window"][y])):
-			s="\033["+str(Y+y+1)+";"+str(X+x+1)+"H"
-			sys.stdout.write(s)
-			#affiche
-			sys.stdout.write(doc["window"][y][x])
+    for y in range(0,len(doc)):
+        for x in range(0,len(doc[y])):
+            s="\033["+str(Y+y+1)+";"+str(X+x+1)+"H"
+            sys.stdout.write(s)
+            #affiche
+            sys.stdout.write(doc[y][x])
 
 
 

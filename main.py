@@ -437,7 +437,7 @@ def Interact():
 					player = movingent.move_entity(player,1,0)
 
 				elif c == "q":
-					if not(player["Jump"]) : 
+					if not(player["Jump"]) :
 						player = character.switch_stand(player,"Run")
 					player = movingent.move_entity(player,-1,0)
 

@@ -2,6 +2,8 @@
 
 import entity
 import time
+import character
+import movingent
 
 #_____Create____________________________________________________________________
 def create_shooting_ent(Entity, damage, assetShot, shotDelay, lastShot=[time.time(),0]) :
@@ -72,6 +74,56 @@ def is_shooting_ent(Entity) :
     else :
         return False
 
+def nb_shot(Entity) :
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de savoir le numéro de la prochaine balle à tirer
+
+    PARAM
+    =====
+
+    @param Entity: Entité dont on veut récupérer l'information
+    @type Entity : dict
+
+
+    RETOUR
+    ======
+    @return : Le numéro de la prochaine balle qui sera tiré
+    @rtype : int
+    """
+    assert type(Entity) is dict
+    assert "shootingEnt" in Entity["Type"]
+
+    return Entity["lastShot"][1]
+
+#_____Modificateur____________________________________________________________________
+
+def as_shot(Entity):
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet d'incrémenter le numéro de la prochaine balle tiré.
+        A utiliser juste après un tir.
+
+    PARAM
+    =====
+
+    @param Entity: Entité dont on veut incrémenter le numéro de la balle
+    @type Entity : dict
+
+
+    RETOUR
+    ======
+    @return : L'Entité avec sa prochaine balle incrémentée
+    @rtype : dict
+    """
+
+    Entity["lastShot"][1] += 1
+    Entity["lastShot"][0] = time.time()
+    return Entity
 
 #_____Action____________________________________________________________________
 def shoot(Entity) :
@@ -97,7 +149,31 @@ def shoot(Entity) :
     assert "shootingEnt" in Entity["Type"]
 	#-afair
 	# -> cre une entite de type bullet -> definir les carac d'une balle
-    return
+    bullet_name = "bullet"+"_"+Entity["Name"]+"_"+str(nb_shot(Entity))
+    if "character" in Entity["Type"] :
+        posture = character.get_posture(Entity)
+        pos_gun = character.position_gun(posture)
+        x = pos_gun[0]+Entity["x"]
+        y = pos_gun[1]+Entity["y"]
+        if posture[2] in [90,-90] :
+            Vx = 0
+            name_asset = "Gun_Vertical"
+        elif posture[1] == "Right" :
+            Vx = 1
+        else :
+            Vx = -1
+        if posture[2]>0 :
+            Vy = -1
+        elif posture[2]<0:
+            Vy = 1
+        else :
+            Vy = 0
+            name_asset = "Gun_Horizontal"
+        asset = Entity["assetShot"][name_asset]
+    bullet = entity.create_entity(bullet_name,x,y,asset)
+    bullet = movingent.create_moving_ent(bullet, Vx, Vy, 0.1)
+    return bullet
+
 
 def hit(bullet, entities , gameBorder, walls ) :
     """

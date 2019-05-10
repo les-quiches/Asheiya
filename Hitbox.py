@@ -6,7 +6,7 @@ def Add_Shadow(Shadow_asset,Shadow_backgound):
         G{classtree}
         DESCRIPTION
         ===========
-
+            Ajoute
         PARAM
         =====
 
@@ -29,7 +29,7 @@ def Add_Shadow(Shadow_asset,Shadow_backgound):
     return(Shadow_backgound)
 
 def detect_collision():
-    
+
 
 def hit_box_simple(asset,entity):
     """

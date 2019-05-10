@@ -31,7 +31,7 @@ gameBorder=[]
 walls=None #-afair : grille representant le jeu
 
 timeStep = None
-timeIni = None
+timeScreen = None
 timeGravity = None
 
 allEntity= {}
@@ -62,7 +62,7 @@ def Init(): 	#initialisation des variables
     ======
     	Sans retour
 	"""
-	global color, window, assetGameZone, timeStep, timeIni, timeGravity, gameBorder, allEntity, player, menu, manche
+	global color, window, assetGameZone, timeStep, timeScreen, timeGravity, gameBorder, allEntity, player, menu, manche
 
 	color["txt"]={"Black":30, "Red":31,"Green":32,"Yellow":33,"Blue":34,"Pink":35,"Cyan":36,"White":37}
 	color["background"]={"Black":40, "Red":41,"Green":42,"Yellow":43,"Blue":44,"Pink":45,"Cyan":46,"White":47}
@@ -82,7 +82,7 @@ def Init(): 	#initialisation des variables
 	]
 
 	timeStep = 0.01 # en secondes -> 100 images par secondes
-	timeIni = time.time()
+	timeScreen = time.time()
 	timeGravity = time.time()
 
 	allEntity["projectile"]=[] #gere les tirs de Asheiya et des ennemis
@@ -218,15 +218,13 @@ def Game():
 
 
 	#gestion des cadavres
+	#/!\ à modifier : -afair : vérifier que les entités soient des living ent puis s'il elles sont vivantes
 	if menu == "manche" :
 		for mob in allEntity["mobs"] :
 			if not(livingent.is_alive(mob)):
 				None
 				# on le fait disparaitre du jeu, on le supprimer des listes -afair
-		for bullet in allEntity["projectile"]:
-			if not(livingent.is_alive(bullet)):
-				None
-				# on le fait disparaitre du jeu -afair
+
 
 		# #gestion des fins de manches
 
@@ -274,7 +272,7 @@ def Time_game():
     ======
 		Sans retour
 	"""
-	global window, timeStep, timeIni, gameBorder,walls, allEntity, player, menu, timeGravity
+	global window, timeStep, timeScreen, gameBorder,walls, allEntity, player, menu, timeGravity
 
 	for bullet in allEntity["projectile"] :
 		if time.time()>bullet["Speed"]+bullet["LastTime"] :
@@ -304,7 +302,8 @@ def Time_game():
 		if (shootingent.is_shooting_ent(mob)) :
 			if time.time()>mob["shotDelay"]+mob["lastShot"][0] :
 				#on fait tirer si le mob est un mob qui tir
-				shootingent.shoot(mob) #-afair
+				allEntity["projectile"].append(shootingent.shoot(mob)) #-afair
+				mob = shootingent.as_shot(mob)
 
 
 	#on gere les deplacements du joueur
@@ -323,7 +322,7 @@ def Time_game():
 			player = character.charge_ult(player)
 			player["spowerLastTime"] = time.time()
 
-	if time.time()>timeIni+timeStep:
+	if time.time()>timeScreen+timeStep:
 		Show()
 
 
@@ -344,7 +343,7 @@ def Show() :
     ======
 		Sans retour
 	"""
-	global window, timeStep, timeIni, gameBorder, allEntity, player, menu, assetGameZone, color
+	global window, timeStep, timeScreen, gameBorder, allEntity, player, menu, assetGameZone, color
 
 
 	#Show Frame
@@ -363,7 +362,7 @@ def Show() :
 			color_bg = color["background"]["Black"]
 			color_txt = color["txt"]["Yellow"]
 		entity.show_entity(ent,color_bg,color_txt)
-	timeIni = time.time()
+	timeScreen = time.time()
 
 	#restoration couleur
 	sys.stdout.write("\033[37m")

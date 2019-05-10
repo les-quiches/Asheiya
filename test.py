@@ -16,7 +16,7 @@ def hit_box_simple(asset,entity):
 
 def hit_box_complex_entity_can_take_damage(asset):
 	"""
-	recupere 
+	recupere un asset pour revoier son
 	"""
 	y=len(asset)-1
 	c=0
@@ -33,6 +33,7 @@ def hit_box_complex_entity_can_take_damage(asset):
 			else:
 				bloc[i][j] = void_collision
 	return(bloc)
+
 
 if (__name__=="__main__"):
 	asset_test=entity.create_asset("Asheiya/Asset/Run_Right_0.txt")

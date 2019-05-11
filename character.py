@@ -192,6 +192,27 @@ def get_asset_doc(player): #recupère le nom du fichier de l'asset correspondant
     asset = "Asheiya/Asset/" + str(player["Asset"]["position"][0]+"_"+player["Asset"]["position"][1]+"_"+str(player["Asset"]["position"][2]))+".txt"
     return asset
 
+def get_posture(player):
+    """
+    G{classtree}
+        DESCRIPTION
+    ===========
+        Permet de donner les éléments de la posture du joueur
+
+    PARAM
+    =====
+
+    @param player: entité du joueur
+    @type player:dict
+
+    RETOUR
+    ======
+
+    @return asset: la tableau contenant la pose, l'orientation, et la position du bras
+    @rtype asset: list
+    """
+    return player["Asset"]["position"]
+
 #____Switch_____________________________________________________
 def switch_orientation(player, orientation) :
     """

@@ -169,6 +169,26 @@ def position_gun(assetPosition):
 
 
 #____Get________________________________________________
+def get_posture(player):
+    """
+    G{classtree}
+        DESCRIPTION
+    ===========
+        Permet de donner les éléments de la posture du joueur
+
+    PARAM
+    =====
+
+    @param player: entité du joueur
+    @type player:dict
+
+    RETOUR
+    ======
+
+    @return asset: la tableau contenant la pose, l'orientation, et la position du bras
+    @rtype asset: list
+    """
+    return player["Asset"]["position"]
 
 def get_asset_doc(player): #recupère le nom du fichier de l'asset correspondant a la position actuelle du joueur
     """
@@ -192,26 +212,30 @@ def get_asset_doc(player): #recupère le nom du fichier de l'asset correspondant
     asset = "Asheiya/Asset/" + str(player["Asset"]["position"][0]+"_"+player["Asset"]["position"][1]+"_"+str(player["Asset"]["position"][2]))+".txt"
     return asset
 
-def get_posture(player):
+
+def get_asset(entity_to_get_asset):
     """
     G{classtree}
         DESCRIPTION
     ===========
-        Permet de donner les éléments de la posture du joueur
+        Permet de donner l'asset du joueur
+
 
     PARAM
     =====
 
-    @param player: entité du joueur
-    @type player:dict
+    @param entity_to_get_asset): entite que l'on veux recupere l'asset
+    @type entity_to_get_asset):dict
 
     RETOUR
     ======
 
-    @return asset: la tableau contenant la pose, l'orientation, et la position du bras
-    @rtype asset: list
+    @return asset: Nom de fichier de l'asset de l'entité
+    @rtype asset: str
     """
-    return player["Asset"]["position"]
+    asset = entity_to_get_asset["Asset"][entity_to_get_asset["Asset"]["position"][0]+"_"+entity_to_get_asset["Asset"]["position"][1]+"_"+str(entity_to_get_asset["Asset"]["position"][2])]
+    return(asset)
+
 
 #____Switch_____________________________________________________
 def switch_orientation(player, orientation) :
@@ -292,34 +316,12 @@ def switch_stand(player, stand):
     RETOUR
     ======
 
-    @return player: joueur avec une pose differente 
+    @return player: joueur avec une pose differente
     @rtype player: dict
     """
     assert stand in ["Wait","Run"]
     player["Asset"]["position"][0]=stand
     return player
-
-def get_asset(entity_to_get_asset):
-    """
-    G{classtree}
-        DESCRIPTION
-    ===========
-        Permet donnée l'asset du joueur
-
-    PARAM
-    =====
-
-    @param entity_to_get_asset): entite que l'on veux recupere l'asset
-    @type entity_to_get_asset):dict
-
-    RETOUR
-    ======
-
-    @return asset: Nom de fichier de l'asset de l'entité
-    @rtype asset: str
-    """
-    asset = entity_to_get_asset["Asset"][entity_to_get_asset["Asset"]["position"][0]+"_"+entity_to_get_asset["Asset"]["position"][1]+"_"+str(entity_to_get_asset["Asset"]["position"][2])]
-    return(asset)
 
 #____Jeux de Test________________________________________________________________
 if (__name__=="__main__"):

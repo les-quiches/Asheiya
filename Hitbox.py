@@ -1,5 +1,9 @@
 #-*- coding:utf-8 -*
 void_collision ="0"
+damage_Zone= "%"
+wall = "X"
+take_damage = "1"
+
 
 def Add_Shadow(Shadow_asset,Shadow_backgound):
     """
@@ -28,7 +32,45 @@ def Add_Shadow(Shadow_asset,Shadow_backgound):
                 Shadow_backgound[i][j] = Shadow_asset[i][j]
     return(Shadow_backgound)
 
-def detect_collision():
+def detect_collision(Entity_bullet, allEntity, Shadow_backgound ):
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de dectecter une collision entre une Entité et le reste des entités
+
+    PARAM
+    =====
+
+    @param Entity_bullet: 
+    @type Entity_bullet : dict
+
+    @param allEntity: dictionnaire contenant toute les Entites
+    @type allEntity: dict
+
+    @param Shadow_backgound: Masque background
+    @type Shadow_backgound: list
+
+
+    RETOUR
+    ======
+
+    @return :
+    @rtype :
+    """
+    x=Entity_bullet["x"]
+    y=Entity_bullet["y"]
+    asset_Bullet= Entity_bullet["Asset"]
+    Shadow_Bullet = hit_box_complex(asset_Bullet,damage_Zone)
+    for i in range(0,len(Shadow_backgound)):
+        for j in range(0,len(Shadow_backgound[i])):
+            if Shadow_asset[i][j] != void_collision:    #detection collision wall
+                if Shadow_backgound[x+i][y+j] == wall:
+                    return
+                for entity in allEntity:#detection collision entité
+                    if entity["Asset"][x+i][y+j] == take_damage
+                    return
+
 
 
 def hit_box_simple(asset,entity):

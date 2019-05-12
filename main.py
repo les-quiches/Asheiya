@@ -125,7 +125,7 @@ def Init(): 	#initialisation des variables
 	damage = 5
 	assetShot = {}
 	for Shot_doc in ["Gun_Horizontal","Gun_Slash","Gun_UnSlash","Gun_Vertical"] :
-		assetShot[Shot_doc] =entity.create_asset("Projectile/"+Shot_doc+".txt")
+		assetShot[Shot_doc] =entity.create_asset("Asheiya/Projectile/"+Shot_doc+".txt")
 	shotDelay = 3
 
 	player = shootingent.create_shooting_ent(player,damage,assetShot,shotDelay)

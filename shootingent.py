@@ -150,28 +150,42 @@ def shoot(Entity) :
 	#-afair
 	# -> cre une entite de type bullet -> definir les carac d'une balle
     bullet_name = "bullet"+"_"+Entity["Name"]+"_"+str(nb_shot(Entity))
+
     if "character" in Entity["Type"] :
         posture = character.get_posture(Entity)
         pos_gun = character.position_gun(posture)
         x = pos_gun[0]+Entity["x"]
         y = pos_gun[1]+Entity["y"]
-        if posture[2] in [90,-90] :
-            Vx = 0
-            name_asset = "Gun_Vertical"
-        elif posture[1] == "Right" :
-            Vx = 1
-        else :
-            Vx = -1
+
+    if posture[2] in [90,-90] :
+        Vx = 0
+        name_asset = "Gun_Vertical"
+
+    elif posture[1] == "Right" :
+        Vx = 1
         if posture[2]>0 :
-            Vy = -1
-        elif posture[2]<0:
-            Vy = 1
-        else :
-            Vy = 0
-            name_asset = "Gun_Horizontal"
-        asset = Entity["assetShot"][name_asset]
+            name_asset="Gun_Slash"
+        elif posture[2]<0 :
+            name_asset="Gun_UnSlash"
+    else :
+        Vx = -1
+        if posture[2]>0 :
+            name_asset="Gun_UnSlash"
+        elif posture[2]<0 :
+            name_asset="Gun_Slash"
+
+    if posture[2]>0 :
+        Vy = -1
+    elif posture[2]<0:
+        Vy = 1
+    else :
+        Vy = 0
+        name_asset = "Gun_Horizontal"
+
+    asset = Entity["assetShot"][name_asset]
     bullet = entity.create_entity(bullet_name,x,y,asset)
-    bullet = movingent.create_moving_ent(bullet, Vx, Vy, 0.1)
+    bullet = movingent.create_moving_ent(bullet, Vx, Vy, 0.05)
+
     return bullet
 
 

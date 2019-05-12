@@ -56,12 +56,42 @@ def is_alive(Entity) :
     @return :  True si elle est encore en vie, False sinon
     @rtype : bool
     """
+    assert type(Entity) is dict
+    assert "livingEnt" in Entity["Type"]
+
     if Entity["Life"]<=0 :
         return False
     else :
         return True
 
 
+#_____Accesseur______________________________________________________________________
+
+def hurt(Entity,damage) :
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Blesse une entité
+
+    PARAM
+    =====
+    @param Entity : l'entité à blesser
+    @type Entity : dict
+
+    @param damage : le nombre de dégâts à lui infliger
+    @type damage : int
+
+    RETOUR
+    ======
+    @return :  l'entité blessé
+    @rtype : dict
+    """
+    assert type(Entity) is dict
+    assert "livingEnt" in Entity["Type"]
+
+    Entity["Life"]+=damage
+    return Entity
 
 
 

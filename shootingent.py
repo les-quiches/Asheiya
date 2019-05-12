@@ -35,11 +35,12 @@ def create_shooting_ent(Entity, damage, assetShot, shotDelay, lastShot=[time.tim
     RETOUR
     ======
 
-    @return ca  : une Entiter de type projectile tiré
-    @rtype ca :def
+    @return Entity  : une entité capable de tirer
+    @rtype Entity : dict
     """
     assert type(Entity) is dict
     assert "entity" in Entity["Type"]
+
     Entity["damage"] = damage
     Entity["assetShot"] = assetShot
     Entity["shotDelay"] = shotDelay
@@ -47,7 +48,38 @@ def create_shooting_ent(Entity, damage, assetShot, shotDelay, lastShot=[time.tim
     Entity["Type"].append("shootingEnt")
     return Entity
 
-#-afair les entites de types bullet
+def create_bullet(Entity, damage, origine) :
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Ajoute à une entité le type bullet
+
+    PARAM
+    =====
+
+    @param Entity: Entité a modifier
+    @type Entity : dict
+
+    @param Entity: le nom de l'entité qui a produite ce projectile
+    @type Entity : str
+
+    @param damage: Dommages du projectile
+    @type damage : int
+
+    RETOUR
+    ======
+
+    @return ca  : une Entiter de type bullet
+    @rtype ca :def
+    """
+    assert type(Entity) is dict
+    assert "entity" in Entity["Type"]
+
+    Entity["origine"] = origine
+    Entity["damageToInflict"] = damage
+    Entity["Type"].append("bullet")
+    return Entity
 
 #_____Accesseur____________________________________________________________________
 def is_shooting_ent(Entity) :
@@ -185,6 +217,7 @@ def shoot(Entity) :
     asset = Entity["assetShot"][name_asset]
     bullet = entity.create_entity(bullet_name,x,y,asset)
     bullet = movingent.create_moving_ent(bullet, Vx, Vy, 0.05)
+    bullet = create_bullet(bullet,Entity["damage"],Entity["Name"])
 
     return bullet
 

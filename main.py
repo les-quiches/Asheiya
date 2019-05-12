@@ -86,7 +86,7 @@ def Init(): 	#initialisation des variables
 	timeGravity = time.time()
 
 	allEntity["projectile"]=[] #gere les tirs de Asheiya et des ennemis
-	allEntity["mobs"]=[] #gere Asheiya, les boss, et autres mobs
+	allEntity["mobs"]=[] #gere Asheiya, les boss, et autres mobs avec des points de vies
 	allEntity["stage"]=[] #gere les bonus, plateforme pieges et autres
 
 	#start menu
@@ -218,12 +218,14 @@ def Game():
 
 
 	#gestion des cadavres
-	#/!\ à modifier : -afair : vérifier que les entités soient des living ent puis s'il elles sont vivantes
+	toRemove = []
 	if menu == "manche" :
 		for mob in allEntity["mobs"] :
-			if not(livingent.is_alive(mob)):
-				None
-				# on le fait disparaitre du jeu, on le supprimer des listes -afair
+			if "livingEnt" in mob["Type"]:
+				if not(livingent.is_alive(mob)):
+					toRemove.append(mob)
+		for deadmob in toRemove :
+			allEntity["mobs"].remove(deadmob)
 
 
 		# #gestion des fins de manches
@@ -231,6 +233,7 @@ def Game():
 		# if not(livingent.is_alive(boss)) :
 		# 	menu = "transition"
 		# 	#-afair, gerer suivant la valeur de manche
+
 		if not(livingent.is_alive(player)):
 			menu = "youLose"
 			# -afair
@@ -279,9 +282,10 @@ def Time_game():
 			bullet = movingent.move_entity(bullet,bullet["Vx"],bullet["Vy"])
 			log = shootingent.hit(bullet,allEntity["mobs"],gameBorder,walls) # -afair walls est le tableau representant la map
 			if log[1]:#une entite a etait touche
-				None #blesser la dite entite
+				None
+				#log[2]=livingent.hurt(log[2],bullet["damageToInflict"])
 			if log[0]:#il y a eu collision
-				None #detruire la balle
+				allEntity["projectile"].remove(bullet)
 
 	#gestion de la gravite
 	if time.time()>timeGravity + 0.08 :

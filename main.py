@@ -179,12 +179,20 @@ def Init_manche():
 		#placement des bonus :  #-afair quand on les placera tous, automatiser le tout
 		listeBonus = {"speedUp" : 0.02, "fireRateUp" : 1}
 		xbonus = 80
-		ybonus = 34
+		ybonus = 40
 		assetBonus = entity.create_asset("Boon/boon1.txt") #-afair en sorte que les accès soient automatisé
 		boon1 = entity.create_entity("boon1", xbonus, ybonus, assetBonus) #-afair en sorte que leurs noms s'incrémente tout seul
 		boon1 = boon.create_boon(boon1, listeBonus)
 
 		allEntity["boons"].append(boon1)
+
+		listeBonus = {"lifeUp" : 5, "armorMaxUp" : 2}
+		xbonus = 80
+		ybonus = 37
+		assetBonus = entity.create_asset("Boon/boonGenerator.txt")
+		geneSpeed = 2
+		boong = entity.create_entity("boong1", xbonus, ybonus, assetBonus)
+		boong = boon.create_boon_generator(boong, listeBonus, geneSpeed)
 
 
 		manche = 11
@@ -310,20 +318,26 @@ def Time_game():
 			movingent.move_entity(mob,0,1,onTheGround,True)
 		timeGravity = time.time()
 
-	for mob in allEntity["mobs"] :
+	#gestion des déplacements
+	for mob in allEntity["mobs"] : #-afair transformer la condition en movingent
 		if (time.time()>mob["Speed"]+mob["LastTime"]) and (mob["Vx"]!=0 or mob["Vy"]!=0) :
 			#inserer gestion de collision ici qui provient du module entity avec en param allEntity - afair
 			#va etre la collision la plus complique a gerer  celle avec les entites et avec les walls -afair
 			willCollide = movingent.collision(mob,allEntity["mobs"],gameBorder,walls) # -afair
 			mob = movingent.move_entity(mob,mob["Vx"],mob["Vy"],willCollide)
 
-
+		#on fait tirer si le mob est un mob qui tir
 		if (shootingent.is_shooting_ent(mob)) :
 			if time.time()>mob["shotDelay"]+mob["lastShot"][0] :
-				#on fait tirer si le mob est un mob qui tir
-				allEntity["projectile"].append(shootingent.shoot(mob)) #-afair
+				allEntity["projectile"].append(shootingent.shoot(mob))
 				mob = shootingent.as_shot(mob)
 
+	#gestion des générateurs de bonus
+	for boonx in allEntity["boons"] :
+		if "boonGenerator" in boonx["Type"] :
+			if boonx["GeneLastTime"]+boonx["GeneSpeed"] > time.time() :
+				allEntity["boons"].append(boon.generate(boonx))
+				boonGene = as_generate(boonx)
 
 	#on gere les deplacements du joueur
 	if time.time()>player["LastTime"]+player["Speed"]:
@@ -371,10 +385,11 @@ def Show() :
 	background.show_pos(assetGameZone["Zone_"+str(assetGameZone["NumZone"])],0,0,color["background"]["Black"],color["txt"]["White"])
 
 	#on affiche les entités
-	for boon in allEntity["boons"] :
+	for boonx in allEntity["boons"] :
 		color_bg = color["background"]["Black"]
 		color_txt = color["txt"]["Green"]
-		entity.show_entity(boon,color_bg,color_txt)
+		if "boonGenerator" not in boonx["Type"] :
+			entity.show_entity(boonx,color_bg,color_txt)
 
 	for ent in allEntity["mobs"] :
 		if "character" in ent["Type"]:

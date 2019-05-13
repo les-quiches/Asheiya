@@ -159,6 +159,10 @@ def show_entity(Entity, color_bg, color_txt):
     ======
 		Sans retour
     """
+    assert type(Entity) is dict
+    assert "entity" in Entity["Type"]
+
+
     if "character" in Entity["Type"]:
         asset = character.get_asset(Entity)
     else:

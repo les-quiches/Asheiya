@@ -243,8 +243,7 @@ def shoot(Entity) :
     """
     assert type(Entity) is dict
     assert "shootingEnt" in Entity["Type"]
-	#-afair
-	# -> cre une entite de type bullet -> definir les carac d'une balle
+
     bullet_name = "bullet"+"_"+Entity["Name"]+"_"+str(nb_shot(Entity))
 
     if "character" in Entity["Type"] :

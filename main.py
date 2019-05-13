@@ -188,12 +188,13 @@ def Init_manche():
 
 		listeBonus = {"lifeUp" : 5, "armorMaxUp" : 2}
 		xbonus = 80
-		ybonus = 37
+		ybonus = 34
 		assetBonus = entity.create_asset("Boon/boonGenerator.txt")
 		geneSpeed = 2
 		boong = entity.create_entity("boong1", xbonus, ybonus, assetBonus)
 		boong = boon.create_boon_generator(boong, listeBonus, geneSpeed)
 
+		allEntity["boons"].append(boong)
 
 		manche = 11
 
@@ -238,6 +239,14 @@ def Game():
 	if player["spowerDelay"]<=0 :
 		player=character.power_off(player) #si le joueur n'a plus de temps d'ultime, il n'est pas entrain de l'utiliser
 		player["spowerDelay"]=0
+
+	#gestion des générateurs de boons -afair : 
+	for boong in allEntity["boons"] :
+		if "boonGenerator" in boong["Type"] :
+			# if il n'y a pas de bonus sur la case du générateur : -afair
+			# boong = boon.set_free(boong)
+			None
+
 
 
 	#gestion des cadavres
@@ -335,9 +344,9 @@ def Time_game():
 	#gestion des générateurs de bonus
 	for boonx in allEntity["boons"] :
 		if "boonGenerator" in boonx["Type"] :
-			if boonx["GeneLastTime"]+boonx["GeneSpeed"] > time.time() :
+			if (boonx["GeneLastTime"][0]+boonx["GeneSpeed"] > time.time() and not(boonx["isGenerated"])) :
 				allEntity["boons"].append(boon.generate(boonx))
-				boonGene = as_generate(boonx)
+				boonGene = boon.as_generate(boonx)
 
 	#on gere les deplacements du joueur
 	if time.time()>player["LastTime"]+player["Speed"]:

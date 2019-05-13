@@ -74,6 +74,7 @@ def create_boon_generator(Entity,Bonus, GeneSpeed, GeneLastTime=[time.time(),0])
 	Entity["Bonus"] = Bonus
 	Entity["GeneSpeed"] = GeneSpeed
 	Entity["GeneLastTime"] = GeneLastTime
+	Entity["isGenerated"] = False  #pour ne pas créer pleins de boons à l'infini sur la même "case"
 
 	Entity["Type"].append("boonGenerator")
 
@@ -98,6 +99,57 @@ def what_boon(boon) :
 	@rtype : liste
 	"""
 	return boon.keys()
+
+#_____Modificateur______________________________________________________________________
+def as_generate(boonG) :
+	"""
+	G{classtree}
+	DESCRIPTION
+	===========
+		Confirme la création d'un bonus
+
+	PARAM
+	=====
+	@param boonG : le générateur de bonus qui a généré
+	@type boonG : dict
+
+	RETOUR
+	======
+	@return : le générateur avec les délais mis à jour
+	@rtype : dict
+	"""
+	assert type(boonG) is dict
+	assert "boonGenerator" in boonG["Type"]
+
+	boonG["isGenerated"] = True
+	boonG["GeneLastTime"][0] = time.time()
+	boonG["GeneLastTime"][1]+=1
+	return boonG
+
+def set_free(boong) :
+	"""
+	G{classtree}
+	DESCRIPTION
+	===========
+		Confirme qu'un bonus n'est pas déjà créé
+
+	PARAM
+	=====
+	@param boonG : le générateur de bonus qui génère
+	@type boonG : dict
+
+	RETOUR
+	======
+	@return : le générateur avec les infos mis à jour
+	@rtype : dict
+	"""
+	assert type(boonG) is dict
+	assert "boonGenerator" in boonG["Type"]
+
+	boong["isGenerated"] = False
+	boon["GeneLastTime"][0]=time.time()
+
+	return boong
 
 #_____Action______________________________________________________________________
 def caught(boon, Entity) :
@@ -166,39 +218,17 @@ def generate(boonG) :
 	assert type(boonG) is dict
 	assert "boonGenerator" in boonG["Type"]
 
-	x = boonG["X"]
-	y = boonG["Y"]
-	asset = "Boon/boon1.txt"
+	x = boonG["x"]
+	y = boonG["y"]
+	asset = entity.create_asset("Boon/boon1.txt")
 	name = "boon" +"_"+ boonG["Name"] +"_"+ str(boonG["GeneLastTime"][1])
 
 	boon = entity.create_entity(name,x,y,asset)
-	boon = create_boon(boonG["Bonus"])
+	boon = create_boon(boon, boonG["Bonus"])
 
 	return boon
 
-def as_generate(boonG) :
-	"""
-	G{classtree}
-	DESCRIPTION
-	===========
-		Confirme la création d'un bonus
 
-	PARAM
-	=====
-	@param boonG : le générateur de bonus qui a généré
-	@type boonG : dict
-
-	RETOUR
-	======
-	@return : le générateur avec les délais mis à jour
-	@rtype : dict
-	"""
-	assert type(boonG) is dict
-	assert "boonGenerator" in boonG["Type"]
-
-	boonG["GeneLastTime"][0] = time.time()
-	boonG["GeneLastTime"][1]+=1
-	return boonG
 
 
 #____Jeux de Test________________________________________________________________

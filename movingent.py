@@ -47,6 +47,37 @@ def create_moving_ent(Entity, Vx, Vy,Speed, LastTime=time.time()):
     return Entity
 
 
+#_____Modificateur______________________________________________________________________
+def speedUp(Entity, amount) :
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Augmente la vitesse d'une entité
+
+    PARAM
+    =====
+
+    @param Entity: Entité dont on veut augmenter la vitesse
+    @type Entity : dict
+
+    @param amount: quantité d'augmentation de la vitesse
+    @type amount : float
+
+    RETOUR
+    ======
+    @return : L'Entité avec sa vitesse augmenté 
+    @rtype : dict
+    """
+    assert type(Entity) is dict
+    assert "moovingEnt" in Entity["Type"]
+
+    if Entity["Speed"]+amount >=0.01 : #tant qu'on va pas plus vite que la boucle de simulation
+        Entity["Speed"]+=amount
+        
+    return Entity
+
+
 #_____Move______________________________________________________________________
 def move_entity(Entity,x,y,willCollide=False,isGravity=False):
 
@@ -166,6 +197,7 @@ def gravity(Entity,onTheGround=False) :
     if onTheGround==True : 
         Entity["Jump"]=0
     return (Entity)
+
 
 #_____Collision______________________________________________________________________
 def collision(ent, allEntity, gameBorder, walls, x=None, y=None) : #x et y correspondent aux prochaines positions, utiles seulement pour le joueur sinon on recupere via entity

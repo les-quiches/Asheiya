@@ -90,10 +90,89 @@ def hurt(Entity,damage) :
     assert type(Entity) is dict
     assert "livingEnt" in Entity["Type"]
 
-    Entity["Life"]+=damage
+    Entity["Life"]-=damage
     return Entity
 
+def heal(Entity,amount) :
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Soigne une entité
 
+    PARAM
+    =====
+    @param Entity : l'entité à soigner
+    @type Entity : dict
+
+    @param amount : le nombre de dégâts à lui réstaurer
+    @type amount : int
+
+    RETOUR
+    ======
+    @return :  l'entité soigné
+    @rtype : dict
+    """
+    assert type(Entity) is dict
+    assert "livingEnt" in Entity["Type"]
+
+    if Entity["Life"] + amount <= Entity["LifeMax"] :
+        Entity["Life"]+=amount
+    return Entity
+
+def armorUp(Entity,amount) :
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Restaure l'armure d'une entité
+
+    PARAM
+    =====
+    @param Entity : l'entité dont on veut restaurer l'armure
+    @type Entity : dict
+
+    @param amount : le nombre de points d'armures à lui réstaurer
+    @type amount : int
+
+    RETOUR
+    ======
+    @return :  l'entité réparé 
+    @rtype : dict
+    """
+    assert type(Entity) is dict
+    assert "livingEnt" in Entity["Type"]
+
+    if Entity["Armor"]+amount <= Entity["ArmorMax"] :
+        Entity["Armor"]+=amount
+
+    return Entity
+
+def armorMaxUp(Entity,amount) :
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Améliore l'armure d'une entité
+
+    PARAM
+    =====
+    @param Entity : l'entité dont on veut améliorer l'armure
+    @type Entity : dict
+
+    @param amount : le nombre de points d'armures à lui améliorer
+    @type amount : int
+
+    RETOUR
+    ======
+    @return :  l'entité avec une meilleur armure 
+    @rtype : dict
+    """
+    assert type(Entity) is dict
+    assert "livingEnt" in Entity["Type"]
+
+    Entity["ArmorMax"]+=amount
+    return Entity
 
 #____Jeux de Test________________________________________________________________
 if (__name__=="__main__"):

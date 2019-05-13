@@ -88,6 +88,7 @@ def Init(): 	#initialisation des variables
 	allEntity["projectile"]=[] #gere les tirs de Asheiya et des ennemis
 	allEntity["mobs"]=[] #gere Asheiya, les boss, et autres mobs avec des points de vies
 	allEntity["stage"]=[] #gere les bonus, plateforme pieges et autres
+	allEntity["boons"]=[]
 
 	#start menu
 	menu="start"
@@ -127,8 +128,9 @@ def Init(): 	#initialisation des variables
 	for Shot_doc in ["Gun_Horizontal","Gun_Slash","Gun_UnSlash","Gun_Vertical"] :
 		assetShot[Shot_doc] =entity.create_asset("Asheiya/Projectile/"+Shot_doc+".txt")
 	shotDelay = 3
+	bulletSpeed = 0.05
 
-	player = shootingent.create_shooting_ent(player,damage,assetShot,shotDelay)
+	player = shootingent.create_shooting_ent(player,damage,bulletSpeed,assetShot,shotDelay)
 
 	spowerSpeed = 1 #toutes les secondes on augmente de 1 la charge du super
 
@@ -156,7 +158,7 @@ def Init_manche():
     G{classtree}
     DESCRIPTION
     ===========
-        Initialise chaque manche : placement du joueur, environnement, ennemies.
+        Initialise chaque manche : placement du joueur, environnement, bonus, ennemies.
 
     PARAM
     =====
@@ -171,7 +173,20 @@ def Init_manche():
 
 	if manche == 10 :
 		player = movingent.tp_entity(player,20,37)
-		# walls =  -afair
+		
+		# walls =  -afair placer les plateformes de cette manche
+
+		#placement des bonus :  #-afair quand on les placera tous, automatiser le tout
+		listeBonus = {"speedUp" : 0.02, "fireRateUp" : 1}
+		xbonus = 80
+		ybonus = 34
+		assetBonus = entity.create_asset("Boon/boon1.txt") #-afair en sorte que les accès soient automatisé
+		boon1 = entity.create_entity("boon1", xbonus, ybonus, assetBonus) #-afair en sorte que leurs noms s'incrémente tout seul
+		boon1 = boon.create_boon(boon1, listeBonus)
+
+		allEntity["boons"].append(boon1)
+
+
 		manche = 11
 
 	if manche == 20 :
@@ -351,11 +366,15 @@ def Show() :
 
 
 	#Show Frame
+
+	#on efface tout
 	background.show_pos(assetGameZone["Zone_"+str(assetGameZone["NumZone"])],0,0,color["background"]["Black"],color["txt"]["White"])
-	for shot in allEntity["projectile"] :
+
+	#on affiche les entités
+	for boon in allEntity["boons"] :
 		color_bg = color["background"]["Black"]
-		color_txt = color["txt"]["Red"]
-		entity.show_entity(shot,color_bg,color_txt)
+		color_txt = color["txt"]["Green"]
+		entity.show_entity(boon,color_bg,color_txt)
 
 	for ent in allEntity["mobs"] :
 		if "character" in ent["Type"]:
@@ -366,6 +385,12 @@ def Show() :
 			color_bg = color["background"]["Black"]
 			color_txt = color["txt"]["Yellow"]
 		entity.show_entity(ent,color_bg,color_txt)
+
+	for shot in allEntity["projectile"] :
+		color_bg = color["background"]["Black"]
+		color_txt = color["txt"]["Red"]
+		entity.show_entity(shot,color_bg,color_txt)
+
 	timeScreen = time.time()
 
 	#restoration couleur

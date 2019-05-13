@@ -6,7 +6,7 @@ import character
 import movingent
 
 #_____Create____________________________________________________________________
-def create_shooting_ent(Entity, damage, assetShot, shotDelay, lastShot=[time.time(),0]) :
+def create_shooting_ent(Entity, damage, bulletSpeed, assetShot, shotDelay, lastShot=[time.time(),0]) :
 
     """
     G{classtree}
@@ -22,6 +22,9 @@ def create_shooting_ent(Entity, damage, assetShot, shotDelay, lastShot=[time.tim
 
     @param damage: Dommages du projectile
     @type damage : int
+
+    @param bulletSpeed : vitesse des projectiles
+    @type bulletSpeed : int
 
     @param assetShot :Asset du projectile
     @type assetShot :list
@@ -42,8 +45,10 @@ def create_shooting_ent(Entity, damage, assetShot, shotDelay, lastShot=[time.tim
     assert "entity" in Entity["Type"]
 
     Entity["damage"] = damage
+    Entity["bulletSpeed"] = bulletSpeed
     Entity["assetShot"] = assetShot
     Entity["shotDelay"] = shotDelay
+    Entity["baseShotDelay"] = shotDelay
     Entity["lastShot"] = lastShot
     Entity["Type"].append("shootingEnt")
     return Entity
@@ -152,9 +157,68 @@ def as_shot(Entity):
     @return : L'Entité avec sa prochaine balle incrémentée
     @rtype : dict
     """
+    assert type(Entity) is dict
+    assert "shootingEnt" in Entity["Type"]
 
     Entity["lastShot"][1] += 1
     Entity["lastShot"][0] = time.time()
+    return Entity
+
+def damageUp(Entity, amount):
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Augmente les dégats d'une entité
+
+    PARAM
+    =====
+
+    @param Entity: Entité dont on veut augmenter les dégats
+    @type Entity : dict
+
+    @param amount: le nombre de dégâts infligés en plus
+    @type amount : int
+
+    RETOUR
+    ======
+    @return : L'Entité avec ses dégats augmentés
+    @rtype : dict
+    """
+    assert type(Entity) is dict
+    assert "shootingEnt" in Entity["Type"]
+
+    Entity["damage"]+=amount
+    return Entity
+
+
+def fireRateUp(Entity, amount) :
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Augmente la cadence de tir d'une entité
+
+    PARAM
+    =====
+
+    @param Entity: Entité dont on veut augmenter la cadence de tir
+    @type Entity : dict
+
+    @param amount: le nombre de dégâts infligés en plus
+    @type amount : int
+
+    RETOUR
+    ======
+    @return : L'Entité avec sa cadence de tir augmentée
+    @rtype : dict
+    """
+    assert type(Entity) is dict
+    assert "shootingEnt" in Entity["Type"]
+
+    if Entity["shotDelay"] - amount >= 0.01 : #tant qu'on tir pas plus vite que la boucle de simulation
+        Entity["shotDelay"]-=amount
+
     return Entity
 
 #_____Action____________________________________________________________________
@@ -216,7 +280,7 @@ def shoot(Entity) :
 
     asset = Entity["assetShot"][name_asset]
     bullet = entity.create_entity(bullet_name,x,y,asset)
-    bullet = movingent.create_moving_ent(bullet, Vx, Vy, 0.05)
+    bullet = movingent.create_moving_ent(bullet, Vx, Vy, Entity["bulletSpeed"])
     bullet = create_bullet(bullet,Entity["damage"],Entity["Name"])
 
     return bullet

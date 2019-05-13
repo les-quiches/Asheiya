@@ -1,6 +1,9 @@
 #-*- coding:utf-8 -*
 
 import entity
+import livingent
+import shootingent
+import movingent
 
 #_____Create____________________________________________________________________
 def create_boon(Entity,Bonus) :
@@ -10,6 +13,7 @@ def create_boon(Entity,Bonus) :
 	===========
 		Constructeur de bonus.
 		Complemente une entite deja cree
+		Liste des bonus possibles : (speedUp, armorUp, damageUp, lifeUp, armorMaxUp, fireRateUp)
 
 
 	PARAM
@@ -82,11 +86,20 @@ def caught(boon, Entity) :
 	assert "entity" in Entity["Type"]
 	assert "livingEnt" in Entity["Type"]
 
-	#-afair pour chaque type de bonus
 	allbonus = what_boon(boon)
 	for bonus in allbonus :
 		if bonus == "lifeUp" :
-			Entity["Life"]+=boon[bonus]
+			Entity = livingent.heal(Entity,boon["bonus"])
+		elif bonus == "damageUp" :
+			Entity = shootingent.damageUp(Entity, bonus["bonus"])
+		elif bonus == "armorUp" :
+			Entity = livingent.armorUp(Entity, bonus["bonus"])
+		elif bonus =="speedUp" :
+			Entity = movingent.speedUp(Entity, bonus["bonus"])
+		elif bonus == "armorMaxUp" :
+			Entity = livingent.armorMaxUp(Entity, bonus["bonus"])
+		elif bonus == "fireRateUp" :
+			Entity = shootingent.fireRateUp(Entity, bonus["bonus"])
 
 
 	return Entity

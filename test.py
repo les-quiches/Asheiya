@@ -7,12 +7,15 @@
 
 
 merde= {}
-merde["ui"] = "8"
-merde["poulet"]=2
-merde["hihi"] = "oups"
+merde["ui"] = ["8","85","56"]
+merde["poulet"]=[2,9,7,6]
+merde["hihi"] = ["oups","d'accord", "tres bien"]
 
 
-print merde.keys()
+for AH in  merde.keys() :
+	for j in merde[AH] :
+		print j
+
 
 
 

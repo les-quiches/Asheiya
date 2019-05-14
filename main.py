@@ -27,7 +27,6 @@ oldSettings = termios.tcgetattr(sys.stdin)
 #Globals
 
 window= None
-gameBorder=[]
 walls=None #-afair : grille representant le jeu
 
 timeStep = None
@@ -86,9 +85,9 @@ def Init(): 	#initialisation des variables
 	timeGravity = time.time()
 
 	allEntity["projectile"]=[] #gere les tirs de Asheiya et des ennemis
-	allEntity["mobs"]=[] #gere Asheiya, les boss, et autres mobs avec des points de vies
-	allEntity["stage"]=[] #gere les bonus, plateforme pieges et autres
-	allEntity["boons"]=[]
+	allEntity["mobs"]=[] #gere Asheiya, les boss, et autres mobs avec des points de vies, qui se déplacent
+	allEntity["stage"]=[] #gere les plateforme pieges et autres
+	allEntity["boons"]=[] #gère les bonus et générateurs de bonus
 
 	#start menu
 	menu="start"
@@ -309,60 +308,65 @@ def Time_game():
 	"""
 	global window, timeStep, timeScreen, gameBorder,walls, allEntity, player, menu, timeGravity
 
-	for bullet in allEntity["projectile"] :
-		if time.time()>bullet["Speed"]+bullet["LastTime"] :
-			bullet = movingent.move_entity(bullet,bullet["Vx"],bullet["Vy"])
-			log = shootingent.hit(bullet,allEntity["mobs"],gameBorder,walls) # -afair walls est le tableau representant la map
-			if log[1]:#une entite a etait touche
-				None
-				#log[2]=livingent.hurt(log[2],bullet["damageToInflict"])
-			if log[0]:#il y a eu collision
-				allEntity["projectile"].remove(bullet)
+	if menu == "manche" : #on est en jeu
+		#gestion des tirs
+		for bullet in allEntity["projectile"] :
+			if time.time()>bullet["Speed"]+bullet["LastTime"] :
+				bullet = movingent.move_entity(bullet,bullet["Vx"],bullet["Vy"])
+				log = shootingent.hit(bullet,allEntity["mobs"],gameBorder,walls) # -afair walls est le tableau representant la map
+				if log[1]:#une entite a etait touche
+					None
+					#log[2]=livingent.hurt(log[2],bullet["damageToInflict"])
+				if log[0]:#il y a eu collision
+					allEntity["projectile"].remove(bullet)
 
-	#gestion de la gravite
-	if time.time()>timeGravity + 0.08 :
+		#gestion de la gravite
+		if time.time()>timeGravity + 0.08 :
+			for mob in allEntity["mobs"] :
+				onTheGround = entity.is_ground_beneath(entity.feet(mob),gameBorder,walls) #-afair test s'il y a une plateforme en dessous
+				mob = movingent.gravity(mob,onTheGround)
+				movingent.move_entity(mob,0,1,onTheGround,True)
+			timeGravity = time.time()
+
+		#gestion des déplacements
 		for mob in allEntity["mobs"] :
-			onTheGround = entity.is_ground_beneath(entity.feet(mob),gameBorder,walls) #-afair test s'il y a une plateforme en dessous
-			mob = movingent.gravity(mob,onTheGround)
-			movingent.move_entity(mob,0,1,onTheGround,True)
-		timeGravity = time.time()
+			if (time.time()>mob["Speed"]+mob["LastTime"]) and (mob["Vx"]!=0 or mob["Vy"]!=0) :
+				#inserer gestion de collision ici qui provient du module entity avec en param allEntity - afair
+				#va etre la collision la plus complique a gerer  celle avec les entites et avec les walls -afair
+				willCollide = movingent.collision(mob,allEntity["mobs"],gameBorder,walls) # -afair
+				mob = movingent.move_entity(mob,mob["Vx"],mob["Vy"],willCollide)
 
-	#gestion des déplacements
-	for mob in allEntity["mobs"] : #-afair transformer la condition en movingent
-		if (time.time()>mob["Speed"]+mob["LastTime"]) and (mob["Vx"]!=0 or mob["Vy"]!=0) :
-			#inserer gestion de collision ici qui provient du module entity avec en param allEntity - afair
-			#va etre la collision la plus complique a gerer  celle avec les entites et avec les walls -afair
-			willCollide = movingent.collision(mob,allEntity["mobs"],gameBorder,walls) # -afair
-			mob = movingent.move_entity(mob,mob["Vx"],mob["Vy"],willCollide)
+			#on fait tirer si le mob est un mob qui tir
+			if (shootingent.is_shooting_ent(mob)) :
+				if time.time()>mob["shotDelay"]+mob["lastShot"][0] :
+					allEntity["projectile"].append(shootingent.shoot(mob))
+					mob = shootingent.as_shot(mob)
 
-		#on fait tirer si le mob est un mob qui tir
-		if (shootingent.is_shooting_ent(mob)) :
-			if time.time()>mob["shotDelay"]+mob["lastShot"][0] :
-				allEntity["projectile"].append(shootingent.shoot(mob))
-				mob = shootingent.as_shot(mob)
+		#gestion des générateurs de bonus
+		for boonx in allEntity["boons"] :
+			if "boonGenerator" in boonx["Type"] :
+				if (boonx["GeneLastTime"][0]+boonx["GeneSpeed"] > time.time() and not(boonx["isGenerated"])) :
+					allEntity["boons"].append(boon.generate(boonx))
+					boonGene = boon.as_generate(boonx)
 
-	#gestion des générateurs de bonus
-	for boonx in allEntity["boons"] :
-		if "boonGenerator" in boonx["Type"] :
-			if (boonx["GeneLastTime"][0]+boonx["GeneSpeed"] > time.time() and not(boonx["isGenerated"])) :
-				allEntity["boons"].append(boon.generate(boonx))
-				boonGene = boon.as_generate(boonx)
+		#on gere les deplacements du joueur
+		if time.time()>player["LastTime"]+player["Speed"]:
+			Interact()
 
-	#on gere les deplacements du joueur
-	if time.time()>player["LastTime"]+player["Speed"]:
+		if time.time()>player["LastTime"]+0.03 :
+			player = character.switch_stand(player,"Wait")
+			#on remet le joueur en position d'attente s'il fait rien
+
+		#gestion de l'ultime
+		if time.time()>player["spowerLastTime"]+player["spowerSpeed"] and player["spowerCharge"]<=60 :
+			if (player["spowerOn"] and player["spowerDelay"]>0) :
+				player = character.cooldown_ult(player)
+			else :
+				player = character.charge_ult(player)
+				player["spowerLastTime"] = time.time()
+	else : #on est dans un autre menu, -afair, disons pour le moment dans un menu textuelle
 		Interact()
 
-	if time.time()>player["LastTime"]+0.03 :
-		player = character.switch_stand(player,"Wait")
-		#on remet le joueur en position d'attente s'il fait rien
-
-	#gestion de l'ultime
-	if time.time()>player["spowerLastTime"]+player["spowerSpeed"] and player["spowerCharge"]<=60 :
-		if (player["spowerOn"] and player["spowerDelay"]>0) :
-			player = character.cooldown_ult(player)
-		else :
-			player = character.charge_ult(player)
-			player["spowerLastTime"] = time.time()
 
 	if time.time()>timeScreen+timeStep:
 		Show()

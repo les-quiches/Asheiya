@@ -4,6 +4,7 @@ import entity
 import time
 import character
 import movingent
+import hitbox
 
 #_____Create____________________________________________________________________
 def create_shooting_ent(Entity, damage, bulletSpeed, assetShot, shotDelay, lastShot=[time.time(),0]) :
@@ -306,7 +307,7 @@ def hit(bullet, entities , gameBorder, walls ) :
     @type gameBorder : list
 
     @param walls: tableau ou sont réparti tout les mur, plateformes
-    @type wall: array
+    @type walls: list
 
     RETOUR
 
@@ -315,9 +316,22 @@ def hit(bullet, entities , gameBorder, walls ) :
     """
     None
     # -afair : les tests de collisions
-    is_hit = False #test si la balle touche quelquechose
-    hit_entity=False  #test si la balle touche une entite ou pas
-    entity = None #l'entite touche (le nom) le cas echeant
+    Shadow_walls=hitbox.hit_box_complex(walls)
+    Shadow_gameBorder=hitbox.hit_box_complex(gameBorder)
+    Shadow_backgound=hitbox.Add_Shadow(Shadow_walls,Shadow_gameBorder)
+    Shadow_bullet=hitbox.hit_box_complex(bullet["Asset"][bullet["FrameNb"]])
+    if not(hitbox.detect_collision_wall(Shadow_bullet,Shadow_backgound)):
+        Shadow_bullet_placed=hitbox.Add_Shadow(Shadow_walls,Shadow_gameBorder,bullet["x"],bullet["y"])
+        for entity in entities:
+            if hitbox.detect_collision_entity(bullet,entity):
+                is_hit = True
+                hit_entity=True  #test si la balle touche une entite ou pas
+                log = (is_hit, hit_entity,entity)
+                return(log)
+    else:
+        is_hit = True
+        hit_entity=False  #test si la balle touche une entite ou pas
+        entity = None #l'entite touche (le nom) le cas echeant
     log = (is_hit, hit_entity,entity) #pour tout renvoyer
     return(log)
 

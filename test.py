@@ -1,20 +1,10 @@
 #-*- coding:utf-8 -*
+import test2
 
-
-
-
-
-
-
-merde= {}
-merde["ui"] = ["8","85","56"]
-merde["poulet"]=[2,9,7,6]
-merde["hihi"] = ["oups","d'accord", "tres bien"]
-
-
-for AH in  merde.keys() :
-	for j in merde[AH] :
-		print j
+def execute(liste) :
+	joueur = test2.find_player(liste)
+	joueur["pv"] = 150
+	return liste
 
 
 

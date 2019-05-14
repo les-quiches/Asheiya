@@ -7,6 +7,7 @@ Gostwall = "-"
 take_damage = "."
 
 import files
+
 def Add_Shadow(Shadow_asset,Shadow_backgound,x=0,y=0):
     """
         G{classtree}
@@ -35,22 +36,26 @@ def Add_Shadow(Shadow_asset,Shadow_backgound,x=0,y=0):
     """
     files.SAVE_FILE_JSON(Shadow_backgound,"Shadow_backgound")
     files.SAVE_FILE_JSON(Shadow_asset,"Shadow_asset")
+
     for i in range(0,len(Shadow_asset)):
         for j in range(0,len(Shadow_asset[i])):
             if Shadow_asset[i][j] != void_collision:
                 Shadow_backgound[i+y][j+x] = Shadow_asset[i][j]
+
     return(Shadow_backgound)
+
+
 def detect_collision_wall(Entity_Asset,Shadow_backgound,x,y):
     """
     G{classtree}
     DESCRIPTION
     ===========
-        Permet de dectecter une collision entre une entité et bordure du jeu
+        Permet de dectecter une collision entre une entité et unebordure du jeu
 
     PARAM
     =====
-    @param Entity_1: entité que l'on test
-    @type Entity_1 : dict
+    @param Entity_Asset: entité que l'on test
+    @type Entity_Asset : dict
 
     @param Shadow_backgound: Masque background
     @type Shadow_backgound: list
@@ -58,23 +63,24 @@ def detect_collision_wall(Entity_Asset,Shadow_backgound,x,y):
     RETOUR
     ======
 
-    @return : Une information Si Vrais: il y a eu collision Sinon: il n'y a pas de collision
+    @return : True s'il y a une collision avec un mur, False sinon.
     @rtype :bool
     """
     Shadow_entity = hit_box_complex(Entity_Asset,random_zone)
     for i in range(0,len(Shadow_entity)):
         for j in range(0,len(Shadow_entity[i])):
-            if Shadow_entity[i][j] != void_collision:    #detection collision wall
-                if Shadow_backgound[x+i][y+j] == wall:
+            if Shadow_entity[i][j] != void_collision:    
+                if Shadow_backgound[x+i][y+j] == wall: #detection collision wall
                     return True
     return False
+
 
 def create_void_shadow(Xmax,Ymax):
     """
     G{classtree}
     DESCRIPTION
     ===========
-        Permet de créer un calque vide de taille
+        Permet de créer un calque vide de taille Xmax / Ymax
 
     PARAM
     =====
@@ -142,7 +148,7 @@ def detect_collision_entity(Entity_1,asset_entity_1, Entity_2, asset_entity_2):
 
 
 
-def hit_box_simple(asset,entity):
+def hit_box_simple(asset,entity):  #####_____OBSOLETE______
     """
     G{classtree}
     DESCRIPTION
@@ -199,10 +205,10 @@ def hit_box_complex(asset,type_hitbox):
     c=0
     a=[]
     for c in asset:
-        a.append(len(c))
-    x = max(a)
+        a.append(len(c)) # "a" représente la liste des longeurs de chaques lignes
+    x = max(a) #on prend la plus grande ligne
     bloc=[]
-    bloc= [[void_collision] * x for _ in range(y)]
+    bloc= [[void_collision] * x for _ in range(y)] #créé un tableau de x par y remplie de 0
     #maintenant que j'ai la taille de l'asset max je vais ramplacer les valeur interieur du bloc
     for i in range(0,len(asset)):
         for j in range(0,len(asset[i])):

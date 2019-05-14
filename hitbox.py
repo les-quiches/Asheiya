@@ -3,9 +3,10 @@ void_collision ="0"
 random_zone="O"
 damage_Zone= "¤"
 wall = "X"
+Gostwall = "-"
 take_damage = "."
 
-
+import files
 def Add_Shadow(Shadow_asset,Shadow_backgound,x=0,y=0):
     """
         G{classtree}
@@ -32,12 +33,14 @@ def Add_Shadow(Shadow_asset,Shadow_backgound,x=0,y=0):
         @return Shadow_backgound: Calque du background avec l'asset intéger
         @rtype Shadow_backgound :list
     """
+    files.SAVE_FILE_JSON(Shadow_backgound,"Shadow_backgound")
+    files.SAVE_FILE_JSON(Shadow_asset,"Shadow_asset")
     for i in range(0,len(Shadow_asset)):
         for j in range(0,len(Shadow_asset[i])):
             if Shadow_asset[i][j] != void_collision:
                 Shadow_backgound[i+y][j+x] = Shadow_asset[i][j]
     return(Shadow_backgound)
-def detect_collision_wall(Entity,Shadow_backgound):
+def detect_collision_wall(Entity_Asset,Shadow_backgound,x,y):
     """
     G{classtree}
     DESCRIPTION
@@ -58,10 +61,7 @@ def detect_collision_wall(Entity,Shadow_backgound):
     @return : Une information Si Vrais: il y a eu collision Sinon: il n'y a pas de collision
     @rtype :bool
     """
-    x=Entity["x"]
-    y=Entity["y"]
-    asset= Entity["Asset"]
-    Shadow_entity = hit_box_complex(asset,random_zone)
+    Shadow_entity = hit_box_complex(Entity_Asset,random_zone)
     for i in range(0,len(Shadow_entity)):
         for j in range(0,len(Shadow_entity[i])):
             if Shadow_entity[i][j] != void_collision:    #detection collision wall
@@ -97,7 +97,7 @@ def create_void_shadow(Xmax,Ymax):
         Shadow[j]=x
     return Shadow
 
-def detect_collision_entity(Entity_1, Entity_2):
+def detect_collision_entity(Entity_1,asset_entity_1, Entity_2, asset_entity_2):
     """
     G{classtree}
     DESCRIPTION
@@ -109,6 +109,12 @@ def detect_collision_entity(Entity_1, Entity_2):
 
     @param Entity_1: entité que l'on test
     @type Entity_1 : dict
+
+    @param asset_entity_1: asset de l'entite
+    @type asset_entity_1 :list
+
+    @param asset_entity_2: asset de l'entite
+    @type asset_entity_2: list
 
     @param  Entity_2: entité que l'on test
     @type Entity_2: dict
@@ -123,8 +129,6 @@ def detect_collision_entity(Entity_1, Entity_2):
     y1=Entity_1["y"]
     x2=Entity_2["x"]
     y2=Entity_2["y"]
-    asset_entity_1= Entity_1["Asset"][Entity_1["FrameNb"]]
-    asset_entity_2= Entity_2["Asset"][Entity_2["FrameNb"]]
     Void_Shadow=create_void_shadow(x2+len(asset_entity_2[len(asset_entity_2)],len(asset_entity_2)))
     Shadow_asset_1 = hit_box_complex(asset_entity_1,random_zone)
     Shadow_asset_2 = hit_box_complex(asset_entity_2,random_zone)
@@ -197,7 +201,8 @@ def hit_box_complex(asset,type_hitbox):
     for c in asset:
         a.append(len(c))
     x = max(a)
-    bloc = [[void_collision] * x for _ in range(y)]
+    bloc=[]
+    bloc= [[void_collision] * x for _ in range(y)]
     #maintenant que j'ai la taille de l'asset max je vais ramplacer les valeur interieur du bloc
     for i in range(0,len(asset)):
         for j in range(0,len(asset[i])):

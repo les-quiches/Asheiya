@@ -19,6 +19,7 @@ import movingent
 import livingent
 import character
 import boon
+import files
 
 #interaction clavier
 oldSettings = termios.tcgetattr(sys.stdin)
@@ -61,7 +62,7 @@ def Init(): 	#initialisation des variables
     ======
     	Sans retour
 	"""
-	global color, window, assetGameZone, timeStep, timeScreen, timeGravity, gameBorder, allEntity, player, menu, manche
+	global color, window, assetGameZone, timeStep, timeScreen, timeGravity, allEntity, player, menu, manche
 
 	color["txt"]={"Black":30, "Red":31,"Green":32,"Yellow":33,"Blue":34,"Pink":35,"Cyan":36,"White":37}
 	color["background"]={"Black":40, "Red":41,"Green":42,"Yellow":43,"Blue":44,"Pink":45,"Cyan":46,"White":47}
@@ -139,15 +140,12 @@ def Init(): 	#initialisation des variables
 
 
 	#definition de la fenetre de jeu
-	x=0
-	y=0
-	xmax=90
-	ymax=42
-	gameBorder=[x,y,xmax,ymax]
 
 	#on efface la console
 	sys.stdout.write("\033[1;1H")
 	sys.stdout.write("\033[2J")
+
+	files.SAVE_FILE_JSON(player,"Log_Asheya")
 	return
 
 
@@ -168,12 +166,11 @@ def Init_manche():
 	    Sans retour
 	"""
 	#-afaire
-	global manche, menu, player, walls
+	global manche, menu, player, walls, assetGameZone
 
 	if manche == 10 :
 		player = movingent.tp_entity(player,20,37)
-		
-		# walls =  -afair placer les plateformes de cette manche
+		walls = background.create_window("GameZone/Zone_"+str(assetGameZone["NumZone"])+"_TraversantPleteforme.txt")
 
 		#placement des bonus :  #-afair quand on les placera tous, automatiser le tout
 		listeBonus = {"speedUp" : 0.02, "fireRateUp" : 1}
@@ -239,7 +236,7 @@ def Game():
 		player=character.power_off(player) #si le joueur n'a plus de temps d'ultime, il n'est pas entrain de l'utiliser
 		player["spowerDelay"]=0
 
-	#gestion des générateurs de boons -afair : 
+	#gestion des générateurs de boons -afair :
 	for boong in allEntity["boons"] :
 		if "boonGenerator" in boong["Type"] :
 			# if il n'y a pas de bonus sur la case du générateur : -afair
@@ -306,14 +303,15 @@ def Time_game():
     ======
 		Sans retour
 	"""
-	global window, timeStep, timeScreen, gameBorder,walls, allEntity, player, menu, timeGravity
-
-	if menu == "manche" : #on est en jeu
+	global window, timeStep, timeScreen, walls, allEntity, player, menu, timeGravity
+	Asset_Game_Zone= assetGameZone["Zone_"+str(assetGameZone["NumZone"])]
+	if menu == "manche":
+		#on est en jeu
 		#gestion des tirs
 		for bullet in allEntity["projectile"] :
 			if time.time()>bullet["Speed"]+bullet["LastTime"] :
 				bullet = movingent.move_entity(bullet,bullet["Vx"],bullet["Vy"])
-				log = shootingent.hit(bullet,allEntity["mobs"],gameBorder,walls) # -afair walls est le tableau representant la map
+				log = shootingent.hit(bullet,allEntity["mobs"],Asset_Game_Zone,walls) # -afair walls est le tableau representant la map
 				if log[1]:#une entite a etait touche
 					None
 					#log[2]=livingent.hurt(log[2],bullet["damageToInflict"])
@@ -323,7 +321,7 @@ def Time_game():
 		#gestion de la gravite
 		if time.time()>timeGravity + 0.08 :
 			for mob in allEntity["mobs"] :
-				onTheGround = entity.is_ground_beneath(entity.feet(mob),gameBorder,walls) #-afair test s'il y a une plateforme en dessous
+				onTheGround = entity.is_ground_beneath(entity.feet(mob),Asset_Game_Zone,walls) #-afair test s'il y a une plateforme en dessous
 				mob = movingent.gravity(mob,onTheGround)
 				movingent.move_entity(mob,0,1,onTheGround,True)
 			timeGravity = time.time()
@@ -333,7 +331,7 @@ def Time_game():
 			if (time.time()>mob["Speed"]+mob["LastTime"]) and (mob["Vx"]!=0 or mob["Vy"]!=0) :
 				#inserer gestion de collision ici qui provient du module entity avec en param allEntity - afair
 				#va etre la collision la plus complique a gerer  celle avec les entites et avec les walls -afair
-				willCollide = movingent.collision(mob,allEntity["mobs"],gameBorder,walls) # -afair
+				willCollide = movingent.collision(mob,allEntity["mobs"],Asset_Game_Zone,walls) # -afair
 				mob = movingent.move_entity(mob,mob["Vx"],mob["Vy"],willCollide)
 
 			#on fait tirer si le mob est un mob qui tir
@@ -341,6 +339,7 @@ def Time_game():
 				if time.time()>mob["shotDelay"]+mob["lastShot"][0] :
 					allEntity["projectile"].append(shootingent.shoot(mob))
 					mob = shootingent.as_shot(mob)
+					files.SAVE_FILE_JSON(allEntity["projectile"],"Log_Bullet")
 
 		#gestion des générateurs de bonus
 		for boonx in allEntity["boons"] :
@@ -389,7 +388,7 @@ def Show() :
     ======
 		Sans retour
 	"""
-	global window, timeStep, timeScreen, gameBorder, allEntity, player, menu, assetGameZone, color
+	global window, timeStep, timeScreen, allEntity, player, menu, assetGameZone, color
 
 
 	#Show Frame
@@ -462,7 +461,7 @@ def Interact():
 
 		if ((manche%10)==1 and menu=="manche") : #on est en jeu
 
-			if (c == "/n" and player["spowerCharge"]>=60) : #-afair : si on appuie sur espace on balance l'ultime
+			if (c == "\n" and player["spowerCharge"]>=60) : #-afair : si on appuie sur espace on balance l'ultime
 				player["spowerCharge"]=0
 				player["spowerDelay"]=4
 				player["spowerOn"]=True

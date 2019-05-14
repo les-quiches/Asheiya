@@ -107,7 +107,7 @@ def feet(entity) :#renvoi les "pieds" de l'entite
     # feet = [hit_box_simple(entity["Asset"],entity)[2],hit_box_simple(entity["Asset"],entity)[3]] # -afair pas sur de mon coup pour le entity["Asset"]
     return
 
-def is_ground_beneath(pos,gameBorder,walls) :
+def is_ground_beneath(pos,Asset_Game_Zone,walls) :
     """
     G{classtree}
     DESCRIPTION
@@ -120,8 +120,8 @@ def is_ground_beneath(pos,gameBorder,walls) :
     @param pos : position de l'endroit où l'on veut savoir s'il y a une plateforme en dessous
     @type pos : list
 
-    @param gameBorder:  Zone de l'ecran ou le joueur peut se mouvoir
-    @type gameBorder : list
+    @param Asset_Game_Zone:  Asset de l'ecran ou le joueur peut se mouvoir
+    @type Asset_Game_Zone : list
 
     @param walls : Ensemble des plateformes du jeu
     @type walls : array

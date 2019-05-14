@@ -1,36 +1,41 @@
 #-*- coding:utf-8 -*
 void_collision ="0"
 random_zone="O"
-damage_Zone= "%"
+damage_Zone= "¤"
 wall = "X"
-take_damage = "1"
+take_damage = "."
 
 
-def Add_Shadow(Shadow_asset,Shadow_backgound):
+def Add_Shadow(Shadow_asset,Shadow_backgound,x=0,y=0):
     """
         G{classtree}
         DESCRIPTION
         ===========
-            Ajoute
+            Ajoute un claque d'asset sur un calque de backgound
         PARAM
         =====
 
-        @param Shadow_asset:
+        @param Shadow_asset: Calque de l'asset
         @type Shadow_asset :list
 
-        @param Shadow_backgound:
+        @param Shadow_backgound: Calque du backgound
         @type Shadow_backgound :list
 
+        @param x: position x du calque de l'asset
+        @type x :int
+
+        @param y: position y du calque de l'asset
+        @type y :int
         RETOUR
         ======
 
-        @return Shadow_backgound:
+        @return Shadow_backgound: Calque du background avec l'asset intéger
         @rtype Shadow_backgound :list
     """
     for i in range(0,len(Shadow_asset)):
         for j in range(0,len(Shadow_asset[i])):
             if Shadow_asset[i][j] != void_collision:
-                Shadow_backgound[i][j] = Shadow_asset[i][j]
+                Shadow_backgound[i+y][j+x] = Shadow_asset[i][j]
     return(Shadow_backgound)
 def detect_collision_wall(Entity,Shadow_backgound):
     """
@@ -50,8 +55,8 @@ def detect_collision_wall(Entity,Shadow_backgound):
     RETOUR
     ======
 
-    @return :
-    @rtype :
+    @return : Une information Si Vrais: il y a eu collision Sinon: il n'y a pas de collision
+    @rtype :bool
     """
     x=Entity["x"]
     y=Entity["y"]
@@ -64,6 +69,33 @@ def detect_collision_wall(Entity,Shadow_backgound):
                     return True
     return False
 
+def create_void_shadow(Xmax,Ymax):
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de créer un calque vide de taille
+
+    PARAM
+    =====
+    @param Xmax: taille du calque, sur l'axe x que l'on veut créer
+    @type Xmax: int
+
+    @param Ymax: taille du calque, sur l'axe y que l'on veut créer
+    @type Ymax: int
+
+    RETOUR
+    ======
+    @return Shadow: Calque de dimmantion Xmax, Ymax
+    @rtype Shadow:list
+    """
+    Shadow =[]
+    x=[]
+    for i in range(0,Xmax):
+        x.append(void_collision)
+    for j in range(0,Ymax):
+        Shadow[j]=x
+    return Shadow
 
 def detect_collision_entity(Entity_1, Entity_2):
     """
@@ -84,19 +116,23 @@ def detect_collision_entity(Entity_1, Entity_2):
     RETOUR
     ======
 
-    @return :
-    @rtype :
+    @return : Une information Si Vrais: il y a eu collision Sinon: il n'y a pas de collision
+    @rtype :bool
     """
-    x=Entity_bullet["x"]
-    y=Entity_bullet["y"]
+    x1=Entity_1["x"]
+    y1=Entity_1["y"]
+    x2=Entity_2["x"]
+    y2=Entity_2["y"]
     asset_entity_1= Entity_1["Asset"]
     asset_entity_1= Entity_1["Asset"]
+    Void_Shadow=create_void_shadow(x2+len(asset_entity_2[len(asset_entity_2)],len(asset_entity_2)))
     Shadow_asset_1 = hit_box_complex(asset_entity_1,random_zone)
     Shadow_asset_2 = hit_box_complex(asset_entity_2,random_zone)
+    Shadow = Add_Shadow(Shadow_asset_2,Void_Shadow,x2,y2)
     for i in range(0,len(Shadow_asset_1)):
         for j in range(0,len(Shadow_asset_1[i])):
             if Shadow_asset_1[i][j] != void_collision:
-                if Shadow_asset_2 != void_collision:
+                if Shadow[i+y1][j+x1] != void_collision:
                     return True
     return False
 

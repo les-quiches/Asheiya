@@ -13,6 +13,7 @@ _wall = "X"
 _gostwall = "-"
 take_damage = "."
 
+import files
 #_____Create____________________________________________________________________
 def create_shooting_ent(Entity, damage, bulletSpeed, assetShot, shotDelay, lastShot=[time.time(),0]) :
 
@@ -323,8 +324,7 @@ def hit(bullet, entities , gameBorder, walls ) :
     @return log  : contient trois informations comme suit : True si le projectile rentre en collision (False sinon), True si c'était une entité vivante(False sinon), l'identifiant de cette entité le cas échéant.
     @rtype log : tuple
     """
-    None
-    # -afair : les tests de collisions
+    files.SAVE_FILE_JSON(bullet,"bullets_log.txt")
     assetBullet = bullet["Asset"]["Actual"]["Asset"]
     Shadow_walls=hitbox.hit_box_complex(walls,_gostwall)
     Shadow_gameBorder=hitbox.hit_box_complex(gameBorder,_wall)

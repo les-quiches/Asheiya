@@ -66,7 +66,7 @@ def speedUp(Entity, amount) :
 
     RETOUR
     ======
-    @return : L'Entité avec sa vitesse augmenté 
+    @return : L'Entité avec sa vitesse augmenté
     @rtype : dict
     """
     assert type(Entity) is dict
@@ -74,7 +74,7 @@ def speedUp(Entity, amount) :
 
     if Entity["Speed"]+amount >=0.01 : #tant qu'on va pas plus vite que la boucle de simulation
         Entity["Speed"]+=amount
-        
+
     return Entity
 
 
@@ -194,13 +194,13 @@ def gravity(Entity,onTheGround=False) :
         Entity["Jump"]-=1
     elif(not(onTheGround)):
         Entity["Vy"]=1
-    if onTheGround==True : 
+    if onTheGround==True :
         Entity["Jump"]=0
     return (Entity)
 
 
 #_____Collision______________________________________________________________________
-def collision(ent, allEntity, gameBorder, walls, x=None, y=None) : #x et y correspondent aux prochaines positions, utiles seulement pour le joueur sinon on recupere via entity
+def collision(ent, allEntity, Asset_Game_Zone, walls, x=None, y=None) : #x et y correspondent aux prochaines positions, utiles seulement pour le joueur sinon on recupere via entity
     """
     G{classtree}
     DESCRIPTION
@@ -215,8 +215,8 @@ def collision(ent, allEntity, gameBorder, walls, x=None, y=None) : #x et y corre
     @param allEntity: toutes les entités qui pourrais etre en collision
     @type allEntity: dict
 
-    @param gameBorder:  Zone de l'ecran ou le joueur peu se mouvoir
-    @type gameBorder : list
+    @param Asset_Game_Zone:  Asset de l'ecran ou le joueur peu se mouvoir
+    @type Asset_Game_Zone : list
 
     @param walls: dictionnaire ou sont réparti tout les mur, plateformes
     @type wall: dict
@@ -244,7 +244,7 @@ def collision(ent, allEntity, gameBorder, walls, x=None, y=None) : #x et y corre
         None
         #on gere une entite programme, donc on prend en compte ent[x]+ent[Vx]
     #on recupere pos -> avec X Y les positions a tester
-    #on regarde dans Walls/allentity/gameBorder si ia pas de collisions
+    #on regarde dans Walls/allentity/Asset_Game_Zone si ia pas de collisions
     return False
 
 

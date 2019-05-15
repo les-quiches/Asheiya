@@ -34,7 +34,6 @@ def Add_Shadow(Shadow_asset,Shadow_backgound,x=0,y=0):
         @return Shadow_backgound: Calque du background avec l'asset intégrer
         @rtype Shadow_backgound :list
     """
-
     for i in range(0,len(Shadow_asset)-1):
         for j in range(0,len(Shadow_asset[i])-1):
             if Shadow_asset[i][j] != void_collision:
@@ -125,9 +124,10 @@ def detect_collision_entity(Entity_1, Entity_2):
     y1=Entity_1["y"]
     x2=Entity_2["x"]
     y2=Entity_2["y"]
-    asset_entity_1 = Entity_1["Asset"]["Actual"]["Asset"]
-    asset_entity_2 = Entity_2["Asset"]["Actual"]["Asset"]
-    Void_Shadow=create_void_shadow(x2+-1+len(asset_entity_2[len(asset_entity_2)-1]),y2+len(asset_entity_2)-1)
+    asset_entity_1 = Entity_1["Asset"]["Actual"]["Asset"][Entity_1["Asset"]["Actual"]["FrameNb"]]
+    asset_entity_2 = Entity_2["Asset"]["Actual"]["Asset"][Entity_2["Asset"]["Actual"]["FrameNb"]]
+    a,b,x,y=hit_box_simple(Entity_2)
+    Void_Shadow=create_void_shadow(x,y)
     Shadow_asset_1 = hit_box_complex(asset_entity_1,random_zone)
     Shadow_asset_2 = hit_box_complex(asset_entity_2,random_zone)
     Shadow = Add_Shadow(Shadow_asset_2,Void_Shadow,x2,y2)
@@ -140,7 +140,7 @@ def detect_collision_entity(Entity_1, Entity_2):
 
 
 
-def hit_box_simple(asset,entity):  #####_____OBSOLETE______
+def hit_box_simple(entity):  #####_____OBSOLETE______
     """
     G{classtree}
     DESCRIPTION
@@ -149,9 +149,6 @@ def hit_box_simple(asset,entity):  #####_____OBSOLETE______
 
     PARAM
     =====
-
-    @param asset: Tableau représentant un asset
-    @type asset : list
 
     @param entity: Entite dont on veut obtenir l'asset
     @type entity: dict
@@ -163,11 +160,12 @@ def hit_box_simple(asset,entity):  #####_____OBSOLETE______
     @return : quatre positions correspondants aux valeurs extremes des contours de l'entite. Permet de positionner les quatre coins.
     @rtype : list
     """
+    asset= entity["Asset"]["Actual"]["Asset"][entity["Asset"]["Actual"]["FrameNb"]]
     y=len(asset)
-    a=0
+    a=[]
     for i in asset:
-        a+=len(asset[i])
-    x= a/(i+1)
+        a.append(len(i))
+    x= max(a)
     hit_box_entity=[entity["x"], entity["y"], entity["x"]+x, entity["y"]+y]# plage de l'hitbox de l'asset (point en haut a gauche puit en bas a doite)
     return(hit_box_entity)
 

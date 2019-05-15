@@ -78,7 +78,9 @@ def create_asset(filename):
     frame = myfile.split("frame\r\n")
     FrameMax=len(frame)
     for i in frame:
-		ca["Asset"].append(i.split("\n"))
+        a=i.split("\r\n")
+        del a[-1]
+        ca["Asset"].append(a)
     ca["FrameNb"]= 0
     return(ca)
 
@@ -130,7 +132,7 @@ def feet(entity) :#renvoi les "pieds" de l'entite
     @return : renvoi la position des pied de l'entité
     @rtype : list
     """
-   
+
     return
 
 def is_ground_beneath(pos,Asset_Game_Zone,walls) :

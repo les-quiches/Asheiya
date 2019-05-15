@@ -15,6 +15,7 @@ _wall = "X"
 _gostwall = "-"
 take_damage = "."
 
+import files
 #_____Create____________________________________________________________________
 def create_shooting_ent(Entity, damage, bulletSpeed, assetShot, shotDelay, lastShot=[time.time(),0]) :
 

@@ -21,6 +21,10 @@ import character
 import boon
 import files
 
+#importation des IAs
+import AI
+import AI_testmob
+
 #interaction clavier
 oldSettings = termios.tcgetattr(sys.stdin)
 
@@ -194,6 +198,16 @@ def Init_manche():
 
 		allEntity["boons"].append(boong)
 
+		#/!\ juste un mob pour test, les valeurs sont débiles
+		assetMob1 = {}
+		assetMob1["boon1"] = entity.create_asset("Boon/boon1.txt")
+		assetMob1["Actual"]= assetMob1["boon1"]
+		mob1 = entity.create_entity("testmob",20,20,assetMob1, "AItest")
+		mob1 = movingent.create_moving_ent(mob1,1,1,1)
+
+		allEntity["mobs"].append(mob1)
+
+		# manche initialisé
 		manche = 11
 
 	if manche == 20 :
@@ -231,6 +245,15 @@ def Game():
 
 	if menu == "manche" and (manche%10 == 0) : #on est dans une mancge non initialise
 		Init_manche()
+
+	#gestion des IAs : 
+	for typeEnt in allEntity.keys() :
+		for ent in allEntity[typeEnt] :
+			if ent["AI"]!=None :
+				log = AI.execute(ent, allEntity)
+				ent = log[0]
+				allEntity = log[1]
+				
 
 	#gestion des assets actuelles :
 	for typeEnt in allEntity.keys() :
@@ -320,10 +343,9 @@ def Time_game():
 		for bullet in allEntity["projectile"] :
 			if time.time()>bullet["Speed"]+bullet["LastTime"] :
 				bullet = movingent.move_entity(bullet,bullet["Vx"],bullet["Vy"])
-				log = shootingent.hit(bullet,allEntity["mobs"],Asset_Game_Zone,walls) # -afair walls est le tableau representant la map
+				log = shootingent.hit(bullet,allEntity["mobs"],Asset_Game_Zone,walls)
 				if log[1]:#une entite a etait touche
-					None
-					#log[2]=livingent.hurt(log[2],bullet["damageToInflict"])
+					log[2]=livingent.hurt(log[2],bullet["damageToInflict"])
 				if log[0]:#il y a eu collision
 					allEntity["projectile"].remove(bullet)
 
@@ -419,6 +441,7 @@ def Show() :
 			#asset = entity.create_asset(ent["Asset"])
 			color_bg = color["background"]["Black"]
 			color_txt = color["txt"]["Yellow"]
+		files.SAVE_FILE_JSON(ent,"log")
 		entity.show_entity(ent,color_bg,color_txt)
 
 	for shot in allEntity["projectile"] :

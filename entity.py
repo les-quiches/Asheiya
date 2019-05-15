@@ -31,8 +31,8 @@ def create_entity(Name, X, Y, Asset, AI = None):
     @param Asset : variables contenant toutes les representations de l'entite
     @type Asset : dict
 
-    @param IA : si l'entite est automatiquement controle, chemin d'acces vers le fichier qui la controle
-    @type IA : str
+    @param AI : si l'entite est automatiquement controle, chemin d'acces vers le fichier qui la controle
+    @type AI : str
 
     RETOUR
     ======

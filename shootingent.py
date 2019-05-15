@@ -323,17 +323,13 @@ def hit(bullet, entities , gameBorder, walls ) :
     @return log  : contient trois informations comme suit : True si le projectile rentre en collision (False sinon), True si c'était une entité vivante(False sinon), l'identifiant de cette entité le cas échéant.
     @rtype log : tuple
     """
+    None
     # -afair : les tests de collisions
-
     assetBullet = bullet["Asset"]["Actual"]["Asset"]
-
     Shadow_walls=hitbox.hit_box_complex(walls,_gostwall)
     Shadow_gameBorder=hitbox.hit_box_complex(gameBorder,_wall)
-
     Shadow_backgound=hitbox.Add_Shadow(Shadow_walls,Shadow_gameBorder)
-
     Shadow_bullet=hitbox.hit_box_complex(assetBullet,damage_Zone)
-
     if not(hitbox.detect_collision_wall(bullet,Shadow_backgound)):
         Shadow_bullet_placed=hitbox.Add_Shadow(Shadow_bullet,Shadow_backgound,bullet["x"],bullet["y"])
         for entity in entities:

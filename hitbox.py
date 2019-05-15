@@ -35,8 +35,8 @@ def Add_Shadow(Shadow_asset,Shadow_backgound,x=0,y=0):
         @rtype Shadow_backgound :list
     """
 
-    for i in range(0,len(Shadow_asset)):
-        for j in range(0,len(Shadow_asset[i])):
+    for i in range(0,len(Shadow_asset)-1):
+        for j in range(0,len(Shadow_asset[i])-1):
             if Shadow_asset[i][j] != void_collision:
                 Shadow_backgound[i+y][j+x] = Shadow_asset[i][j]
 
@@ -68,9 +68,9 @@ def detect_collision_wall(Entity,Shadow_backgound):
     x = Entity["x"]
     y = Entity["y"]
     Shadow_entity = hit_box_complex(asset,random_zone)
-    for i in range(0,len(Shadow_entity)):
-        for j in range(0,len(Shadow_entity[i])):
-            if Shadow_entity[i][j] != void_collision:    
+    for i in range(0,len(Shadow_entity)-1):
+        for j in range(0,len(Shadow_entity[i])-1):
+            if Shadow_entity[i][j] != void_collision:
                 if Shadow_backgound[x+i][y+j] == wall: #detection collision wall
                     return True
     return False
@@ -96,12 +96,7 @@ def create_void_shadow(Xmax,Ymax):
     @return Shadow: Calque de dimmantion Xmax, Ymax
     @rtype Shadow:list
     """
-    Shadow =[]
-    x=[]
-    for i in range(0,Xmax):
-        x.append(void_collision)
-    for j in range(0,Ymax):
-        Shadow[j]=x
+    Shadow = [[void_collision] * Xmax for _ in range(Ymax)]
     return Shadow
 
 def detect_collision_entity(Entity_1, Entity_2):
@@ -132,12 +127,12 @@ def detect_collision_entity(Entity_1, Entity_2):
     y2=Entity_2["y"]
     asset_entity_1 = Entity_1["Asset"]["Actual"]["Asset"]
     asset_entity_2 = Entity_2["Asset"]["Actual"]["Asset"]
-    Void_Shadow=create_void_shadow(x2+len(asset_entity_2[len(asset_entity_2)],len(asset_entity_2)))
+    Void_Shadow=create_void_shadow(x2+-1+len(asset_entity_2[len(asset_entity_2)-1]),y2+len(asset_entity_2)-1)
     Shadow_asset_1 = hit_box_complex(asset_entity_1,random_zone)
     Shadow_asset_2 = hit_box_complex(asset_entity_2,random_zone)
     Shadow = Add_Shadow(Shadow_asset_2,Void_Shadow,x2,y2)
-    for i in range(0,len(Shadow_asset_1)):
-        for j in range(0,len(Shadow_asset_1[i])):
+    for i in range(0,len(Shadow_asset_1)-1):
+        for j in range(0,len(Shadow_asset_1[i])-1):
             if Shadow_asset_1[i][j] != void_collision:
                 if Shadow[i+y1][j+x1] != void_collision:
                     return True

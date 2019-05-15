@@ -238,9 +238,6 @@ def Game():
 			if "character" in ent["Type"] :
 				ent["Asset"]["Actual"] = character.get_asset(ent)
 				pass #au cas ou on mette d'autre type ensuite, il faut pas que les assets actuels s'écrasent les uns les autres.
-	files.SAVE_FILE_JSON(player,"Log_Asheya")
-	files.SAVE_FILE_JSON(allEntity["projectile"],"Log_Bullet")
-	files.SAVE_FILE_JSON(allEntity,"Log_AllEntity")
 
 
 	#gestion de l'ultime

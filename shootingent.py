@@ -325,15 +325,15 @@ def hit(bullet, entities , gameBorder, walls ) :
     """
     None
     # -afair : les tests de collisions
-    assetBullet = bullet["Asset"]["Asset"][bullet["Asset"]["FrameNb"]]
+    assetBullet = bullet["Asset"]["Actual"]["Asset"]
     Shadow_walls=hitbox.hit_box_complex(walls,Gostwall)
     Shadow_gameBorder=hitbox.hit_box_complex(gameBorder,wall)
     Shadow_backgound=hitbox.Add_Shadow(Shadow_walls,Shadow_gameBorder)
     Shadow_bullet=hitbox.hit_box_complex(assetBullet,damage_Zone)
-    if not(hitbox.detect_collision_wall(assetBullet,Shadow_backgound,bullet["x"],bullet["y"])):
+    if not(hitbox.detect_collision_wall(bullet,Shadow_backgound)):
         Shadow_bullet_placed=hitbox.Add_Shadow(Shadow_bullet,Shadow_backgound,bullet["x"],bullet["y"])
         for entity in entities:
-            if hitbox.detect_collision_entity(bullet,assetBullet,entity):#trouver asset général
+            if hitbox.detect_collision_entity(bullet,entity):#trouver asset général
                 is_hit = True
                 hit_entity=True  #test si la balle touche une entite ou pas
                 log = (is_hit, hit_entity,entity)

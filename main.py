@@ -144,8 +144,6 @@ def Init(): 	#initialisation des variables
 	#on efface la console
 	sys.stdout.write("\033[1;1H")
 	sys.stdout.write("\033[2J")
-
-	files.SAVE_FILE_JSON(player,"Log_Asheya")
 	return
 
 
@@ -176,7 +174,9 @@ def Init_manche():
 		listeBonus = {"speedUp" : 0.02, "fireRateUp" : 1}
 		xbonus = 80
 		ybonus = 40
-		assetBonus = entity.create_asset("Boon/boon1.txt") #-afair en sorte que les accès soient automatisé
+		assetBonus = {}
+		assetBonus["boon1"] = entity.create_asset("Boon/boon1.txt") #-afair en sorte que les accès soient automatisé
+		assetBonus["Actual"] = assetBonus["boon1"]
 		boon1 = entity.create_entity("boon1", xbonus, ybonus, assetBonus) #-afair en sorte que leurs noms s'incrémente tout seul
 		boon1 = boon.create_boon(boon1, listeBonus)
 
@@ -185,7 +185,9 @@ def Init_manche():
 		listeBonus = {"lifeUp" : 5, "armorMaxUp" : 2}
 		xbonus = 80
 		ybonus = 34
-		assetBonus = entity.create_asset("Boon/boonGenerator.txt")
+		assetBonus = {}
+		assetBonus["boonGenerator"] = entity.create_asset("Boon/boonGenerator.txt")
+		assetBonus["Actual"] = assetBonus["boonGenerator"]
 		geneSpeed = 2
 		boong = entity.create_entity("boong1", xbonus, ybonus, assetBonus)
 		boong = boon.create_boon_generator(boong, listeBonus, geneSpeed)
@@ -229,6 +231,16 @@ def Game():
 
 	if menu == "manche" and (manche%10 == 0) : #on est dans une mancge non initialise
 		Init_manche()
+
+	#gestion des assets actuelles :
+	for typeEnt in allEntity.keys() :
+		for ent in allEntity[typeEnt] :
+			if "character" in ent["Type"] :
+				ent["Asset"]["Actual"] = character.get_asset(ent)
+				pass #au cas ou on mette d'autre type ensuite, il faut pas que les assets actuels s'écrasent les uns les autres.
+	files.SAVE_FILE_JSON(player,"Log_Asheya")
+	files.SAVE_FILE_JSON(allEntity["projectile"],"Log_Bullet")
+	files.SAVE_FILE_JSON(allEntity,"Log_AllEntity")
 
 
 	#gestion de l'ultime
@@ -339,7 +351,6 @@ def Time_game():
 				if time.time()>mob["shotDelay"]+mob["lastShot"][0] :
 					allEntity["projectile"].append(shootingent.shoot(mob))
 					mob = shootingent.as_shot(mob)
-					files.SAVE_FILE_JSON(allEntity["projectile"],"Log_Bullet")
 
 		#gestion des générateurs de bonus
 		for boonx in allEntity["boons"] :

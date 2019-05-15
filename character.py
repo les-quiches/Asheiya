@@ -213,7 +213,7 @@ def get_asset_doc(player): #recupère le nom du fichier de l'asset correspondant
     return asset
 
 
-def get_asset(entity_to_get_asset):
+def get_asset(player):
     """
     G{classtree}
         DESCRIPTION
@@ -224,8 +224,8 @@ def get_asset(entity_to_get_asset):
     PARAM
     =====
 
-    @param entity_to_get_asset): entite que l'on veux recupere l'asset
-    @type entity_to_get_asset):dict
+    @param player): entite que l'on veux recupere l'asset
+    @type player):dict
 
     RETOUR
     ======
@@ -233,7 +233,7 @@ def get_asset(entity_to_get_asset):
     @return asset: Nom de fichier de l'asset de l'entité
     @rtype asset: str
     """
-    asset = entity_to_get_asset["Asset"][entity_to_get_asset["Asset"]["position"][0]+"_"+entity_to_get_asset["Asset"]["position"][1]+"_"+str(entity_to_get_asset["Asset"]["position"][2])]
+    asset = player["Asset"][player["Asset"]["position"][0]+"_"+player["Asset"]["position"][1]+"_"+str(player["Asset"]["position"][2])]
     return(asset)
 
 

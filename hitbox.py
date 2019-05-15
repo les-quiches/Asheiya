@@ -31,7 +31,7 @@ def Add_Shadow(Shadow_asset,Shadow_backgound,x=0,y=0):
         RETOUR
         ======
 
-        @return Shadow_backgound: Calque du background avec l'asset intéger
+        @return Shadow_backgound: Calque du background avec l'asset intégrer
         @rtype Shadow_backgound :list
     """
     files.SAVE_FILE_JSON(Shadow_backgound,"Shadow_backgound")

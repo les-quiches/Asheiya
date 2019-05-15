@@ -285,7 +285,9 @@ def shoot(Entity) :
         Vy = 0
         name_asset = "Gun_Horizontal"
 
-    asset = Entity["assetShot"][name_asset]
+    asset = {}
+    asset[name_asset] = Entity["assetShot"][name_asset]
+    asset["Actual"] = Entity["assetShot"][name_asset]
     bullet = entity.create_entity(bullet_name,x,y,asset)
     bullet = movingent.create_moving_ent(bullet, Vx, Vy, Entity["bulletSpeed"])
     bullet = create_bullet(bullet,Entity["damage"],Entity["Name"])

@@ -82,14 +82,13 @@ def create_asset(filename):
     ca["FrameNb"]= 0
     return(ca)
 
-#____collision___________________
-
-def feet(entity) :#renvoi les "pieds" de l'entite
+#____getter___________________________________________________
+def get_actual_asset(entity) :
     """
     G{classtree}
     DESCRIPTION
     ===========
-        Permet de donner la position des pieds d'un asset
+        Permet de donner l'asset actuelle d'une entité.
 
     PARAM
     =====
@@ -101,10 +100,37 @@ def feet(entity) :#renvoi les "pieds" de l'entite
     RETOUR
     ======
 
+    @return : renvoi l'asset actuelle de l'entité sous forme [nbFrame, Asset]
+    @rtype : list
+    """
+    assert type(entity) is dict
+
+    return entity["Asset"]["Actual"]
+
+
+#____collision___________________________________________________
+
+def feet(entity) :#renvoi les "pieds" de l'entite
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de donner la position des pieds d'un asset
+
+    PARAM
+    =====
+
+    @param entity: Entite dont on veut obtenir la position des pieds
+    @type entity: dict
+
+
+    RETOUR
+    ======
+
     @return : renvoi la position des pied de l'entité
     @rtype : list
     """
-    # feet = [hit_box_simple(entity["Asset"],entity)[2],hit_box_simple(entity["Asset"],entity)[3]] # -afair pas sur de mon coup pour le entity["Asset"]
+   
     return
 
 def is_ground_beneath(pos,Asset_Game_Zone,walls) :
@@ -163,10 +189,7 @@ def show_entity(Entity, color_bg, color_txt):
     assert "entity" in Entity["Type"]
 
 
-    if "character" in Entity["Type"]:
-        asset = character.get_asset(Entity)
-    else:
-        asset = Entity["Asset"]
+    asset  = Entity["Asset"]["Actual"]
     X=Entity["x"]+1
     Y=Entity["y"]+1
     #couleur fond

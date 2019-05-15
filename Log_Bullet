@@ -1,0 +1,1 @@
+[{"origine": "Asheiya Briceval", "Name": "bullet_Asheiya Briceval_0", "AI": null, "Speed": 0.05, "damageToInflict": 5, "Jump": 0, "Vx": 1, "Asset": {"Gun_Horizontal": {"FrameNb": 0, "Asset": [["--\r", ""]]}, "Actual": {"FrameNb": 0, "Asset": [["--\r", ""]]}}, "Vy": 0, "y": 38, "x": 28, "LastTime": 1557898166.44227, "Type": ["entity", "movingEnt", "bullet"]}]

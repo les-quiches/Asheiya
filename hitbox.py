@@ -125,21 +125,31 @@ def detect_collision_entity(Entity_1, Entity_2):
     @return : Une information Si Vrais: il y a eu collision Sinon: il n'y a pas de collision
     @rtype :bool
     """
+    files.SAVE_FILE_JSON((Entity_1["Name"],Entity_2["Name"]),"logname")
     x1=Entity_1["x"]
     y1=Entity_1["y"]
     x2=Entity_2["x"]
     y2=Entity_2["y"]
     asset_entity_1 = Entity_1["Asset"]["Actual"]["Asset"][Entity_1["Asset"]["Actual"]["FrameNb"]]
     asset_entity_2 = Entity_2["Asset"]["Actual"]["Asset"][Entity_2["Asset"]["Actual"]["FrameNb"]]
-    a,b,x,y=hit_box_simple(Entity_2)
+    a2,b2,x_2,y_2=hit_box_simple(Entity_2)
+    a1,b1,x_1,y_1=hit_box_simple(Entity_2)
+    x = max(x_1,x_2)
+    y = max(y_1,y_2)
     Void_Shadow=create_void_shadow(x,y)
     Shadow_asset_1 = hit_box_complex(asset_entity_1,random_zone)
     Shadow_asset_2 = hit_box_complex(asset_entity_2,random_zone)
     Shadow = Add_Shadow(Shadow_asset_2,Void_Shadow,x2,y2)
+
+    files.SAVE_FILE_JSON(Shadow_asset_1,"logasset1")
+    files.SAVE_FILE_JSON(Shadow_asset_2,"logasset2")
+    files.SAVE_FILE_JSON(Shadow,"logshadow")
+
     for i in range(0,len(Shadow_asset_1)-1):
         for j in range(0,len(Shadow_asset_1[i])-1):
-            if Shadow_asset_1[j][i] != void_collision:
-                if Shadow[j+y1][i+x1] == _wall:
+            if Shadow_asset_1[i][j] != void_collision:
+                files.SAVE_FILE_JSON((i+y1,j+x1),"log")
+                if Shadow[i+y1][j+x1] != void_collision:
                     return True
     return False
 

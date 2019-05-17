@@ -190,7 +190,6 @@ def show_entity(Entity, color_bg, color_txt):
     assert type(Entity) is dict
     assert "entity" in Entity["Type"]
 
-
     asset  = Entity["Asset"]["Actual"]
     X=Entity["x"]+1
     Y=Entity["y"]+1

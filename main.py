@@ -30,8 +30,11 @@ oldSettings = termios.tcgetattr(sys.stdin)
 
 #Globals
 
-window= None
-walls=None #-afair : grille representant le jeu
+window= None #contete du jeu manche/menu
+walls=None
+allAssetGameZone = None
+acutalAssetGameZone = None
+
 
 timeStep = None
 timeScreen = None
@@ -65,7 +68,7 @@ def Init(): 	#initialisation des variables
     ======
     	Sans retour
 	"""
-	global color, window, assetGameZone, timeStep, timeScreen, timeGravity, allEntity, player, menu, manche
+	global color, window, allAssetGameZone, timeStep, timeScreen, timeGravity, allEntity, player, menu, manche
 
 	color["txt"]={"Black":30, "Red":31,"Green":32,"Yellow":33,"Blue":34,"Pink":35,"Cyan":36,"White":37}
 	color["background"]={"Black":40, "Red":41,"Green":42,"Yellow":43,"Blue":44,"Pink":45,"Cyan":46,"White":47}
@@ -84,7 +87,7 @@ def Init(): 	#initialisation des variables
 	"Gun_Horizontal","Gun_Slach","Gun_UnSlash","Gun_Vertical"
 	]
 
-	timeStep = 0.01 # en secondes -> 100 images par secondes
+	timeStep = 0.05 # en secondes -> 100 images par secondes
 	timeScreen = time.time()
 	timeGravity = time.time()
 
@@ -100,10 +103,10 @@ def Init(): 	#initialisation des variables
 
 	#asset background
 	window=background.create_window("Windows.txt")
-	assetGameZone={}
+	allAssetGameZone={}
 	for GameZone_doc in gameZone :
-		assetGameZone[GameZone_doc]=background.create_window("GameZone/" + GameZone_doc + ".txt")
-	assetGameZone["NumZone"]=1
+		allAssetGameZone[GameZone_doc]=background.create_window("GameZone/" + GameZone_doc + ".txt")
+	allAssetGameZone["NumZone"]=1
 	#interaction clavier
 	tty.setcbreak(sys.stdin.fileno())
 
@@ -167,11 +170,13 @@ def Init_manche():
 	    Sans retour
 	"""
 	#-afaire
-	global manche, menu, player, walls, assetGameZone
+	global manche, menu, player, walls, allAssetGameZone, acutalAssetGameZone
 
 	if manche == 10 :
+		walls = background.create_window("GameZone/Zone_"+str(allAssetGameZone["NumZone"])+"_TraversantPleteforme.txt")
+		acutalAssetGameZone= allAssetGameZone["Zone_"+str(allAssetGameZone["NumZone"])]
+		
 		player = movingent.tp_entity(player,20,37)
-		walls = background.create_window("GameZone/Zone_"+str(assetGameZone["NumZone"])+"_TraversantPleteforme.txt")
 
 		#placement des bonus :  #-afair quand on les placera tous, automatiser le tout
 		listeBonus = {"speedUp" : 0.02, "fireRateUp" : 1}
@@ -334,15 +339,14 @@ def Time_game():
     ======
 		Sans retour
 	"""
-	global window, timeStep, timeScreen, walls, allEntity, player, menu, timeGravity
-	Asset_Game_Zone= assetGameZone["Zone_"+str(assetGameZone["NumZone"])]
+	global window, timeStep, timeScreen, walls, allEntity, player, menu, timeGravity, acutalAssetGameZone
 	if menu == "manche":
 		#on est en jeu
 		#gestion des tirs
 		for bullet in allEntity["projectile"] :
 			if time.time()>bullet["Speed"]+bullet["LastTime"] :
 				bullet = movingent.move_entity(bullet,bullet["Vx"],bullet["Vy"])
-				log = shootingent.hit(bullet,allEntity["mobs"],Asset_Game_Zone,walls)
+				log = shootingent.hit(bullet,allEntity["mobs"],acutalAssetGameZone,walls)
 				if log[1]:#une entite a etait touche
 					log[2]=livingent.hurt(log[2],bullet["damageToInflict"])
 				if log[0]:#il y a eu collision
@@ -351,18 +355,21 @@ def Time_game():
 		#gestion de la gravite
 		if time.time()>timeGravity + 0.08 :
 			for mob in allEntity["mobs"] :
-				onTheGround = entity.is_ground_beneath(entity.feet(mob),Asset_Game_Zone,walls) #-afair test s'il y a une plateforme en dessous
+				onTheGround = entity.is_ground_beneath(entity.feet(mob),acutalAssetGameZone,walls) #-afair test s'il y a une plateforme en dessous
 				mob = movingent.gravity(mob,onTheGround)
-				movingent.move_entity(mob,0,1,onTheGround,True)
+				if not(onTheGround) :
+					movingent.move_entity(mob,0,1,True)
 			timeGravity = time.time()
 
 		#gestion des déplacements
-		for mob in allEntity["mobs"] :
+		for mob in allEntity["mobs"] : # -afair modifier par movingent
 			if (time.time()>mob["Speed"]+mob["LastTime"]) and (mob["Vx"]!=0 or mob["Vy"]!=0) :
 				#inserer gestion de collision ici qui provient du module entity avec en param allEntity - afair
 				#va etre la collision la plus complique a gerer  celle avec les entites et avec les walls -afair
-				willCollide = movingent.collision(mob,allEntity["mobs"],Asset_Game_Zone,walls) # -afair
-				mob = movingent.move_entity(mob,mob["Vx"],mob["Vy"],willCollide)
+				mob = movingent.move_entity(mob,mob["Vx"],mob["Vy"])
+				willCollide = movingent.collision(mob,allEntity["mobs"],acutalAssetGameZone,walls)
+				if willCollide :
+					mob = movingent.move_entity(mob,-mob["Vx"],-mob["Vy"])
 
 			#on fait tirer si le mob est un mob qui tir
 			if (shootingent.is_shooting_ent(mob)) :
@@ -417,13 +424,13 @@ def Show() :
     ======
 		Sans retour
 	"""
-	global window, timeStep, timeScreen, allEntity, player, menu, assetGameZone, color
+	global window, timeStep, timeScreen, allEntity, player, menu, allAssetGameZone, color
 
 
 	#Show Frame
 
 	#on efface tout
-	background.show_pos(assetGameZone["Zone_"+str(assetGameZone["NumZone"])],0,0,color["background"]["Black"],color["txt"]["White"])
+	background.show_pos(allAssetGameZone["Zone_"+str(allAssetGameZone["NumZone"])],0,0,color["background"]["Black"],color["txt"]["White"])
 
 	#on affiche les entités
 	for boonx in allEntity["boons"] :
@@ -480,7 +487,7 @@ def Interact():
 		#recuperation evenement clavier
 		return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
 
-	global player, menu, manche
+	global player, menu, manche, walls, acutalAssetGameZone
 
 	if isData() :
 		c = sys.stdin.read(1)
@@ -519,11 +526,15 @@ def Interact():
 					if not(player["Jump"]) : #-afair : si on est en saut on bouge pas les pieds, fonctionne pas actuellement
 						player = character.switch_stand(player,"Run")
 					player = movingent.move_entity(player,1,0)
+					if movingent.collision(player, allEntity["mobs"], acutalAssetGameZone, walls) :
+						player = movingent.move_entity(player,-1,0)
 
 				elif c == "q":
 					if not(player["Jump"]) :
 						player = character.switch_stand(player,"Run")
 					player = movingent.move_entity(player,-1,0)
+					if movingent.collision(player, allEntity["mobs"], acutalAssetGameZone, walls) :
+						player = movingent.move_entity(player,1,0)
 
 				elif c == "z" and player["Jump"]==0 :
 					player = character.switch_stand(player, "Wait")
@@ -603,7 +614,7 @@ def Quit_game():
     ======
 		Sans retour
 	"""
-	global oldSettings
+	global oldSettings, allEntity
 
 	sys.stdout.write("\033[1;1H")
 	sys.stdout.write("\033[2J")

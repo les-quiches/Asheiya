@@ -3,6 +3,7 @@
 import entity
 import time
 import hitbox
+import files
 
 void_collision ="0"
 random_zone="O"
@@ -86,7 +87,7 @@ def speedUp(Entity, amount) :
 
 
 #_____Move______________________________________________________________________
-def move_entity(Entity,x,y,willCollide=False,isGravity=False):
+def move_entity(Entity,x,y,isGravity=False):
 
     """
     G{classtree}
@@ -118,11 +119,10 @@ def move_entity(Entity,x,y,willCollide=False,isGravity=False):
     @return Entity : Entité déplacé
     @rtype Entity :dict
     """
-    if not(willCollide):
-        Entity["x"]+=2*x
-        Entity["y"]+=y
-        if not(isGravity) :
-            Entity["LastTime"]=time.time()
+    Entity["x"]+=2*x
+    Entity["y"]+=y
+    if not(isGravity) :
+        Entity["LastTime"]=time.time()
     return(Entity)
 
 def tp_entity(Entity,x,y):
@@ -207,7 +207,7 @@ def gravity(Entity,onTheGround=False) :
 
 
 #_____Collision______________________________________________________________________
-def collision(ent, allEntity, Asset_Game_Zone, walls, x=None, y=None) : #x et y correspondent aux prochaines positions, utiles seulement pour le joueur sinon on recupere via entity
+def collision(ent, allEntity, Asset_Game_Zone, walls) : #x et y correspondent aux prochaines positions, utiles seulement pour le joueur sinon on recupere via entity
     """
     G{classtree}
     DESCRIPTION
@@ -242,40 +242,29 @@ def collision(ent, allEntity, Asset_Game_Zone, walls, x=None, y=None) : #x et y 
     """
     Shadow_walls=hitbox.hit_box_complex(walls,Gostwall)
     Shadow_gameBorder=hitbox.hit_box_complex(Asset_Game_Zone,_wall)
+
     Shadow_backgound=hitbox.Add_Shadow(Shadow_walls,Shadow_gameBorder)
 
     hitentwall=hitbox.detect_collision_wall(ent,Shadow_backgound)
 
     if hitentwall == _wall:
         #detect un mur
-        None
+        return True
     elif hitentwall == Gostwall:
-        None
+        return False
         #detect un Gostwall
     elif hitentwall == void_collision:
         for entity in allEntity:
-            if hitbox.detect_collision_entity(ent,entity):#trouver asset général
-                None
-                #collision entre les deux entiter
-            else:
-                None
-                #aucune collision
+            if entity != ent :
+                if hitbox.detect_collision_entity(ent,entity):
+                   return True
+                    #collision entre les deux entiter
+                else:
+                    return False
+                    #aucune collision
     else:
-        None
+        files.SAVE_FILE_JSON(ent,"log_wtf")
         # si on est ici c'est un BUG
-
-    # -afair : reperer tout d'abord si ia pas de collisions avec les murs, puis ensuite les collisions possibles
-    #           avec les entites proches, en recuperant les hit_box des entites PROCHES SEULEMENT
-
-    #pos["x"] et pos["y"] les FUTURS positions de l'entite
-    if (x != None or y!=None):
-        None
-        #ca veut dire quon gere le deplacement du joueur, donc la position en prendre en compte c'est ent[x]+x
-    else :
-        None
-        #on gere une entite programme, donc on prend en compte ent[x]+ent[Vx]
-    #on recupere pos -> avec X Y les positions a tester
-    #on regarde dans Walls/allentity/Asset_Game_Zone si ia pas de collisions
     return False
 
 

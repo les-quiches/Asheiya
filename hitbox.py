@@ -165,7 +165,16 @@ def hit_box_simple(entity):  #####_____OBSOLETE______
     a=[]
     for i in asset:
         a.append(len(i))
-    x= max(a)
+    # x = max(a)
+
+    files.SAVE_FILE_JSON(a,"log_max")
+    amax=0
+    for b in a :
+        if b>amax :
+            amax = b
+    x = amax
+    files.SAVE_FILE_JSON(x,"log_x")
+
     hit_box_entity=[entity["x"], entity["y"], entity["x"]+x, entity["y"]+y]# plage de l'hitbox de l'asset (point en haut a gauche puit en bas a doite)
     return(hit_box_entity)
 
@@ -196,7 +205,13 @@ def hit_box_complex(asset,type_hitbox):
     a=[]
     for c in asset:
         a.append(len(c)) # "a" représente la liste des longeurs de chaques lignes
-    x = max(a) #on prend la plus grande ligne
+    # x = max(a) #on prend la plus grande ligne
+    amax = 0
+    for b in a :
+        if b>amax :
+            amax = b
+    x = amax
+    
     bloc=[]
     bloc= [[void_collision] * x for _ in range(y)] #créé un tableau de x par y remplie de 0
     #maintenant que j'ai la taille de l'asset max je vais ramplacer les valeur interieur du bloc

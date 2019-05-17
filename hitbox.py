@@ -75,7 +75,7 @@ def detect_collision_wall(Entity,Shadow_backgound):
                      #detection collision wall
                      detect = _wall
                      return detect
-                elif Shadow[j+y1][i+x1] == Gostwall:
+                elif Shadow_backgound[i+y][j+x] == Gostwall:
                     detect = Gostwall
     return detect
 

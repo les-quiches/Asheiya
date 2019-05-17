@@ -326,7 +326,7 @@ def hit(bullet, entities , gameBorder, walls ) :
     @return log  : contient trois informations comme suit : True si le projectile rentre en collision (False sinon), True si c'était une entité vivante(False sinon), l'identifiant de cette entité le cas échéant.
     @rtype log : tuple
     """
-    Shadow_walls=hitbox.hit_box_complex(walls,_gostwall)
+    Shadow_walls=hitbox.hit_box_complex(walls,Gostwall)
     Shadow_gameBorder=hitbox.hit_box_complex(gameBorder,_wall)
     Shadow_backgound=hitbox.Add_Shadow(Shadow_walls,Shadow_gameBorder)
     if hitbox.detect_collision_wall(bullet,Shadow_backgound) != _wall:

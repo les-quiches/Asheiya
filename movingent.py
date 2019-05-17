@@ -8,7 +8,7 @@ void_collision ="0"
 random_zone="O"
 damage_Zone= "¤"
 _wall = "X"
-_gostwall = "-"
+Gostwall = "-"
 take_damage = "."
 
 #_____Create____________________________________________________________________
@@ -240,8 +240,8 @@ def collision(ent, allEntity, Asset_Game_Zone, walls, x=None, y=None) : #x et y 
     @return collision : Renvoie True s'il y a une collision, False sinon.
     @rtype collision :bool
     """
-    Shadow_walls=hitbox.hit_box_complex(walls,_gostwall)
-    Shadow_gameBorder=hitbox.hit_box_complex(gameBorder,_wall)
+    Shadow_walls=hitbox.hit_box_complex(walls,Gostwall)
+    Shadow_gameBorder=hitbox.hit_box_complex(Asset_Game_Zone,_wall)
     Shadow_backgound=hitbox.Add_Shadow(Shadow_walls,Shadow_gameBorder)
 
     hitentwall=hitbox.detect_collision_wall(ent,Shadow_backgound)

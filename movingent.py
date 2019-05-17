@@ -2,7 +2,14 @@
 
 import entity
 import time
+import hitbox
 
+void_collision ="0"
+random_zone="O"
+damage_Zone= "¤"
+_wall = "X"
+_gostwall = "-"
+take_damage = "."
 
 #_____Create____________________________________________________________________
 def create_moving_ent(Entity, Vx, Vy,Speed, LastTime=time.time()):
@@ -233,6 +240,30 @@ def collision(ent, allEntity, Asset_Game_Zone, walls, x=None, y=None) : #x et y 
     @return collision : Renvoie True s'il y a une collision, False sinon.
     @rtype collision :bool
     """
+    Shadow_walls=hitbox.hit_box_complex(walls,_gostwall)
+    Shadow_gameBorder=hitbox.hit_box_complex(gameBorder,_wall)
+    Shadow_backgound=hitbox.Add_Shadow(Shadow_walls,Shadow_gameBorder)
+
+    hitentwall=hitbox.detect_collision_wall(ent,Shadow_backgound)
+
+    if hitentwall == _wall:
+        #detect un mur
+        None
+    elif hitentwall == Gostwall:
+        None
+        #detect un Gostwall
+    elif hitentwall == void_collision:
+        for entity in allEntity:
+            if hitbox.detect_collision_entity(ent,entity):#trouver asset général
+                None
+                #collision entre les deux entiter
+            else:
+                None
+                #aucune collision
+    else:
+        None
+        # si on est ici c'est un BUG
+
     # -afair : reperer tout d'abord si ia pas de collisions avec les murs, puis ensuite les collisions possibles
     #           avec les entites proches, en recuperant les hit_box des entites PROCHES SEULEMENT
 

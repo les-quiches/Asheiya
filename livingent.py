@@ -137,7 +137,7 @@ def armorUp(Entity,amount) :
 
     RETOUR
     ======
-    @return :  l'entité réparé 
+    @return :  l'entité réparé
     @rtype : dict
     """
     assert type(Entity) is dict
@@ -165,7 +165,7 @@ def armorMaxUp(Entity,amount) :
 
     RETOUR
     ======
-    @return :  l'entité avec une meilleur armure 
+    @return :  l'entité avec une meilleur armure
     @rtype : dict
     """
     assert type(Entity) is dict

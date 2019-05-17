@@ -105,7 +105,15 @@ def show_pos(doc, X, Y, color_bg, color_txt):
             #affiche
             sys.stdout.write(doc[y][x])
 
-
+def infoPrint(doc,x,y,color_bg, color_txt):
+        #couleur fond
+        sys.stdout.write("\033["+str(color_bg)+"m")
+        #couleur white
+        sys.stdout.write("\033["+str(color_txt)+"m")
+        s="\033["+str(y+1)+";"+str(x+1)+"H"
+        sys.stdout.write(s)
+        #affiche
+        sys.stdout.write(doc[y][x])
 
 
 """ txt  bg

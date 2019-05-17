@@ -67,10 +67,10 @@ def detect_collision_wall(Entity,Shadow_backgound):
     x = Entity["x"]
     y = Entity["y"]
     Shadow_entity = hit_box_complex(asset,random_zone)
-    for i in range(0,len(Shadow_entity)-1):
+    for i in range(0,len(Shadow_entity)):
         for j in range(0,len(Shadow_entity[i])):
             if Shadow_entity[i][j] != void_collision:
-                if Shadow_backgound[x+i][y+j] == _wall:
+                if Shadow_backgound[y+i][x+j] == _wall:
                      #detection collision wall
                      return True
     return False
@@ -134,8 +134,8 @@ def detect_collision_entity(Entity_1, Entity_2):
     Shadow = Add_Shadow(Shadow_asset_2,Void_Shadow,x2,y2)
     for i in range(0,len(Shadow_asset_1)-1):
         for j in range(0,len(Shadow_asset_1[i])-1):
-            if Shadow_asset_1[i][j] != void_collision:
-                if Shadow[i+y1][j+x1] == _wall:
+            if Shadow_asset_1[j][i] != void_collision:
+                if Shadow[j+y1][i+x1] == _wall:
                     return True
     return False
 
@@ -205,14 +205,14 @@ def hit_box_complex(asset,type_hitbox):
     for c in asset:
         a.append(len(c)) # "a" représente la liste des longeurs de chaques lignes
 
-    # x = max(a) 
+    # x = max(a)
     # -afair , la fonction bug for no reason, elle vide la liste a
     amax = 0
     for b in a : #on prend la plus grande ligne
         if b>amax :
             amax = b
     x = amax
-    
+
     bloc=[]
     bloc= [[void_collision] * x for _ in range(y)] #créé un tableau de x par y remplie de 0
     #maintenant que j'ai la taille de l'asset max je vais ramplacer les valeur interieur du bloc
@@ -253,3 +253,6 @@ if (__name__=="__main__"):
     assetb=hit_box_complex(assetb,"=")
     asset=Add_Shadow(assetb,asset)
     background.show_window(asset)
+
+    assetBullet = bullet["Asset"]["Actual"]["Asset"]
+    Shadow_bullet=hitbox.hit_box_complex(assetBullet,damage_Zone)

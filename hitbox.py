@@ -67,13 +67,9 @@ def detect_collision_wall(Entity,Shadow_backgound):
     x = Entity["x"]
     y = Entity["y"]
     Shadow_entity = hit_box_complex(asset,random_zone)
-    print len(Shadow_entity)
     for i in range(0,len(Shadow_entity)-1):
-        print i
         for j in range(0,len(Shadow_entity[i])):
-            print i,j
             if Shadow_entity[i][j] != void_collision:
-                print "Shadow_entity[i][j] != void_collision:"
                 if Shadow_backgound[x+i][y+j] == _wall:
                      #detection collision wall
                      return True
@@ -170,15 +166,13 @@ def hit_box_simple(entity):  #####_____OBSOLETE______
     a=[]
     for i in asset:
         a.append(len(i))
-    # x = max(a)
 
-    files.SAVE_FILE_JSON(a,"log_max")
+    # x = max(a) -afair , la fonction bug for no reason, elle vide la liste a
     amax=0
     for b in a :
         if b>amax :
             amax = b
     x = amax
-    files.SAVE_FILE_JSON(x,"log_x")
 
     hit_box_entity=[entity["x"], entity["y"], entity["x"]+x, entity["y"]+y]# plage de l'hitbox de l'asset (point en haut a gauche puit en bas a doite)
     return(hit_box_entity)
@@ -210,9 +204,11 @@ def hit_box_complex(asset,type_hitbox):
     a=[]
     for c in asset:
         a.append(len(c)) # "a" représente la liste des longeurs de chaques lignes
-    # x = max(a) #on prend la plus grande ligne
+
+    # x = max(a) 
+    # -afair , la fonction bug for no reason, elle vide la liste a
     amax = 0
-    for b in a :
+    for b in a : #on prend la plus grande ligne
         if b>amax :
             amax = b
     x = amax

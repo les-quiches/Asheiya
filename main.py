@@ -65,7 +65,7 @@ def Init(): 	#initialisation des variables
     ======
     	Sans retour
 	"""
-	global color, window, assetGameZone, timeStep, timeScreen, timeGravity, allEntity, player, menu, manche
+	global color, window, assetGameZone, timeStep, timeScreen, timeGravity, allEntity, player, menu, manche, assetInfoStory
 
 	color["txt"]={"Black":30, "Red":31,"Green":32,"Yellow":33,"Blue":34,"Pink":35,"Cyan":36,"White":37}
 	color["background"]={"Black":40, "Red":41,"Green":42,"Yellow":43,"Blue":44,"Pink":45,"Cyan":46,"White":47}
@@ -99,13 +99,18 @@ def Init(): 	#initialisation des variables
 
 
 	#asset background
-	window=background.create_window("Windows.txt")
 	assetGameZone={}
 	for GameZone_doc in gameZone :
 		assetGameZone[GameZone_doc]=background.create_window("GameZone/" + GameZone_doc + ".txt")
 	assetGameZone["NumZone"]=1
+
+	assetInfoStory={}
+	assetInfoStory["Info"]=background.create_window("Info/info.txt")
+	assetInfoStory["Story"]=background.create_window("Story/story.txt")
+
 	#interaction clavier
 	tty.setcbreak(sys.stdin.fileno())
+
 
 	#on concoit le joueur
 	xPlayer = 0
@@ -216,6 +221,16 @@ def Init_manche():
 	return
 
 
+def Windows():
+	x=140
+	#info
+	#life
+	txt_life = "Vie:"+str(player["Life"])+" / "+str(player["LifeMax"])
+	background.infoPrint(txt_life,x,2,color["background"]["Black"],color["txt"]["White"])
+
+
+	#story
+
 #______Game________________________________________________________________________
 def Game():
 	"""
@@ -245,14 +260,14 @@ def Game():
 	if menu == "manche" and (manche%10 == 0) : #on est dans une mancge non initialise
 		Init_manche()
 
-	#gestion des IAs : 
+	#gestion des IAs :
 	for typeEnt in allEntity.keys() :
 		for ent in allEntity[typeEnt] :
 			if ent["AI"]!=None :
 				log = AI.execute(ent, allEntity)
 				ent = log[0]
 				allEntity = log[1]
-				
+
 
 	#gestion des assets actuelles :
 	for typeEnt in allEntity.keys() :
@@ -424,6 +439,9 @@ def Show() :
 
 	#on efface tout
 	background.show_pos(assetGameZone["Zone_"+str(assetGameZone["NumZone"])],0,0,color["background"]["Black"],color["txt"]["White"])
+	background.show_pos(assetInfoStory["Info"],138,0,color["background"]["Black"],color["txt"]["White"])
+	background.show_pos(assetInfoStory["Story"],0,42,color["background"]["Black"],color["txt"]["White"])
+	Windows()
 
 	#on affiche les entités
 	for boonx in allEntity["boons"] :

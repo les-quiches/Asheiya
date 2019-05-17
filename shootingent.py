@@ -349,8 +349,6 @@ def hit(bullet, entities , gameBorder, walls ) :
         hit_entity=False  #test si la balle touche une entite ou pas
         entity = None #l'entite touche (le nom) le cas echeant
     log = (is_hit, hit_entity,entity) #pour tout renvoyer
-
-    files.SAVE_FILE_JSON(log,"log_log")
     return(log)
 
 

@@ -23,7 +23,6 @@ import files
 
 #importation des IAs
 import AI
-import AI_testmob
 
 #interaction clavier
 oldSettings = termios.tcgetattr(sys.stdin)
@@ -203,7 +202,7 @@ def Init_manche():
 		assetMob1["boon1"] = entity.create_asset("Boon/boon1.txt")
 		assetMob1["Actual"]= assetMob1["boon1"]
 		mob1 = entity.create_entity("testmob",20,20,assetMob1, "AItest")
-		mob1 = movingent.create_moving_ent(mob1,1,1,1)
+		mob1 = movingent.create_moving_ent(mob1,1,1,0.5)
 
 		allEntity["mobs"].append(mob1)
 
@@ -441,7 +440,6 @@ def Show() :
 			#asset = entity.create_asset(ent["Asset"])
 			color_bg = color["background"]["Black"]
 			color_txt = color["txt"]["Yellow"]
-		files.SAVE_FILE_JSON(ent,"log")
 		entity.show_entity(ent,color_bg,color_txt)
 
 	for shot in allEntity["projectile"] :
@@ -617,9 +615,7 @@ def Quit_game():
 
 	termios.tcsetattr(sys.stdin, termios.TCSADRAIN, oldSettings)
 
-	A = time.time()
-	while time.time()<A+1 :
-		None
+	time.sleep(1)
 	print "Game exited successfully"
 
 	sys.exit()

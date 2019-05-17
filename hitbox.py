@@ -2,7 +2,7 @@
 void_collision ="0"
 random_zone="O"
 damage_Zone= "¤"
-wall = "X"
+_wall = "X"
 Gostwall = "-"
 take_damage = "."
 
@@ -63,15 +63,20 @@ def detect_collision_wall(Entity,Shadow_backgound):
     @return : True s'il y a une collision avec un mur, False sinon.
     @rtype :bool
     """
-    asset = Entity["Asset"]["Actual"]["Asset"]
+    asset = Entity["Asset"]["Actual"]["Asset"][Entity["Asset"]["Actual"]["FrameNb"]]
     x = Entity["x"]
     y = Entity["y"]
     Shadow_entity = hit_box_complex(asset,random_zone)
+    print len(Shadow_entity)
     for i in range(0,len(Shadow_entity)-1):
-        for j in range(0,len(Shadow_entity[i])-1):
+        print i
+        for j in range(0,len(Shadow_entity[i])):
+            print i,j
             if Shadow_entity[i][j] != void_collision:
-                if Shadow_backgound[x+i][y+j] == wall: #detection collision wall
-                    return True
+                print "Shadow_entity[i][j] != void_collision:"
+                if Shadow_backgound[x+i][y+j] == _wall:
+                     #detection collision wall
+                     return True
     return False
 
 
@@ -134,7 +139,7 @@ def detect_collision_entity(Entity_1, Entity_2):
     for i in range(0,len(Shadow_asset_1)-1):
         for j in range(0,len(Shadow_asset_1[i])-1):
             if Shadow_asset_1[i][j] != void_collision:
-                if Shadow[i+y1][j+x1] != void_collision:
+                if Shadow[i+y1][j+x1] == _wall:
                     return True
     return False
 

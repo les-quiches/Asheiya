@@ -231,6 +231,21 @@ def Init_manche():
 
 
 def Windows():
+	"""
+	G{classtree}
+	DESCRIPTION
+	===========
+		Affiche les informations dans la fennetre de droite
+		Affiche le texte dans la fenetre du bas
+
+	PARAM
+	=====
+		Sans parametre.
+
+	RETOUR
+	======
+		Sans retour.
+	"""
 	x=140
 	y=2
 	#info

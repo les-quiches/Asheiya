@@ -55,20 +55,20 @@ manche = None #permet de gerer la manche et si c'est la premiere boucle de la ma
 
 def Init(): 	#initialisation des variables
 	"""
-    G{classtree}
-    DESCRIPTION
-    ===========
-        Initialise les variables globales et la fenetre de jeu.
+	G{classtree}
+	DESCRIPTION
+	===========
+		Initialise les variables globales et la fenetre de jeu.
 
-    PARAM
-    =====
-    	Sans parametre
+	PARAM
+	=====
+		Sans parametre
 
-    RETOUR
-    ======
-    	Sans retour
+	RETOUR
+	======
+		Sans retour
 	"""
-	global color, window, assetGameZone, timeStep, timeScreen, timeGravity, allEntity, player, menu, manche, assetInfoStory
+	global color, window, allAssetGameZone, timeStep, timeScreen, timeGravity, allEntity, player, menu, manche, assetInfoStory
 
 
 	color["txt"]={"Black":30, "Red":31,"Green":32,"Yellow":33,"Blue":34,"Pink":35,"Cyan":36,"White":37}
@@ -104,7 +104,7 @@ def Init(): 	#initialisation des variables
 
 	#asset background
 
-	window=background.create_window("Windows.txt")
+	window=background.create_window("GameZone/Windows.txt")
 	allAssetGameZone={}
 	for GameZone_doc in gameZone :
 		allAssetGameZone[GameZone_doc]=background.create_window("GameZone/" + GameZone_doc + ".txt")
@@ -164,26 +164,27 @@ def Init(): 	#initialisation des variables
 
 def Init_manche():
 	"""
-    G{classtree}
-    DESCRIPTION
-    ===========
-        Initialise chaque manche : placement du joueur, environnement, bonus, ennemies.
+	G{classtree}
+	DESCRIPTION
+	===========
+		Initialise chaque manche : placement du joueur, environnement, bonus, ennemies.
 
-    PARAM
-    =====
+	PARAM
+	=====
 		Sans parametre
 
-    RETOUR
-    ======
-	    Sans retour
+	RETOUR
+	======
+		Sans retour
 	"""
 	#-afaire
 	global manche, menu, player, walls, allAssetGameZone, acutalAssetGameZone
 
 	if manche == 10 :
-		walls = background.create_window("GameZone/Zone_"+str(allAssetGameZone["NumZone"])+"_TraversantPleteforme.txt")
+		print allAssetGameZone["NumZone"]
+		walls = background.create_window("GameZone/Zone_"+str(allAssetGameZone["NumZone"])+"_TraversantPlateforme.txt")
 		acutalAssetGameZone= allAssetGameZone["Zone_"+str(allAssetGameZone["NumZone"])]
-		
+
 		player = movingent.tp_entity(player,20,37)
 
 		#placement des bonus :  #-afair quand on les placera tous, automatiser le tout
@@ -231,10 +232,17 @@ def Init_manche():
 
 def Windows():
 	x=140
+	y=2
 	#info
 	#life
-	txt_life = "Vie:"+str(player["Life"])+" / "+str(player["LifeMax"])
-	background.infoPrint(txt_life,x,2,color["background"]["Black"],color["txt"]["White"])
+	txt= "Vie: "+str(player["Life"])+" / "+str(player["LifeMax"])+"."
+	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+	y+=2
+
+	txt= "Armure: "+str(player["Armor"])+" / "+str(player["ArmorMax"])+"."
+	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+	y+=2
+
 
 
 	#story
@@ -242,19 +250,19 @@ def Windows():
 #______Game________________________________________________________________________
 def Game():
 	"""
-    G{classtree}
-    DESCRIPTION
-    ===========
-        Gere les evennements du jeu : prends des decisions en fonction des informations.
-        Redirige vers differentes fonctions et change le contexte des autres fonctions.
-        Gere la dynamique et l'adaptabilite des autres fonctions.
+	G{classtree}
+	DESCRIPTION
+	===========
+		Gere les evennements du jeu : prends des decisions en fonction des informations.
+		Redirige vers differentes fonctions et change le contexte des autres fonctions.
+		Gere la dynamique et l'adaptabilite des autres fonctions.
 
-    PARAM
-    =====
+	PARAM
+	=====
 		Sans parametre.
 
-    RETOUR
-    ======
+	RETOUR
+	======
 		Sans retour.
 	"""
 	global menu, player, manche, allEntity
@@ -343,18 +351,18 @@ def Game():
 #______Time_game________________________________________________________________________
 def Time_game():
 	"""
-    G{classtree}
-    DESCRIPTION
-    ===========
-        Gere toutes les actions a effectuer avec une certaine frequence.
-        Effectue des protocoles en fonction de leur frequence.
+	G{classtree}
+	DESCRIPTION
+	===========
+		Gere toutes les actions a effectuer avec une certaine frequence.
+		Effectue des protocoles en fonction de leur frequence.
 
-    PARAM
-    =====
+	PARAM
+	=====
 		Sans parametre
 
-    RETOUR
-    ======
+	RETOUR
+	======
 		Sans retour
 	"""
 	global window, timeStep, timeScreen, walls, allEntity, player, menu, timeGravity, acutalAssetGameZone
@@ -429,17 +437,17 @@ def Time_game():
 
 def Show() :
 	"""
-    G{classtree}
-    DESCRIPTION
-    ===========
-        Gere l'affichage du jeu. Gere le retour utilisateur.
+	G{classtree}
+	DESCRIPTION
+	===========
+		Gere l'affichage du jeu. Gere le retour utilisateur.
 
-    PARAM
-    =====
+	PARAM
+	=====
 		Sans parametre
 
-    RETOUR
-    ======
+	RETOUR
+	======
 		Sans retour
 	"""
 	global window, timeStep, timeScreen, allEntity, player, menu, allAssetGameZone, color
@@ -491,18 +499,18 @@ def Show() :
 #______INTERACT________________________________________________________________________
 def Interact():
 	"""
-    G{classtree}
-    DESCRIPTION
-    ===========
-        Gere les entrees claviers.
-        Reagit en fonction des demandes de l'utilisateur.
+	G{classtree}
+	DESCRIPTION
+	===========
+		Gere les entrees claviers.
+		Reagit en fonction des demandes de l'utilisateur.
 
-    PARAM
-    =====
+	PARAM
+	=====
 		Sans parametre
 
-    RETOUR
-    ======
+	RETOUR
+	======
 		Sans retour
 	"""
 
@@ -592,20 +600,20 @@ def Interact():
 #########Boucle de simulation#########__________________________________________________
 def Run():
 	"""
-    G{classtree}
-    DESCRIPTION
-    ===========
-        Protocol principal.
-        Protocol lancee lors de l'execution du jeu.
-        Redirige vers les autres protocol primordiaux.
-        Contient la boucle de simulation.
+	G{classtree}
+	DESCRIPTION
+	===========
+		Protocol principal.
+		Protocol lancee lors de l'execution du jeu.
+		Redirige vers les autres protocol primordiaux.
+		Contient la boucle de simulation.
 
-    PARAM
-    =====
+	PARAM
+	=====
 		Sans parametre
 
-    RETOUR
-    ======
+	RETOUR
+	======
 		Sans retour
 	"""
 	Init()
@@ -623,18 +631,18 @@ def Run():
 
 def Quit_game():
 	"""
-    G{classtree}
-    DESCRIPTION
-    ===========
-        Quitte le jeu proprement.
-        Apres une pause d'une seconde, remet en place le fonctionnement naturel du terminal.
+	G{classtree}
+	DESCRIPTION
+	===========
+		Quitte le jeu proprement.
+		Apres une pause d'une seconde, remet en place le fonctionnement naturel du terminal.
 
-    PARAM
-    =====
+	PARAM
+	=====
 		Sans param
 
-    RETOUR
-    ======
+	RETOUR
+	======
 		Sans retour
 	"""
 	global oldSettings, allEntity

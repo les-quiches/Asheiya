@@ -105,15 +105,16 @@ def show_pos(doc, X, Y, color_bg, color_txt):
             #affiche
             sys.stdout.write(doc[y][x])
 
-def infoPrint(doc,x,y,color_bg, color_txt):
+def infoPrint(doc,X,Y,color_bg, color_txt):
         #couleur fond
         sys.stdout.write("\033["+str(color_bg)+"m")
         #couleur white
         sys.stdout.write("\033["+str(color_txt)+"m")
-        s="\033["+str(y+1)+";"+str(x+1)+"H"
-        sys.stdout.write(s)
-        #affiche
-        sys.stdout.write(doc[y][x])
+        for x in range(0,len(doc)-1):
+            s="\033["+str(Y+1)+";"+str(X+x+1)+"H"
+            sys.stdout.write(s)
+            #affiche
+            sys.stdout.write(doc[x])
 
 
 """ txt  bg

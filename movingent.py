@@ -13,7 +13,7 @@ Gostwall = "-"
 take_damage = "."
 
 #_____Create____________________________________________________________________
-def create_moving_ent(Entity, Vx, Vy,Speed, LastTime=time.time()):
+def create_moving_ent(CME_Entity, CME_Vx, CME_Vy,CME_Speed, CME_LastTime=time.time()):
     """
     G{classtree}
         DESCRIPTION
@@ -23,17 +23,17 @@ def create_moving_ent(Entity, Vx, Vy,Speed, LastTime=time.time()):
     PARAM
     =====
 
-    @param Entity: Entité que l'on veux déplacé
-    @type Entity: dict
+    @param CME_Entity: Entité que l'on veux déplacé
+    @type CME_Entity: dict
 
-    @param vx: déplacement sur x que l'on veux appliquer à l'entité
-    @type  vx: int
+    @param CME_Vx: déplacement sur x que l'on veux appliquer à l'entité
+    @type  CME_Vx: int
 
-    @param vy: déplacement sur y que l'on veux appliquer à l'entité
-    @type  vy: int
+    @param CME_Vy: déplacement sur y que l'on veux appliquer à l'entité
+    @type  CME_Vy: int
 
-    @param Speed: vitesse du joueur
-    @type Speed: : int
+    @param CME_Speed: vitesse du joueur
+    @type CME_Speed: : int
 
     @param LastTime: dernière fois que l'entité c'est déplacé
     @type LastTime :int
@@ -41,22 +41,22 @@ def create_moving_ent(Entity, Vx, Vy,Speed, LastTime=time.time()):
     RETOUR
     ======
 
-    @return Entity : Entity de type déplaçable
-    @rtype Entity :dict
+    @return CME_Entity : entité de type déplaçable
+    @rtype CME_Entity :dict
     """
-    assert type(Entity) is dict
-    assert "entity" in Entity["Type"]
-    Entity["Vx"]= Vx
-    Entity["Vy"]= Vy
-    Entity["Speed"]=Speed
-    Entity["LastTime"]=LastTime
-    Entity["Jump"] = 0
-    Entity["Type"].append("movingEnt")
-    return Entity
+    assert type(CME_Entity) is dict
+    assert "entity" in CME_Entity["Type"]
+    CME_Entity["Vx"]= CME_Vx
+    CME_Entity["Vy"]= CME_Vy
+    CME_Entity["Speed"]=CME_Speed
+    CME_Entity["LastTime"]=CME_LastTime
+    CME_Entity["Jump"] = 0
+    CME_Entity["Type"].append("movingEnt")
+    return CME_Entity
 
 
 #_____Modificateur______________________________________________________________________
-def speedUp(Entity, amount) :
+def speedUp(SU_Entity, SU_amount) :
     """
     G{classtree}
     DESCRIPTION
@@ -66,28 +66,28 @@ def speedUp(Entity, amount) :
     PARAM
     =====
 
-    @param Entity: Entité dont on veut augmenter la vitesse
-    @type Entity : dict
+    @param SU_Entity: Entité dont on veut augmenter la vitesse
+    @type SU_Entity : dict
 
-    @param amount: quantité d'augmentation de la vitesse
-    @type amount : float
+    @param SU_amount: quantité d'augmentation de la vitesse
+    @type SU_amount : float
 
     RETOUR
     ======
-    @return : L'Entité avec sa vitesse augmenté
-    @rtype : dict
+    @return SU_Entity : L'Entité avec sa vitesse augmenté
+    @rtype SU_Entity: dict
     """
-    assert type(Entity) is dict
-    assert "moovingEnt" in Entity["Type"]
+    assert type(SU_Entity) is dict
+    assert "moovingEnt" in SU_Entity["Type"]
 
-    if Entity["Speed"]+amount >=0.01 : #tant qu'on va pas plus vite que la boucle de simulation
-        Entity["Speed"]+=amount
+    if SU_Entity["Speed"]+SU_amount >=0.01 : #tant qu'on va pas plus vite que la boucle de simulation
+        SU_Entity["Speed"]+=SU_amount
 
-    return Entity
+    return SU_Entity
 
 
 #_____Move______________________________________________________________________
-def move_entity(Entity,x,y,isGravity=False):
+def move_entity(ME_Entity,ME_x,ME_y,ME_isGravity=False):
 
     """
     G{classtree}
@@ -98,34 +98,34 @@ def move_entity(Entity,x,y,isGravity=False):
     PARAM
     =====
 
-    @param Entity: Entite que l'on veux déplacer
-    @type Entity: dict
+    @param ME_Entity: Entite que l'on veux déplacer
+    @type ME_Entity: dict
 
-    @param x: déplacement sur x que l'on veux appliquer à l'entité
-    @type  x: int
+    @param ME_x: déplacement sur x que l'on veux appliquer à l'entité
+    @type  ME_x: int
 
-    @param y: déplacement sur y que l'on veux appliquer à l'entité
-    @type  y: int
+    @param ME_y: déplacement sur y que l'on veux appliquer à l'entité
+    @type  ME_y: int
 
-    @param willCollide: True si le déplacement va engendrer une collision, False sinon
-    @type willCollide : bool
+    @param ME_willCollide: True si le déplacement va engendrer une collision, False sinon
+    @type ME_willCollide : bool
 
-    @param isGravity: True si le déplacement est dû à la gravité
-    @type isGravity : bool
+    @param ME_isGravity: True si le déplacement est dû à la gravité
+    @type ME_isGravity : bool
 
     RETOUR
     ======
 
-    @return Entity : Entité déplacé
-    @rtype Entity :dict
+    @return ME_Entity : Entité déplacé
+    @rtype ME_Entity :dict
     """
-    Entity["x"]+=2*x
-    Entity["y"]+=y
-    if not(isGravity) :
-        Entity["LastTime"]=time.time()
-    return(Entity)
+    ME_Entity["x"]+=2*ME_x
+    ME_Entity["y"]+=ME_y
+    if not(ME_isGravity) :
+        ME_Entity["LastTime"]=time.time()
+    return(ME_Entity)
 
-def tp_entity(Entity,x,y):
+def tp_entity(TPE_Entity,TPE_x,TPE_y):
     """
     G{classtree}
         DESCRIPTION
@@ -135,26 +135,26 @@ def tp_entity(Entity,x,y):
     PARAM
     =====
 
-    @param Entity: Entite que l'on veux déplacer
-    @type Entity: dict
+    @param TPE_Entity: Entite que l'on veux déplacer
+    @type TPE_Entity: dict
 
-    @param x: postion sur x où on veut déplacer l'entité
-    @type  x: int
+    @param TPE_x: postion sur x où on veut déplacer l'entité
+    @type  TPE_x: int
 
-    @param y: postion sur y où on veut déplacer l'entité
-    @type  y: int
+    @param TPE_y: postion sur y où on veut déplacer l'entité
+    @type  TPE_y: int
 
     RETOUR
     ======
 
-    @return Entity : Entité déplacé
-    @rtype Entity :dict
+    @return TPE_Entity : Entité déplacé
+    @rtype TPE_Entity :dict
     """
-    Entity["x"]=x
-    Entity["y"]=y
-    return(Entity)
+    TPE_Entity["x"]=TPE_x
+    TPE_Entity["y"]=TPE_y
+    return(TPE_Entity)
 
-def jump(Entity):
+def jump(JUMP_Entity):
     """
     G{classtree}
     DESCRIPTION
@@ -164,19 +164,19 @@ def jump(Entity):
     PARAM
     =====
 
-    @param Entity: Entité que l'on veut faire sauter
-    @type Entity: dict
+    @param JUMP_Entity: Entité que l'on veut faire sauter
+    @type JUMP_Entity: dict
 
     RETOUR
     ======
 
-    @return Entity : Entité entrain de sauter
-    @rtype Entity :dict
+    @return JUMP_Entity : Entité entrain de sauter
+    @rtype JUMP_Entity :dict
     """
-    Entity["Jump"] = 9
-    return Entity
+    JUMP_Entity["Jump"] = 9
+    return JUMP_Entity
 
-def gravity(Entity,onTheGround=False) :
+def gravity(GRAVITY_Entity,GRAVITY_onTheGround=False) :
     """
     G{classtree}
     DESCRIPTION
@@ -185,29 +185,39 @@ def gravity(Entity,onTheGround=False) :
 
     PARAM
     =====
-    @param Entity: Entite à qui l'on veut appliquer notre gravitée
-    @type Entity: dict
+    @param GRAVITY_Entity: Entite à qui l'on veut appliquer notre gravitée
+    @type GRAVITY_Entity: dict
 
-    @param onTheGround: True si l'entité est déjà au sol, False sinon
-    @type  onTheGround: bool
+    @param GRAVITY_onTheGround: True si l'entité est déjà au sol, False sinon
+    @type  GRAVITY_onTheGround: bool
 
     RETOUR
     ======
 
-    @return Entity : Entité soumise à une force gravitationelle
-    @rtype Entity :dict
+    @return GRAVITY_Entity : Entité soumise à une force gravitationelle
+    @rtype GRAVITY_Entity :dict
     """
-    if Entity["Jump"]>=1 :
-        Entity["Jump"]-=1
-    elif(not(onTheGround)):
-        Entity["Vy"]=1
-    if onTheGround==True :
-        Entity["Jump"]=0
-    return (Entity)
-
+    if GRAVITY_Entity["Jump"]>=1 :
+        GRAVITY_Entity["Jump"]-=1
+    elif(not(GRAVITY_onTheGround)):
+        GRAVITY_Entity["Vy"]=1
+    else:
+        GRAVITY_Entity["Vy"]=0
+    if GRAVITY_onTheGround==True :
+        GRAVITY_Entity["Jump"]=0
+    return (GRAVITY_Entity)
 
 #_____Collision______________________________________________________________________
-def collision(ent, allEntity, Asset_Game_Zone, walls) : #x et y correspondent aux prochaines positions, utiles seulement pour le joueur sinon on recupere via entity
+def Zone_Collision(ZC_ent,ZC_Asset_Game_Zone,ZC_walls):
+    ZC_Shadow_walls=hitbox.hit_box_complex(ZC_walls,Gostwall)
+    ZC_Shadow_gameBorder=hitbox.hit_box_complex(ZC_Asset_Game_Zone,_wall)
+    ZC_Shadow_backgound=hitbox.Add_Shadow(ZC_Shadow_walls,ZC_Shadow_gameBorder)
+    ZC_hitentwall=hitbox.detect_collision_wall(ZC_ent,ZC_Shadow_backgound)
+    return ZC_hitentwall
+
+
+
+def collision(COLLI_ent, COLLI_allEntityTest, COLLI_Asset_Game_Zone, COLLI_walls) : #x et y correspondent aux prochaines positions, utiles seulement pour le joueur sinon on recupere via entity
     """
     G{classtree}
     DESCRIPTION
@@ -216,54 +226,49 @@ def collision(ent, allEntity, Asset_Game_Zone, walls) : #x et y correspondent au
 
     PARAM
     =====
-    @param ent: entité dont l'on veux tester si il y a une collision
-    @type ent:dict
+    @param COLLI_ent: entité dont l'on veux tester si il y a une collision
+    @type COLLI_ent:dict
 
-    @param allEntity: toutes les entités qui pourrais etre en collision
-    @type allEntity: dict
+    @param COLLI_allEntityTest: toutes les entités qui pourrais etre en collision
+    @type COLLI_allEntityTest: dict
 
-    @param Asset_Game_Zone:  Asset de l'ecran ou le joueur peu se mouvoir
-    @type Asset_Game_Zone : list
+    @param COLLI_Asset_Game_Zone:  Asset de l'ecran ou le joueur peu se mouvoir
+    @type COLLI_Asset_Game_Zone : list
 
-    @param walls: dictionnaire ou sont réparti tout les mur, plateformes
-    @type wall: dict
+    @param COLLI_walls: dictionnaire ou sont réparti tout les mur, plateformes
+    @type COLLI_wall: dict
 
-    @param x: coordonnés x
-    @type x: int
+    @param COLLI_x: coordonnés x
+    @type COLLI_x: int
 
-    @param y: coordonnés y
-    @type y: int
+    @param COLLI_y: coordonnés y
+    @type COLLI_y: int
 
     RETOUR
     ======
 
-    @return collision : Renvoie True s'il y a une collision, False sinon.
-    @rtype collision :bool
+    @return COLLI_collision : Renvoie True s'il y a une collision, False sinon.
+    @rtype COLLI_collision :bool
     """
-    Shadow_walls=hitbox.hit_box_complex(walls,Gostwall)
-    Shadow_gameBorder=hitbox.hit_box_complex(Asset_Game_Zone,_wall)
+     COLLI_hitentwall=Zone_Collision(COLLI_ent, COLLI_Asset_Game_Zone, COLLI_walls)
 
-    Shadow_backgound=hitbox.Add_Shadow(Shadow_walls,Shadow_gameBorder)
-
-    hitentwall=hitbox.detect_collision_wall(ent,Shadow_backgound)
-
-    if hitentwall == _wall:
+    if COLLI_hitentwall == _wall:
         #detect un mur
         return True
-    elif hitentwall == Gostwall:
+    elif COLLI_hitentwall == Gostwall:
         return False
         #detect un Gostwall
-    elif hitentwall == void_collision:
-        for entity in allEntity:
-            if entity != ent :
-                if hitbox.detect_collision_entity(ent,entity):
+    elif COLLI_hitentwall == void_collision:
+        for COLLI_Entity in COLLI_allEntityTest:
+            if COLLI_Entity != COLLI_ent :
+                if hitbox.detect_collision_entity(COLLI_ent,COLLI_Entity):
                    return True
                     #collision entre les deux entiter
                 else:
                     return False
                     #aucune collision
     else:
-        files.SAVE_FILE_JSON(ent,"log_wtf")
+        files.SAVE_FILE_JSON(COLLI_ent,"log_wtf")
         # si on est ici c'est un BUG
     return False
 

@@ -88,7 +88,7 @@ def Init(): 	#initialisation des variables
 	"Gun_Horizontal","Gun_Slach","Gun_UnSlash","Gun_Vertical"
 	]
 
-	timeStep = 0.05 # en secondes -> 100 images par secondes
+	timeStep = 0.01 # en secondes -> 100 images par secondes
 	timeScreen = time.time()
 	timeGravity = time.time()
 
@@ -230,37 +230,6 @@ def Init_manche():
 	return
 
 
-def Windows():
-	"""
-	G{classtree}
-	DESCRIPTION
-	===========
-		Affiche les informations dans la fennetre de droite
-		Affiche le texte dans la fenetre du bas
-
-	PARAM
-	=====
-		Sans parametre.
-
-	RETOUR
-	======
-		Sans retour.
-	"""
-	x=140
-	y=2
-	#info
-	#life
-	txt= "Vie: "+str(player["Life"])+" / "+str(player["LifeMax"])+"."
-	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
-	y+=2
-
-	txt= "Armure: "+str(player["Armor"])+" / "+str(player["ArmorMax"])+"."
-	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
-	y+=2
-
-
-
-	#story
 
 #______Game________________________________________________________________________
 def Game():
@@ -381,11 +350,12 @@ def Time_game():
 		Sans retour
 	"""
 	global window, timeStep, timeScreen, walls, allEntity, player, menu, timeGravity, acutalAssetGameZone
+	actualTime=time.time()
 	if menu == "manche":
 		#on est en jeu
 		#gestion des tirs
 		for bullet in allEntity["projectile"] :
-			if time.time()>bullet["Speed"]+bullet["LastTime"] :
+			if actualTime>bullet["Speed"]+bullet["LastTime"] :
 				bullet = movingent.move_entity(bullet,bullet["Vx"],bullet["Vy"])
 				log = shootingent.hit(bullet,allEntity["mobs"],acutalAssetGameZone,walls)
 				if log[1]:#une entite a etait touche
@@ -394,57 +364,57 @@ def Time_game():
 					allEntity["projectile"].remove(bullet)
 
 		#gestion de la gravite
-		if time.time()>timeGravity + 0.08 :
+		if actualTime >timeGravity + 0.08 :
 			for mob in allEntity["mobs"] :
 				onTheGround = entity.is_ground_beneath(entity.feet(mob),acutalAssetGameZone,walls) #-afair test s'il y a une plateforme en dessous
 				mob = movingent.gravity(mob,onTheGround)
 				if not(onTheGround) :
 					movingent.move_entity(mob,0,1,True)
-			timeGravity = time.time()
+			timeGravity = actualTime
 
 		#gestion des déplacements
 		for mob in allEntity["mobs"] : # -afair modifier par movingent
-			if (time.time()>mob["Speed"]+mob["LastTime"]) and (mob["Vx"]!=0 or mob["Vy"]!=0) :
+			if (actualTime>mob["Speed"]+mob["LastTime"]) and (mob["Vx"]!=0 or mob["Vy"]!=0) :
 				#inserer gestion de collision ici qui provient du module entity avec en param allEntity - afair
 				#va etre la collision la plus complique a gerer  celle avec les entites et avec les walls -afair
-				mob = movingent.move_entity(mob,mob["Vx"],mob["Vy"])
-				willCollide = movingent.collision(mob,allEntity["mobs"],acutalAssetGameZone,walls)
+				mobSelect = movingent.move_entity(mob,mob["Vx"],mob["Vy"])
+				willCollide = movingent.collision(mobSelect,allEntity["mobs"],acutalAssetGameZone,walls)
 				if willCollide :
-					mob = movingent.move_entity(mob,-mob["Vx"],-mob["Vy"])
+					mob = movingent.move_entity(mobSelect,-mobSelect["Vx"],-mobSelect["Vy"])
 
 			#on fait tirer si le mob est un mob qui tir
 			if (shootingent.is_shooting_ent(mob)) :
-				if time.time()>mob["shotDelay"]+mob["lastShot"][0] :
+				if actualTime>mob["shotDelay"]+mob["lastShot"][0] :
 					allEntity["projectile"].append(shootingent.shoot(mob))
 					mob = shootingent.as_shot(mob)
 
 		#gestion des générateurs de bonus
 		for boonx in allEntity["boons"] :
 			if "boonGenerator" in boonx["Type"] :
-				if (boonx["GeneLastTime"][0]+boonx["GeneSpeed"] > time.time() and not(boonx["isGenerated"])) :
+				if (boonx["GeneLastTime"][0]+boonx["GeneSpeed"] > actualTime and not(boonx["isGenerated"])) :
 					allEntity["boons"].append(boon.generate(boonx))
 					boonGene = boon.as_generate(boonx)
 
 		#on gere les deplacements du joueur
-		if time.time()>player["LastTime"]+player["Speed"]:
+		if actualTime>player["LastTime"]+player["Speed"]:
 			Interact()
 
-		if time.time()>player["LastTime"]+0.03 :
+		if actualTime>player["LastTime"]+0.03 :
 			player = character.switch_stand(player,"Wait")
 			#on remet le joueur en position d'attente s'il fait rien
 
 		#gestion de l'ultime
-		if time.time()>player["spowerLastTime"]+player["spowerSpeed"] and player["spowerCharge"]<=60 :
+		if actualTime>player["spowerLastTime"]+player["spowerSpeed"] and player["spowerCharge"]<=60 :
 			if (player["spowerOn"] and player["spowerDelay"]>0) :
 				player = character.cooldown_ult(player)
 			else :
 				player = character.charge_ult(player)
-				player["spowerLastTime"] = time.time()
+				player["spowerLastTime"] = actualTime
 	else : #on est dans un autre menu, -afair, disons pour le moment dans un menu textuelle
 		Interact()
 
 
-	if time.time()>timeScreen+timeStep:
+	if actualTime>timeScreen+timeStep:
 		Show()
 
 
@@ -509,6 +479,46 @@ def Show() :
 	#deplacement curseur
 	sys.stdout.write("\033[1;1H\n")
 	return
+
+
+def Windows():
+	"""
+	G{classtree}
+	DESCRIPTION
+	===========
+		Affiche les informations dans la fenetre de droite
+		Affiche le texte dans la fenetre du bas
+
+	PARAM
+	=====
+		Sans parametre.
+
+	RETOUR
+	======
+		Sans retour.
+	"""
+	x=140
+	y=13
+	#info
+	txt= "Vie: "+str(player["Life"])+" / "+str(player["LifeMax"])+"."
+	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+	y+=2
+
+	txt= "Armure: "+str(player["Armor"])+" / "+str(player["ArmorMax"])+"."
+	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+	y+=2
+
+	txt= "SUPER: "+str(player["spowerCharge"])+" / "+str(100)+"."
+	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+	y+=2
+
+	txt= "Jump: "+str(player["Jump"]) + "."
+	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+	y+=2
+
+
+	#story
+
 
 
 #______INTERACT________________________________________________________________________

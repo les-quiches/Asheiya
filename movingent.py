@@ -250,7 +250,7 @@ def collision(COLLI_ent, COLLI_allEntityTest, COLLI_Asset_Game_Zone, COLLI_walls
     @return COLLI_collision : Renvoie True s'il y a une collision, False sinon.
     @rtype COLLI_collision :bool
     """
-     COLLI_hitentwall=Zone_Collision(COLLI_ent, COLLI_Asset_Game_Zone, COLLI_walls)
+    COLLI_hitentwall=Zone_Collision(COLLI_ent, COLLI_Asset_Game_Zone, COLLI_walls)
 
     if COLLI_hitentwall == _wall:
         #detect un mur

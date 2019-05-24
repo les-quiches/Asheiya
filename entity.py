@@ -3,10 +3,12 @@
 import sys
 import os
 import character
+import hitbox
 
 
 import files
 f=files
+
 
 #_____Create____________________________________________________________________
 def create_entity(Name, X, Y, Asset, AI = None):
@@ -112,7 +114,7 @@ def get_actual_asset(entity) :
 
 #____collision___________________________________________________
 
-def feet(entity) :#renvoi les "pieds" de l'entite
+def feet(FEET_entity) :#renvoi les "pieds" de l'entite
     """
     G{classtree}
     DESCRIPTION
@@ -122,20 +124,22 @@ def feet(entity) :#renvoi les "pieds" de l'entite
     PARAM
     =====
 
-    @param entity: Entite dont on veut obtenir la position des pieds
-    @type entity: dict
+    @param FEET_entity: Entite dont on veut obtenir la position des pieds
+    @type FEET_entity: dict
 
 
     RETOUR
     ======
 
-    @return : renvoi la position des pied de l'entité
-    @rtype : list
+    @return FEET_feet : renvoi la position des pied de l'entité
+    @rtype FEET_feet : list
     """
+    FEET_x,FEET_y,FEET_xmax,FEET_ymax=hitbox.hit_box_simple(FEET_entity)
+    FEET_feet=[FEET_x,FEET_xmax,FEET_ymax]
 
-    return
+    return FEET_feet #-afair : ne fonctionne pas!!
 
-def is_ground_beneath(pos,Asset_Game_Zone,walls) :
+def is_ground_beneath(IGB_feet,Asset_Game_Zone,walls) :
     """
     G{classtree}
     DESCRIPTION
@@ -159,8 +163,17 @@ def is_ground_beneath(pos,Asset_Game_Zone,walls) :
     @return : True s'il y a bien un sol solide en dessous, False sinon.
     @rtype :bool
     """
+    files.SAVE_FILE_JSON(IGB_feet,"log_walls")
+    IGB_ground = IGB_feet[2]+1 #position en dessous des pieds
+    IGB_length_feet = IGB_feet[1]-IGB_feet[0]
+    IGB_map = hitbox.Add_Shadow(walls,Asset_Game_Zone)
+    for a in range(IGB_length_feet):
+        log = (IGB_feet[0]+a,IGB_feet[2])
+        files.SAVE_FILE_JSON(log,"log_map")   #-> retourne [20/23] au lieu d'un truc genre [20/37]
+        if IGB_map[IGB_feet[0]+a][IGB_feet[2]] != " " :
+            return True
     # -afair : test si en dessous de pos il y a ou pas une plateforme et renvoie True or False en consequence
-    return True
+    return False
 
 
 #_____Show______________________________________________________________________

@@ -4,7 +4,7 @@ import files
 def execute(mob, allEntity) :
 	if mob["AI"] == "AItest" :
 		log = AItest(mob, allEntity)
-		return log
+		return log # dans l'ordre : mob, tout les mobs
 
 
 #######################################

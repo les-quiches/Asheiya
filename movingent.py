@@ -13,7 +13,7 @@ Gostwall = "-"
 take_damage = "."
 
 #_____Create____________________________________________________________________
-def create_moving_ent(CME_Entity, CME_Vx, CME_Vy,CME_Speed, CME_LastTime=time.time()):
+def create_moving_ent(CME_Entity, CME_Vx, CME_Vy,CME_Speed, CME_Gravity=True, CME_LastTime=time.time()):
     """
     G{classtree}
         DESCRIPTION
@@ -35,6 +35,9 @@ def create_moving_ent(CME_Entity, CME_Vx, CME_Vy,CME_Speed, CME_LastTime=time.ti
     @param CME_Speed: vitesse du joueur
     @type CME_Speed: : int
 
+    @param CME_Speed: Si l'entité subit la gravité ou pas
+    @type CME_Speed: : bool
+
     @param LastTime: dernière fois que l'entité c'est déplacé
     @type LastTime :int
 
@@ -52,6 +55,7 @@ def create_moving_ent(CME_Entity, CME_Vx, CME_Vy,CME_Speed, CME_LastTime=time.ti
     CME_Entity["LastTime"]=CME_LastTime
     CME_Entity["Jump"] = 0
     CME_Entity["Type"].append("movingEnt")
+    CME_Entity["Gravity"]=CME_Gravity
     return CME_Entity
 
 

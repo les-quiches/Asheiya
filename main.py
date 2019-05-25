@@ -216,7 +216,7 @@ def Init_manche():
 		assetMob1["boon1"] = entity.create_asset("Boon/boon1.txt")
 		assetMob1["Actual"]= assetMob1["boon1"]
 		mob1 = entity.create_entity("testmob",20,20,assetMob1, "AItest")
-		mob1 = movingent.create_moving_ent(mob1,1,1,0.5)
+		mob1 = movingent.create_moving_ent(mob1,1,1,0.5, False)
 
 		allEntity["mobs"].append(mob1)
 
@@ -366,10 +366,12 @@ def Time_game():
 		#gestion de la gravite
 		if actualTime >timeGravity + 0.08 :
 			for mob in allEntity["mobs"] :
-				onTheGround = entity.is_ground_beneath(entity.feet(mob),acutalAssetGameZone,walls) #-afair test s'il y a une plateforme en dessous
-				mob = movingent.gravity(mob,onTheGround)
-				if not(onTheGround) :
-					movingent.move_entity(mob,0,1,True)
+				if movingent in mob["Type"] :
+					if mob["Gravity"]==True :
+						onTheGround = entity.is_ground_beneath(entity.feet(mob),acutalAssetGameZone,walls) #-afair test s'il y a une plateforme en dessous
+						mob = movingent.gravity(mob,onTheGround)
+						if not(onTheGround) :
+							movingent.move_entity(mob,0,1,True)
 			timeGravity = actualTime
 
 		#gestion des déplacements
@@ -538,6 +540,8 @@ def Interact():
 	======
 		Sans retour
 	"""
+	log = (player["Jump"], player["y"])
+	files.SAVE_FILE_JSON(log,"log_interact")
 
 	def isData():
 		#recuperation evenement clavier
@@ -553,7 +557,7 @@ def Interact():
 
 		if ((manche%10)==1 and menu=="manche") : #on est en jeu
 
-			if (c == "\n" and player["spowerCharge"]>=60) : #-afair : si on appuie sur espace on balance l'ultime
+			if (c == "\n" and player["spowerCharge"]>=100) : #-afair : si on appuie sur espace on balance l'ultime
 				player["spowerCharge"]=0
 				player["spowerDelay"]=4
 				player["spowerOn"]=True

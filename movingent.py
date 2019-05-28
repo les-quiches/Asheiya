@@ -125,7 +125,7 @@ def move_entity(ME_Entity,ME_x,ME_y,ME_isGravity=False):
     """
     ME_Entity["x"]+=2*ME_x
     ME_Entity["y"]+=ME_y
-    if not(ME_isGravity) :
+    if not(ME_isGravity):
         ME_Entity["LastTime"]=time.time()
     return(ME_Entity)
 
@@ -180,7 +180,7 @@ def jump(JUMP_Entity):
     JUMP_Entity["Jump"] = 9
     return JUMP_Entity
 
-def gravity(GRAVITY_Entity,GRAVITY_onTheGround=False) :
+def gravity(GRAVITY_Entity,GRAVITY_onTheGround) :
     """
     G{classtree}
     DESCRIPTION
@@ -203,13 +203,10 @@ def gravity(GRAVITY_Entity,GRAVITY_onTheGround=False) :
     """
     if GRAVITY_Entity["Jump"]>=1 :
         GRAVITY_Entity["Jump"]-=1
-    elif(not(GRAVITY_onTheGround)):
-        GRAVITY_Entity["Vy"]=1
-    else:
-        GRAVITY_Entity["Vy"]=0
     if GRAVITY_onTheGround==True :
         GRAVITY_Entity["Jump"]=0
-    return (GRAVITY_Entity)
+        GRAVITY_Entity["Vy"]=0
+    return GRAVITY_Entity
 
 #_____Collision______________________________________________________________________
 def Zone_Collision(ZC_ent,ZC_Asset_Game_Zone,ZC_walls):

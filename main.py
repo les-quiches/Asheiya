@@ -185,7 +185,7 @@ def Init_manche():
 		walls = background.create_window("GameZone/Zone_"+str(allAssetGameZone["NumZone"])+"_TraversantPlateforme.txt")
 		acutalAssetGameZone= allAssetGameZone["Zone_"+str(allAssetGameZone["NumZone"])]
 
-		player = movingent.tp_entity(player,20,37)
+		player = movingent.tp_entity(player,20,20)
 
 		#placement des bonus :  #-afair quand on les placera tous, automatiser le tout
 		listeBonus = {"speedUp" : 0.02, "fireRateUp" : 1}
@@ -366,23 +366,25 @@ def Time_game():
 		#gestion de la gravite
 		if actualTime >timeGravity + 0.08 :
 			for mob in allEntity["mobs"] :
-				if movingent in mob["Type"] :
-					if mob["Gravity"]==True :
+				if "movingEnt" in mob["Type"] :
+					files.SAVE_FILE_JSON("onTheGround","log_onTheGround")
+					if (mob["Gravity"]):
 						onTheGround = entity.is_ground_beneath(entity.feet(mob),acutalAssetGameZone,walls) #-afair test s'il y a une plateforme en dessous
 						mob = movingent.gravity(mob,onTheGround)
-						if not(onTheGround) :
+						if (not(onTheGround) and mob["Jump"] ==0) :
 							movingent.move_entity(mob,0,1,True)
 			timeGravity = actualTime
 
 		#gestion des déplacements
 		for mob in allEntity["mobs"] : # -afair modifier par movingent
-			if (actualTime>mob["Speed"]+mob["LastTime"]) and (mob["Vx"]!=0 or mob["Vy"]!=0) :
-				#inserer gestion de collision ici qui provient du module entity avec en param allEntity - afair
-				#va etre la collision la plus complique a gerer  celle avec les entites et avec les walls -afair
-				mobSelect = movingent.move_entity(mob,mob["Vx"],mob["Vy"])
-				willCollide = movingent.collision(mobSelect,allEntity["mobs"],acutalAssetGameZone,walls)
-				if willCollide :
-					mob = movingent.move_entity(mobSelect,-mobSelect["Vx"],-mobSelect["Vy"])
+			if (actualTime>mob["Speed"]+mob["LastTime"]):
+				if "character" in mob["Type"] :#deplacement joueur
+					Interact() 
+				if (mob["Vx"]!=0 or mob["Vy"]!=0) : #deplacement contraints
+					mobSelect = movingent.move_entity(mob,mob["Vx"],mob["Vy"])
+					willCollide = movingent.collision(mobSelect,allEntity["mobs"],acutalAssetGameZone,walls)
+					if willCollide :
+						mob = movingent.move_entity(mobSelect,-mobSelect["Vx"],-mobSelect["Vy"])
 
 			#on fait tirer si le mob est un mob qui tir
 			if (shootingent.is_shooting_ent(mob)) :
@@ -396,10 +398,6 @@ def Time_game():
 				if (boonx["GeneLastTime"][0]+boonx["GeneSpeed"] > actualTime and not(boonx["isGenerated"])) :
 					allEntity["boons"].append(boon.generate(boonx))
 					boonGene = boon.as_generate(boonx)
-
-		#on gere les deplacements du joueur
-		if actualTime>player["LastTime"]+player["Speed"]:
-			Interact()
 
 		if actualTime>player["LastTime"]+0.03 :
 			player = character.switch_stand(player,"Wait")
@@ -518,6 +516,11 @@ def Windows():
 	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
 	y+=2
 
+	txt= "Speed: "+str(int(1/player["Speed"])) + "."
+	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+	y+=2
+
+
 
 	#story
 
@@ -540,8 +543,6 @@ def Interact():
 	======
 		Sans retour
 	"""
-	log = (player["Jump"], player["y"])
-	files.SAVE_FILE_JSON(log,"log_interact")
 
 	def isData():
 		#recuperation evenement clavier
@@ -583,7 +584,7 @@ def Interact():
 
 				# /!\ dans toute cette zone, gerer les collisions avant les deplacements avec movingent.collision -afair
 				elif c == "d":
-					if not(player["Jump"]) : #-afair : si on est en saut on bouge pas les pieds, fonctionne pas actuellement
+					if not(player["Jump"]) :
 						player = character.switch_stand(player,"Run")
 					player = movingent.move_entity(player,1,0)
 					if movingent.collision(player, allEntity["mobs"], acutalAssetGameZone, walls) :
@@ -596,7 +597,7 @@ def Interact():
 					if movingent.collision(player, allEntity["mobs"], acutalAssetGameZone, walls) :
 						player = movingent.move_entity(player,1,0)
 
-				elif c == "z" and player["Jump"]==0 :
+				elif c == "z" and player["Jump"]==0 and player["Vy"]==0 :
 					player = character.switch_stand(player, "Wait")
 					player = movingent.jump(player)
 					player["Vy"]=-1

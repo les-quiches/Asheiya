@@ -215,8 +215,9 @@ def Init_manche():
 
 		#/!\ juste un mob pour test, les valeurs sont débiles
 		assetMob1 = {}
-		assetMob1["boon1"] = entity.create_asset("Mobs/mob1.txt")
-		assetMob1["Actual"]= assetMob1["boon1"]
+		assetMob1["mob1"] = entity.create_asset("Mobs/mob1.txt")
+		assetMob1["Actual"]= assetMob1["mob1"]
+
 		mob1 = entity.create_entity("testmob",20,20,assetMob1, "AItest")
 		mob1 = movingent.create_moving_ent(mob1,1,1,0.5, False)
 

@@ -213,6 +213,29 @@ def gravity(GRAVITY_Entity,GRAVITY_onTheGround) :
 
 #_____Collision______________________________________________________________________
 def Zone_Collision(ZC_ent,ZC_Asset_Game_Zone,ZC_walls):
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de détecter la collision entre une entité et le backgound
+
+    PARAM
+    =====
+    @param ZC_ent:entité a tester
+    @type ZC_ent:dict
+
+    @param ZC_Asset_Game_Zone: asset de la zone de jeu
+    @type  ZC_Asset_Game_Zone:list
+
+    @param ZC_walls: asset des plateformes de jeu
+    @type  ZC_walls:list
+
+    RETOUR
+    ======
+
+    @return ZC_hitentwall : renvois ce qui a été détecter
+    @rtype ZC_hitentwall :str
+    """
     ZC_Shadow_walls=hitbox.hit_box_complex(ZC_walls,Gostwall)
     ZC_Shadow_gameBorder=hitbox.hit_box_complex(ZC_Asset_Game_Zone,_wall)
     ZC_Shadow_backgound=hitbox.Add_Shadow(ZC_Shadow_walls,ZC_Shadow_gameBorder)

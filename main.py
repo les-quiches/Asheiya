@@ -20,6 +20,7 @@ import livingent
 import character
 import boon
 import files
+import windows
 
 #importation des IAs
 import AI
@@ -178,7 +179,7 @@ def Init_manche():
 		Sans retour
 	"""
 	#-afaire
-	global manche, menu, player, walls, allAssetGameZone, acutalAssetGameZone
+	global manche, menu, player, walls, allAssetGameZone, acutalAssetGameZone, Story
 
 	if manche == 10 :
 		print allAssetGameZone["NumZone"]
@@ -220,6 +221,11 @@ def Init_manche():
 
 		allEntity["mobs"].append(mob1)
 
+		#Story
+		storyFile = "Story/Zone_1.txt"
+		maxLigne = 10
+		LastTime = time.time()
+		Story=windows.create_story(storyFile,maxLigne,LastTime)
 		# manche initialisé
 		manche = 11
 
@@ -349,7 +355,7 @@ def Time_game():
 	======
 		Sans retour
 	"""
-	global window, timeStep, timeScreen, walls, allEntity, player, menu, timeGravity, acutalAssetGameZone
+	global window, timeStep, timeScreen, walls, allEntity, player, menu, timeGravity, acutalAssetGameZone, Story
 	actualTime=time.time()
 	if menu == "manche":
 		#on est en jeu
@@ -410,6 +416,11 @@ def Time_game():
 			else :
 				player = character.charge_ult(player)
 				player["spowerLastTime"] = actualTime
+
+		#gestion de Story
+		if actualTime>Story["Speed"]+Story["LastTime"] :
+			windows.Story_Next_Ligne(Story)
+			Story["LastTime"]=actualTime
 	else : #on est dans un autre menu, -afair, disons pour le moment dans un menu textuelle
 		Interact()
 
@@ -523,8 +534,23 @@ def Windows():
 
 
 	#story
-
-
+	x=2
+	y=42
+	txt= Story["Txt"][0]
+	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+	y+=1
+	txt= Story["Txt"][1]
+	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+	y+=1
+	txt= Story["Txt"][2]
+	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+	y+=1
+	txt= Story["Txt"][3]
+	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+	y+=1
+	txt= Story["Txt"][4]
+	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+	y+=1
 
 #______INTERACT________________________________________________________________________
 def Interact():

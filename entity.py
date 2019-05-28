@@ -163,13 +163,11 @@ def is_ground_beneath(IGB_feet,Asset_Game_Zone,walls) :
     @return : True s'il y a bien un sol solide en dessous, False sinon.
     @rtype :bool
     """
-    files.SAVE_FILE_JSON(IGB_feet,"log_walls")
     IGB_ground = IGB_feet[2]+1 #position en dessous des pieds
     IGB_length_feet = IGB_feet[1]-IGB_feet[0]
     IGB_map = hitbox.Add_Shadow(walls,Asset_Game_Zone)
     for a in range(IGB_length_feet):
         log = (IGB_feet[0]+a,IGB_feet[2])
-        files.SAVE_FILE_JSON(log,"log_map")   #-> retourne [20/23] au lieu d'un truc genre [20/37]
         if IGB_map[IGB_feet[0]+a][IGB_feet[2]] != " " :
             return True
     # -afair : test si en dessous de pos il y a ou pas une plateforme et renvoie True or False en consequence

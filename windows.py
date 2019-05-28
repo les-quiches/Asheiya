@@ -1,3 +1,5 @@
+#-*- coding:utf-8 -*
+
 import files
 
 def create_story(cs_storyFile, cs_maxLigne,cs_LastTime):

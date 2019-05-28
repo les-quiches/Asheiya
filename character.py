@@ -5,7 +5,7 @@ import time
 
 
 #_____Create____________________________________________________________________
-def create_character(Entity, spowerSpeed):
+def create_character(Entity, spowerSpeed, spowerMax):
     """
     G{classtree}
         DESCRIPTION
@@ -20,6 +20,9 @@ def create_character(Entity, spowerSpeed):
 
     @param spowerSpeed: vitesse de chargement de l'ultime
     @type  spowerSpeed: int
+
+    @param spowerMax: limite de chargement de l'ultime
+    @type  spowerMax: int
 
     RETOUR
     ======
@@ -36,6 +39,7 @@ def create_character(Entity, spowerSpeed):
     Entity["spowerDelay"] = 0 #pendant combien de temps on est encore en ult
     Entity["spowerLastTime"] = time.time() #derniere fois qu'on a charge l'ultime
     Entity["spowerSpeed"] = spowerSpeed #vitesse de chargement de l'ultime
+    Entity["spowerMax"] = spowerMax
     Entity["Type"].append("character")
     return Entity
 

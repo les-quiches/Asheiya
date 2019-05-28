@@ -148,8 +148,9 @@ def Init(): 	#initialisation des variables
 	player = shootingent.create_shooting_ent(player,damage,bulletSpeed,assetShot,shotDelay)
 
 	spowerSpeed = 1 #toutes les secondes on augmente de 1 la charge du super
+	spowerMax = 100 #au bout de 100 charges on peut utiliser l'ultime
 
-	player = character.create_character(player , spowerSpeed)
+	player = character.create_character(player , spowerSpeed, spowerMax)
 
 	allEntity["mobs"].append(player)
 
@@ -369,18 +370,6 @@ def Time_game():
 				if log[0]:#il y a eu collision
 					allEntity["projectile"].remove(bullet)
 
-		#gestion de la gravite
-		if actualTime >timeGravity + 0.08 :
-			for mob in allEntity["mobs"] :
-				if "movingEnt" in mob["Type"] :
-					files.SAVE_FILE_JSON("onTheGround","log_onTheGround")
-					if (mob["Gravity"]):
-						onTheGround = entity.is_ground_beneath(entity.feet(mob),acutalAssetGameZone,walls) #-afair test s'il y a une plateforme en dessous
-						mob = movingent.gravity(mob,onTheGround)
-						if (not(onTheGround) and mob["Jump"] ==0) :
-							movingent.move_entity(mob,0,1,True)
-			timeGravity = actualTime
-
 		#gestion des déplacements
 		for mob in allEntity["mobs"] : # -afair modifier par movingent
 			if (actualTime>mob["Speed"]+mob["LastTime"]):
@@ -391,6 +380,17 @@ def Time_game():
 					willCollide = movingent.collision(mobSelect,allEntity["mobs"],acutalAssetGameZone,walls)
 					if willCollide :
 						mob = movingent.move_entity(mobSelect,-mobSelect["Vx"],-mobSelect["Vy"])
+
+		#gestion de la gravite
+		if actualTime >timeGravity + 0.08 :
+			for mob in allEntity["mobs"] :
+				if "movingEnt" in mob["Type"] :
+					if (mob["Gravity"]):
+						onTheGround = entity.is_ground_beneath(entity.feet(mob),acutalAssetGameZone,walls) #-afair test s'il y a une plateforme en dessous
+						mob = movingent.gravity(mob,onTheGround)
+						if (not(onTheGround) and mob["Jump"] ==0) :
+							movingent.move_entity(mob,0,1,True)
+			timeGravity = actualTime
 
 			#on fait tirer si le mob est un mob qui tir
 			if (shootingent.is_shooting_ent(mob)) :
@@ -410,7 +410,7 @@ def Time_game():
 			#on remet le joueur en position d'attente s'il fait rien
 
 		#gestion de l'ultime
-		if actualTime>player["spowerLastTime"]+player["spowerSpeed"] and player["spowerCharge"]<=60 :
+		if actualTime>player["spowerLastTime"]+player["spowerSpeed"] and player["spowerCharge"]<player["spowerMax"] :
 			if (player["spowerOn"] and player["spowerDelay"]>0) :
 				player = character.cooldown_ult(player)
 			else :
@@ -584,7 +584,7 @@ def Interact():
 
 		if ((manche%10)==1 and menu=="manche") : #on est en jeu
 
-			if (c == "\n" and player["spowerCharge"]>=100) : #-afair : si on appuie sur espace on balance l'ultime
+			if (c == "\n" and player["spowerCharge"]>=player["spowerMax"]) : #-afair : si on appuie sur espace on balance l'ultime
 				player["spowerCharge"]=0
 				player["spowerDelay"]=4
 				player["spowerOn"]=True

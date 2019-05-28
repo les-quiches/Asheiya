@@ -111,3 +111,29 @@ def OPEN_FILE_XML(filename):
     txt=myFile.read()
     myFile.close()
     return(txt)
+
+def READ_FILELIGNE_XML(RFLX_filename,RFLX_ligne):
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de récuperer une ligne d'un fichier
+
+    PARAM
+    =====
+
+    @param RFLX_filename : Chemin d'acces du fichier à ouvrir
+    @type RFLX_filename :str
+
+    @param RFLX_ligne : Ligne a lire
+    @type RFLX_ligne :int
+
+    RETOUR
+    ======
+    @return file_open : renvoi le contenue du fichier
+    @rtype file_open :str
+    """
+    with open(RFLX_filename,'r') as fich:
+        for i in range(RFLX_ligne):
+            RFLX_ligne = fich.readline()
+    return RFLX_ligne

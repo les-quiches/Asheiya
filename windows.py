@@ -1,3 +1,4 @@
+#-*- coding:utf-8 -*
 import files
 
 def create_story(cs_storyFile, cs_maxLigne,cs_LastTime):
@@ -57,4 +58,4 @@ def Story_Next_Ligne(SNL_Story):
          SNL_Story["Txt"].append(files.READ_FILELIGNE_XML(SNL_Story["File"],SNL_Story["Ligne"]))
     else:
         SNL_Story["Txt"].append([" "])
-        SNL_Story["Ligne"]=1
+        SNL_Story["Ligne"]=0

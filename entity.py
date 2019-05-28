@@ -137,7 +137,7 @@ def feet(FEET_entity) :#renvoi les "pieds" de l'entite
     FEET_x,FEET_y,FEET_xmax,FEET_ymax=hitbox.hit_box_simple(FEET_entity)
     FEET_feet=[FEET_x,FEET_xmax,FEET_ymax]
     files.SAVE_FILE_JSON(FEET_feet,"log_feet")
-    return FEET_feet #-afair : ne fonctionne pas!!
+    return FEET_feet
 
 def is_ground_beneath(IGB_feet,Asset_Game_Zone,walls) :
     """

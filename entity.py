@@ -136,7 +136,7 @@ def feet(FEET_entity) :#renvoi les "pieds" de l'entite
     """
     FEET_x,FEET_y,FEET_xmax,FEET_ymax=hitbox.hit_box_simple(FEET_entity)
     FEET_feet=[FEET_x,FEET_xmax,FEET_ymax]
-
+    files.SAVE_FILE_JSON(FEET_feet,"log_feet")
     return FEET_feet #-afair : ne fonctionne pas!!
 
 def is_ground_beneath(IGB_feet,Asset_Game_Zone,walls) :
@@ -168,7 +168,7 @@ def is_ground_beneath(IGB_feet,Asset_Game_Zone,walls) :
     IGB_map = hitbox.Add_Shadow(walls,Asset_Game_Zone)
     for a in range(IGB_length_feet):
         log = (IGB_feet[0]+a,IGB_feet[2])
-        if IGB_map[IGB_feet[0]+a][IGB_feet[2]] != " " :
+        if IGB_map[IGB_feet[2]][IGB_feet[0]+a] != " " :
             return True
     # -afair : test si en dessous de pos il y a ou pas une plateforme et renvoie True or False en consequence
     return False

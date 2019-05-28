@@ -374,7 +374,7 @@ def Time_game():
 		for mob in allEntity["mobs"] : # -afair modifier par movingent
 			if (actualTime>mob["Speed"]+mob["LastTime"]):
 				if "character" in mob["Type"] :#deplacement joueur
-					Interact() 
+					Interact()
 				if (mob["Vx"]!=0 or mob["Vy"]!=0) : #deplacement contraints
 					mobSelect = movingent.move_entity(mob,mob["Vx"],mob["Vy"])
 					willCollide = movingent.collision(mobSelect,allEntity["mobs"],acutalAssetGameZone,walls)
@@ -528,6 +528,14 @@ def Windows():
 	y+=2
 
 	txt= "Speed: "+str(int(1/player["Speed"])) + "."
+	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+	y+=2
+
+	txt= "X: "+str(player["x"]) + "."
+	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+	y+=2
+
+	txt= "Y: "+str(player["y"]) + "."
 	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
 	y+=2
 

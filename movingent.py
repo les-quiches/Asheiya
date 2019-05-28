@@ -203,6 +203,9 @@ def gravity(GRAVITY_Entity,GRAVITY_onTheGround) :
     """
     if GRAVITY_Entity["Jump"]>=1 :
         GRAVITY_Entity["Jump"]-=1
+    else : 
+        GRAVITY_Entity["Vy"]=1
+
     if GRAVITY_onTheGround==True :
         GRAVITY_Entity["Jump"]=0
         GRAVITY_Entity["Vy"]=0
@@ -248,30 +251,28 @@ def collision(COLLI_ent, COLLI_allEntityTest, COLLI_Asset_Game_Zone, COLLI_walls
     RETOUR
     ======
 
-    @return COLLI_collision : Renvoie True s'il y a une collision, False sinon.
-    @rtype COLLI_collision :bool
+    @return COLLI_log : Renvoie une liste d'information : s'il y a eu une collision dur, 
+    @rtype COLLI_log :bool
     """
     COLLI_hitentwall=Zone_Collision(COLLI_ent, COLLI_Asset_Game_Zone, COLLI_walls)
 
+    COLLI_log=[]
+    COLLI_log.append(False)
+
     if COLLI_hitentwall == _wall:
         #detect un mur
-        return True
-    elif COLLI_hitentwall == Gostwall:
-        return False
-        #detect un Gostwall
+        COLLI_log[0]=True
     elif COLLI_hitentwall == void_collision:
         for COLLI_Entity in COLLI_allEntityTest:
             if COLLI_Entity != COLLI_ent :
                 if hitbox.detect_collision_entity(COLLI_ent,COLLI_Entity):
-                   return True
+                   COLLI_log[0]=True
                     #collision entre les deux entiter
-                else:
-                    return False
-                    #aucune collision
     else:
         files.SAVE_FILE_JSON(COLLI_ent,"log_wtf")
         # si on est ici c'est un BUG
-    return False
+
+    return COLLI_log
 
 
 

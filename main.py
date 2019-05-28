@@ -215,7 +215,7 @@ def Init_manche():
 
 		#/!\ juste un mob pour test, les valeurs sont débiles
 		assetMob1 = {}
-		assetMob1["boon1"] = entity.create_asset("Boon/boon1.txt")
+		assetMob1["boon1"] = entity.create_asset("Mobs/mob1.txt")
 		assetMob1["Actual"]= assetMob1["boon1"]
 		mob1 = entity.create_entity("testmob",20,20,assetMob1, "AItest")
 		mob1 = movingent.create_moving_ent(mob1,1,1,0.5, False)
@@ -376,10 +376,10 @@ def Time_game():
 				if "character" in mob["Type"] :#deplacement joueur
 					Interact()
 				if (mob["Vx"]!=0 or mob["Vy"]!=0) : #deplacement contraints
-					mobSelect = movingent.move_entity(mob,mob["Vx"],mob["Vy"])
-					willCollide = movingent.collision(mobSelect,allEntity["mobs"],acutalAssetGameZone,walls)
+					mob = movingent.move_entity(mob,mob["Vx"],mob["Vy"])
+					willCollide = movingent.collision(mob,allEntity["mobs"],acutalAssetGameZone,walls)[0]
 					if willCollide :
-						mob = movingent.move_entity(mobSelect,-mobSelect["Vx"],-mobSelect["Vy"])
+						mob = movingent.move_entity(mob,-mob["Vx"],-mob["Vy"])
 
 		#gestion de la gravite
 		if actualTime >timeGravity + 0.08 :
@@ -392,11 +392,13 @@ def Time_game():
 							movingent.move_entity(mob,0,1,True)
 			timeGravity = actualTime
 
-			#on fait tirer si le mob est un mob qui tir
-			if (shootingent.is_shooting_ent(mob)) :
-				if actualTime>mob["shotDelay"]+mob["lastShot"][0] :
-					allEntity["projectile"].append(shootingent.shoot(mob))
-					mob = shootingent.as_shot(mob)
+		#on fait tirer si le mob est un mob qui tir
+		for mob in allEntity["mobs"] :
+			if "shootingEnt" in mob["Type"] :
+				if (shootingent.is_shooting_ent(mob)) :
+					if actualTime>mob["shotDelay"]+mob["lastShot"][0] :
+						allEntity["projectile"].append(shootingent.shoot(mob))
+						mob = shootingent.as_shot(mob)
 
 		#gestion des générateurs de bonus
 		for boonx in allEntity["boons"] :
@@ -510,6 +512,7 @@ def Windows():
 	"""
 	x=140
 	y=13
+
 	#info
 	txt= "Vie: "+str(player["Life"])+" / "+str(player["LifeMax"])+"."
 	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
@@ -536,6 +539,10 @@ def Windows():
 	y+=2
 
 	txt= "Y: "+str(player["y"]) + "."
+	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+	y+=2
+
+	txt= "Vy: "+str(player["Vy"]) + "."
 	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
 	y+=2
 
@@ -621,14 +628,14 @@ def Interact():
 					if not(player["Jump"]) :
 						player = character.switch_stand(player,"Run")
 					player = movingent.move_entity(player,1,0)
-					if movingent.collision(player, allEntity["mobs"], acutalAssetGameZone, walls) :
+					if movingent.collision(player, allEntity["mobs"], acutalAssetGameZone, walls)[0] :
 						player = movingent.move_entity(player,-1,0)
 
 				elif c == "q":
 					if not(player["Jump"]) :
 						player = character.switch_stand(player,"Run")
 					player = movingent.move_entity(player,-1,0)
-					if movingent.collision(player, allEntity["mobs"], acutalAssetGameZone, walls) :
+					if movingent.collision(player, allEntity["mobs"], acutalAssetGameZone, walls)[0] :
 						player = movingent.move_entity(player,1,0)
 
 				elif c == "z" and player["Jump"]==0 and player["Vy"]==0 :
@@ -636,9 +643,11 @@ def Interact():
 					player = movingent.jump(player)
 					player["Vy"]=-1
 
-				# 	elif c == "s" and player_move == False:
-				# 		Move.Player.stand("Wait")
-				# 		player_move = True
+				elif c == "s" :
+					player = movingent.move_entity(player,0,1)
+					if movingent.collision(player, allEntity["mobs"], acutalAssetGameZone, walls)[0] :
+						player = movingent.move_entity(player,0,-1)
+
 				# -afair on fait descendre de la plateforme si c'est sur une plateforme
 			else :
 				None

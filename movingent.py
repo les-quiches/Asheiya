@@ -203,12 +203,10 @@ def gravity(GRAVITY_Entity,GRAVITY_onTheGround) :
     """
     if GRAVITY_Entity["Jump"]>=1 :
         GRAVITY_Entity["Jump"]-=1
-    else : 
-        GRAVITY_Entity["Vy"]=1
 
     if GRAVITY_onTheGround==True :
         GRAVITY_Entity["Jump"]=0
-        GRAVITY_Entity["Vy"]=0
+
     return GRAVITY_Entity
 
 #_____Collision______________________________________________________________________

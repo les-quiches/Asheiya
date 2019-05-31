@@ -41,7 +41,7 @@ timeStep = None
 timeScreen = None
 timeGravity = None
 
-allEntity= {}
+allEntity= []
 
 color={}
 
@@ -92,11 +92,6 @@ def Init(): 	#initialisation des variables
 	timeStep = 0.01 # en secondes -> 100 images par secondes
 	timeScreen = time.time()
 	timeGravity = time.time()
-
-	allEntity["projectile"]=[] #gere les tirs de Asheiya et des ennemis
-	allEntity["mobs"]=[] #gere Asheiya, les boss, et autres mobs avec des points de vies, qui se déplacent
-	allEntity["stage"]=[] #gere les plateforme pieges et autres
-	allEntity["boons"]=[] #gère les bonus et générateurs de bonus
 
 	#start menu
 	menu="start"
@@ -152,7 +147,7 @@ def Init(): 	#initialisation des variables
 
 	player = character.create_character(player , spowerSpeed, spowerMax)
 
-	allEntity["mobs"].append(player)
+	allEntity.append(player)
 
 
 	#definition de la fenetre de jeu
@@ -187,7 +182,7 @@ def Init_manche():
 		walls = background.create_window("GameZone/Zone_"+str(allAssetGameZone["NumZone"])+"_TraversantPlateforme.txt")
 		acutalAssetGameZone= allAssetGameZone["Zone_"+str(allAssetGameZone["NumZone"])]
 
-		player = movingent.tp_entity(player,20,20)
+		player = movingent.tp_entity(player,20,37)
 
 		#placement des bonus :  #-afair quand on les placera tous, automatiser le tout
 		listeBonus = {"speedUp" : 0.02, "fireRateUp" : 1}
@@ -199,7 +194,7 @@ def Init_manche():
 		boon1 = entity.create_entity("boon1", xbonus, ybonus, assetBonus) #-afair en sorte que leurs noms s'incrémente tout seul
 		boon1 = boon.create_boon(boon1, listeBonus)
 
-		allEntity["boons"].append(boon1)
+		allEntity.append(boon1)
 
 		listeBonus = {"lifeUp" : 5, "armorMaxUp" : 2}
 		xbonus = 80
@@ -211,7 +206,7 @@ def Init_manche():
 		boong = entity.create_entity("boong1", xbonus, ybonus, assetBonus)
 		boong = boon.create_boon_generator(boong, listeBonus, geneSpeed)
 
-		allEntity["boons"].append(boong)
+		allEntity.append(boong)
 
 		#/!\ juste un mob pour test, les valeurs sont débiles
 		assetMob1 = {}
@@ -221,11 +216,11 @@ def Init_manche():
 		mob1 = entity.create_entity("testmob",20,20,assetMob1, "AItest")
 		mob1 = movingent.create_moving_ent(mob1,1,1,0.5, False)
 
-		allEntity["mobs"].append(mob1)
+		allEntity.append(mob1)
 
 		#Story
 		storyFile = "Story/Zone_1.txt"
-		maxLigne = 10
+		maxLigne = 35
 		LastTime = time.time()
 		Story=windows.create_story(storyFile,maxLigne,LastTime)
 		# manche initialisé
@@ -269,20 +264,18 @@ def Game():
 		Init_manche()
 
 	#gestion des IAs :
-	for typeEnt in allEntity.keys() :
-		for ent in allEntity[typeEnt] :
-			if ent["AI"]!=None :
-				log = AI.execute(ent, allEntity)
-				ent = log[0]
-				allEntity = log[1]
+	for ent in allEntity:
+		if ent["AI"]!=None :
+			log = AI.execute(ent, allEntity)
+			ent = log[0]
+			allEntity = log[1]
 
 
 	#gestion des assets actuelles :
-	for typeEnt in allEntity.keys() :
-		for ent in allEntity[typeEnt] :
-			if "character" in ent["Type"] :
-				ent["Asset"]["Actual"] = character.get_asset(ent)
-				pass #au cas ou on mette d'autre type ensuite, il faut pas que les assets actuels s'écrasent les uns les autres.
+	for ent in allEntity :
+		if "character" in ent["Type"] :
+			ent["Asset"]["Actual"] = character.get_asset(ent)
+			pass #au cas ou on mette d'autre type ensuite, il faut pas que les assets actuels s'écrasent les uns les autres.
 
 
 	#gestion de l'ultime
@@ -291,8 +284,8 @@ def Game():
 		player["spowerDelay"]=0
 
 	#gestion des générateurs de boons -afair :
-	for boong in allEntity["boons"] :
-		if "boonGenerator" in boong["Type"] :
+	for ent in allEntity :
+		if "boonGenerator" in ent["Type"] :
 			# if il n'y a pas de bonus sur la case du générateur : -afair
 			# boong = boon.set_free(boong)
 			None
@@ -302,12 +295,13 @@ def Game():
 	#gestion des cadavres
 	toRemove = []
 	if menu == "manche" :
-		for mob in allEntity["mobs"] :
-			if "livingEnt" in mob["Type"]:
-				if not(livingent.is_alive(mob)):
-					toRemove.append(mob)
-		for deadmob in toRemove :
-			allEntity["mobs"].remove(deadmob)
+		for ent in allEntity :
+			if "livingEnt" in ent["Type"]:
+				if not(livingent.is_alive(ent)):
+					toRemove.append(ent)
+
+		for deadEnt in toRemove :
+			allEntity.remove(deadEnt)
 
 
 		# #gestion des fins de manches
@@ -361,56 +355,65 @@ def Time_game():
 	actualTime=time.time()
 	if menu == "manche":
 		#on est en jeu
-		#gestion des tirs
-		for bullet in allEntity["projectile"] :
-			if actualTime>bullet["Speed"]+bullet["LastTime"] :
-				bullet = movingent.move_entity(bullet,bullet["Vx"],bullet["Vy"])
-				log = shootingent.hit(bullet,allEntity["mobs"],acutalAssetGameZone,walls)
-				if log[1]:#une entite a etait touche
-					log[2]=livingent.hurt(log[2],bullet["damageToInflict"])
-				if log[0]:#il y a eu collision
-					allEntity["projectile"].remove(bullet)
 
-		#gestion des déplacements
-		for mob in allEntity["mobs"] : # -afair modifier par movingent
-			if (actualTime>mob["Speed"]+mob["LastTime"]):
-				if "character" in mob["Type"] :#deplacement joueur
-					Interact()
-				if (mob["Vx"]!=0 or mob["Vy"]!=0) : #deplacement contraints
-					mob = movingent.move_entity(mob,mob["Vx"],mob["Vy"])
-					willCollide = movingent.collision(mob,allEntity["mobs"],acutalAssetGameZone,walls)[0]
-					if willCollide :
-						mob = movingent.move_entity(mob,-mob["Vx"],-mob["Vy"])
+		toRemove = []
 
-		#gestion de la gravite
-		if actualTime >timeGravity + 0.08 :
-			for mob in allEntity["mobs"] :
-				if "movingEnt" in mob["Type"] :
-					if (mob["Gravity"]):
-						onTheGround = entity.is_ground_beneath(entity.feet(mob),acutalAssetGameZone,walls) #-afair test s'il y a une plateforme en dessous
-						mob = movingent.gravity(mob,onTheGround)
-						if (not(onTheGround) and mob["Jump"] ==0) :
-							movingent.move_entity(mob,0,1,True)
-			timeGravity = actualTime
+		for ent in allEntity :
 
-		#on fait tirer si le mob est un mob qui tir
-		for mob in allEntity["mobs"] :
-			if "shootingEnt" in mob["Type"] :
-				if (shootingent.is_shooting_ent(mob)) :
-					if actualTime>mob["shotDelay"]+mob["lastShot"][0] :
-						allEntity["projectile"].append(shootingent.shoot(mob))
-						mob = shootingent.as_shot(mob)
+			#deplacement des entitées
+			if "movingEnt" in ent["Type"] :
+				if actualTime>ent["LastTime"] + ent["Speed"] :
+					if "character" in ent["Type"] :
+						Interact()
+					if (ent["Vx"]!=0 or ent["Vy"]!=0) :
+						ent = movingent.move_entity(ent,ent["Vx"], ent["Vy"])
+					if "bullet" in ent["Type"] : 
+						logHit = shootingent.hit(ent, allEntity, acutalAssetGameZone, walls)
+						if logHit["hit_entity"]:#une entite a etait touche
+							logHit["entity"]=livingent.hurt(logHit["entity"],ent["damageToInflict"])  #a tester -afair
+						if logHit["is_hit"]:#il y a eu collision
+							toRemove.append(ent)
+					else :
+						willCollide = movingent.collision(ent,allEntity,acutalAssetGameZone,walls)[0]
+						if willCollide :
+							ent = movingent.move_entity(ent,-ent["Vx"],-ent["Vy"])
+				#gravité							
+				if actualTime >timeGravity + 0.08 :												
+						if (ent["Gravity"]):
+							onTheGround = entity.is_ground_beneath(entity.feet(ent),acutalAssetGameZone,walls)
+							if ent["Jump"]>0 :
+								movingent.move_entity(ent,0,-1,True)
+								willCollide = movingent.collision(ent,allEntity,acutalAssetGameZone,walls)[0]
+								if willCollide :
+									ent = movingent.move_entity(ent,0,1,False)
+							elif not(onTheGround) :
+								movingent.move_entity(ent,0,1,True)
+							ent = movingent.gravity(ent,onTheGround) #on gère la valeur de Jump
+							
+						timeGravity = actualTime
 
-		#gestion des générateurs de bonus
-		for boonx in allEntity["boons"] :
-			if "boonGenerator" in boonx["Type"] :
-				if (boonx["GeneLastTime"][0]+boonx["GeneSpeed"] > actualTime and not(boonx["isGenerated"])) :
-					allEntity["boons"].append(boon.generate(boonx))
-					boonGene = boon.as_generate(boonx)
-
-		if actualTime>player["LastTime"]+0.03 :
-			player = character.switch_stand(player,"Wait")
 			#on remet le joueur en position d'attente s'il fait rien
+			if actualTime>player["LastTime"]+0.03 :
+				player = character.switch_stand(player,"Wait")
+
+			#gestion des tirs
+			if "shootingEnt" in ent["Type"] :
+				if actualTime>ent["shotDelay"]+ent["lastShot"][0] :
+					allEntity.append(shootingent.shoot(ent))
+					ent = shootingent.as_shot(ent)
+
+			#gestion des bonus
+			if "boonGenerator" in ent["Type"] :
+				if (actualTime and not(ent["isGenerated"]) > ent["GeneLastTime"][0]+ent["GeneSpeed"]) :
+					allEntity.append(boon.generate(ent))
+					ent = boon.as_generate(ent)
+
+
+		#gestion des cadavres : 
+		for deadEnt in toRemove :
+			allEntity.remove(deadEnt)
+		
+
 
 		#gestion de l'ultime
 		if actualTime>player["spowerLastTime"]+player["spowerSpeed"] and player["spowerCharge"]<player["spowerMax"] :
@@ -420,10 +423,12 @@ def Time_game():
 				player = character.charge_ult(player)
 				player["spowerLastTime"] = actualTime
 
+
 		#gestion de Story
 		if actualTime>Story["Speed"]+Story["LastTime"] :
 			windows.Story_Next_Ligne(Story)
 			Story["LastTime"]=actualTime
+
 	else : #on est dans un autre menu, -afair, disons pour le moment dans un menu textuelle
 		Interact()
 
@@ -463,26 +468,24 @@ def Show() :
 
 
 	#on affiche les entités
-	for boonx in allEntity["boons"] :
-		color_bg = color["background"]["Black"]
-		color_txt = color["txt"]["Green"]
-		if "boonGenerator" not in boonx["Type"] :
-			entity.show_entity(boonx,color_bg,color_txt)
+	for ent in allEntity :
+		if "boon" in ent["Type"] :
+			color_bg = color["background"]["Black"]
+			color_txt = color["txt"]["Green"]
 
-	for ent in allEntity["mobs"] :
-		if "character" in ent["Type"]:
-			color_bg = color["background"]["Black"] #noir
-			color_txt = color["txt"]["Yellow"]#jaune
+		elif "bullet" in ent["Type"] :
+			color_bg = color["background"]["Black"]
+			color_txt = color["txt"]["Red"]
+
 		else :
-			#asset = entity.create_asset(ent["Asset"])
+			color_bg = color["background"]["Black"]
+			color_txt = color["txt"]["Cyan"]
+
+		if "character" in ent["Type"]:
 			color_bg = color["background"]["Black"]
 			color_txt = color["txt"]["Yellow"]
 		entity.show_entity(ent,color_bg,color_txt)
-
-	for shot in allEntity["projectile"] :
-		color_bg = color["background"]["Black"]
-		color_txt = color["txt"]["Red"]
-		entity.show_entity(shot,color_bg,color_txt)
+		
 
 	timeScreen = time.time()
 
@@ -629,24 +632,23 @@ def Interact():
 					if not(player["Jump"]) :
 						player = character.switch_stand(player,"Run")
 					player = movingent.move_entity(player,1,0)
-					if movingent.collision(player, allEntity["mobs"], acutalAssetGameZone, walls)[0] :
+					if movingent.collision(player, allEntity, acutalAssetGameZone, walls)[0] :
 						player = movingent.move_entity(player,-1,0)
 
 				elif c == "q":
 					if not(player["Jump"]) :
 						player = character.switch_stand(player,"Run")
 					player = movingent.move_entity(player,-1,0)
-					if movingent.collision(player, allEntity["mobs"], acutalAssetGameZone, walls)[0] :
+					if movingent.collision(player, allEntity, acutalAssetGameZone, walls)[0] :
 						player = movingent.move_entity(player,1,0)
 
 				elif c == "z" and player["Jump"]==0 and player["Vy"]==0 :
 					player = character.switch_stand(player, "Wait")
 					player = movingent.jump(player)
-					player["Vy"]=-1
 
 				elif c == "s" :
 					player = movingent.move_entity(player,0,1)
-					if movingent.collision(player, allEntity["mobs"], acutalAssetGameZone, walls)[0] :
+					if movingent.collision(player, allEntity, acutalAssetGameZone, walls)[0] :
 						player = movingent.move_entity(player,0,-1)
 
 				# -afair on fait descendre de la plateforme si c'est sur une plateforme
@@ -719,7 +721,7 @@ def Quit_game():
 	======
 		Sans retour
 	"""
-	global oldSettings, allEntity
+	global oldSettings
 
 	sys.stdout.write("\033[1;1H")
 	sys.stdout.write("\033[2J")

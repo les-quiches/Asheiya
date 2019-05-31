@@ -4,6 +4,7 @@ import entity
 import time
 import character
 import movingent
+import livingent
 import hitbox
 
 import files
@@ -98,30 +99,6 @@ def create_bullet(Entity, damage, origine) :
     return Entity
 
 #_____Accesseur____________________________________________________________________
-def is_shooting_ent(Entity) :
-    """
-    G{classtree}
-    DESCRIPTION
-    ===========
-        Permet de vérifier si l'entité est une entité capable de tirer
-
-    PARAM
-    =====
-
-    @param Entité: Entité a tester
-    @type Entité : dict
-
-
-    RETOUR
-    ======
-    @return : True si l'entité est capable de tirer, False sinon.
-    @rtype :bool
-    """
-    if "shootingEnt" in Entity["Type"] :
-        return True
-    else :
-        return False
-
 def nb_shot(Entity) :
     """
     G{classtree}
@@ -329,23 +306,26 @@ def hit(bullet, entities , gameBorder, walls ) :
     Shadow_walls=hitbox.hit_box_complex(walls,Gostwall)
     Shadow_gameBorder=hitbox.hit_box_complex(gameBorder,_wall)
     Shadow_backgound=hitbox.Add_Shadow(Shadow_walls,Shadow_gameBorder)
+
+    HIT_log = {}
+
     if hitbox.detect_collision_wall(bullet,Shadow_backgound) != _wall:
         for entity in entities:
             if hitbox.detect_collision_entity(bullet,entity):#trouver asset général
-                is_hit = True
-                hit_entity=True  #test si la balle touche une entite ou pas
-                log = (is_hit, hit_entity,entity)
-                return(log)
+                if "livingEnt" in entity["Type"] :
+                    HIT_log["is_hit"] = True
+                    HIT_log["hit_entity"]=True  #test si la balle touche une entite ou pas
+                    HIT_log["entity"] = entity
             else:
-                is_hit = False
-                hit_entity=False  #test si la balle touche une entite ou pas
-                entity = None
+                HIT_log["is_hit"] = False
+                HIT_log["hit_entity"]=False  
+                HIT_log["entity"] = None
     else:
-        is_hit = True
-        hit_entity=False  #test si la balle touche une entite ou pas
-        entity = None #l'entite touche (le nom) le cas echeant
-    log = (is_hit, hit_entity,entity) #pour tout renvoyer
-    return(log)
+        HIT_log["is_hit"] = True
+        HIT_log["hit_entity"]=False  #test si la balle touche une entite ou pas
+        HIT_log["entity"] = None
+
+    return(HIT_log)
 
 
 

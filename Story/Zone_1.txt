@@ -1,10 +1,33 @@
-Titre de l'Histoire
-Ligne 2
-Ligne 3
-Ligne 4
-Ligne 5
-Ligne 6
-Ligne 7
-Ligne 8
-Ligne 9
-Ligne 10
+Episode 1 :
+- Le reveil -
+____________
+" . "
+"  ..  "
+"    ...    "
+"Il fait si noir.."
+"Quel est cette endroit?"
+"J'ai si chaud..."
+"..."
+"Mon gantelet est encore fonctionnelle."
+"Je vais m'en servir pour m'eclairer, en attendant de retrouver mon vaisseau."
+"Ou est mon vaisseau? Que m'est-il arrive?"
+"Je me rappelle du vide de l'espace, du vide de mes pensees."
+"Il faut que je retrouve mes memoires."
+"Je reconnais la composition de ces cristaux."
+"Je pense pouvoir en tirer suffisemment d'energie pour remettre en marche ma combinaison."
+"Qu'etais-je entrain de fuir?"
+"L'atmosphere de cette planete ne semble pas m'etre nocive."
+"Est-ce que ce cristal vient de bouger?"
+"..."
+"Je ne suis pas seule dans ces cavernes."
+____________
+
+Episode 2  :
+- Premier contact -
+___________
+
+"Les ombres bougent."
+"Je sens mes avant-bras se remplir de fluide inflammable."
+"Les murs semblent vivant."
+"Ils sont tout autour de moi."
+"Je dois a tout pris recuperer ces cristaux."

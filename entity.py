@@ -11,7 +11,7 @@ f=files
 
 
 #_____Create____________________________________________________________________
-def create_entity(Name, X, Y, Asset, AI = None):
+def create_entity(Name, X, Y, Asset,ShadowAsset, AI = None):
     """
     G{classtree}
     DESCRIPTION
@@ -50,6 +50,7 @@ def create_entity(Name, X, Y, Asset, AI = None):
     Entity["x"]= X
     Entity["y"]= Y
     Entity["Asset"]= Asset
+    Entity["ShadowAsset"] = ShadowAsset
     Entity["AI"]=AI
 
     return(Entity)

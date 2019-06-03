@@ -4,11 +4,12 @@ import entity
 import livingent
 import shootingent
 import movingent
+import hitbox
 
 import time
 
 # Liste des bonus possibles : (speedUp, armorUp, damageUp, lifeUp, armorMaxUp, fireRateUp)
-
+Boon_Zone = "$"
 
 #_____Create____________________________________________________________________
 def create_boon(Entity,Bonus) :
@@ -81,7 +82,7 @@ def create_boon_generator(Entity,Bonus, GeneSpeed, GeneLastTime=[time.time(),0])
 	return Entity
 
 #_____Get______________________________________________________________________
-def what_boon(boon) : 
+def what_boon(boon) :
 	"""
 	G{classtree}
 	DESCRIPTION
@@ -224,8 +225,11 @@ def generate(boonG) :
 	asset["boon1"] = entity.create_asset("Boon/boon1.txt")
 	asset["Actual"] = asset["boon1"]
 	name = "boon" +"_"+ boonG["Name"] +"_"+ str(boonG["GeneLastTime"][1])
-
-	boon = entity.create_entity(name,x,y,asset)
+	Shadowasset={}
+	Shadowasset["boon1"]={}
+	Shadowasset["boon1"]["Asset"]=hitbox.hit_box_complex(asset["boon1"]["Asset"],Boon_Zone)
+	Shadowasset["Actual"]=asset["boon1"]
+	boon = entity.create_entity(name,x,y,asset, Shadowasset)
 	boon = create_boon(boon, boonG["Bonus"])
 
 	return boon
@@ -236,4 +240,3 @@ def generate(boonG) :
 #____Jeux de Test________________________________________________________________
 if (__name__=="__main__"):
 	None
-

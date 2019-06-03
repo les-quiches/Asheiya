@@ -5,6 +5,7 @@ damage_Zone= "¤"
 _wall = "X"
 Gostwall = "-"
 take_damage = "."
+Boon_Zone = "$"
 
 import files
 
@@ -63,10 +64,10 @@ def detect_collision_wall(Entity,Shadow_backgound):
     @return detect: True s'il y a une collision avec un mur, False sinon.
     @rtype detect: str
     """
-    asset = Entity["Asset"]["Actual"]["Asset"][Entity["Asset"]["Actual"]["FrameNb"]]
     x = Entity["x"]
     y = Entity["y"]
-    Shadow_entity = hit_box_complex(asset,random_zone)
+    files.SAVE_FILE_JSON(Entity["ShadowAsset"]["Actual"],'Entity["ShadowAsset"]["Actual"]')
+    Shadow_entity = Entity["ShadowAsset"]["Actual"]["Asset"][Entity["ShadowAsset"]["Actual"]["FrameNb"]]
     detect = void_collision
     for i in range(0,len(Shadow_entity)):
         for j in range(0,len(Shadow_entity[i])):
@@ -129,15 +130,15 @@ def detect_collision_entity(DCE_Entity_1, DCE_Entity_2):
     DCE_y1=DCE_Entity_1["y"]
     DCE_x2=DCE_Entity_2["x"]
     DCE_y2=DCE_Entity_2["y"]
-    DCE_asset_entity_1 = DCE_Entity_1["Asset"]["Actual"]["Asset"][DCE_Entity_1["Asset"]["Actual"]["FrameNb"]]
-    DCE_asset_entity_2 = DCE_Entity_2["Asset"]["Actual"]["Asset"][DCE_Entity_2["Asset"]["Actual"]["FrameNb"]]
+    #DCE_asset_entity_1 = DCE_Entity_1["Asset"]["Actual"]["Asset"][DCE_Entity_1["Asset"]["Actual"]["FrameNb"]]
+    #DCE_asset_entity_2 = DCE_Entity_2["Asset"]["Actual"]["Asset"][DCE_Entity_2["Asset"]["Actual"]["FrameNb"]]
     #a,b,DCE_x_2,DCE_y_2=hit_box_simple(DCE_Entity_2)
     #a,b,DCE_x_1,DCE_y_1=hit_box_simple(DCE_Entity_2)
     #DCE_x = max(DCE_x_1,DCE_x_2)
     #DCE_y = max(DCE_y_1,DCE_y_2)
     DCE_Void_Shadow=create_void_shadow(140,42)
-    DCE_Shadow_asset_1 = hit_box_complex(DCE_asset_entity_1,random_zone)
-    DCE_Shadow_asset_2 = hit_box_complex(DCE_asset_entity_2,random_zone)
+    DCE_Shadow_asset_1 = DCE_Entity_1["ShadowAsset"]["Actual"]["Asset"][DCE_Entity_1["ShadowAsset"]["Actual"]["FrameNb"]]
+    DCE_Shadow_asset_2 = DCE_Entity_2["ShadowAsset"]["Actual"]["Asset"][DCE_Entity_2["ShadowAsset"]["Actual"]["FrameNb"]]
     DCE_Shadow = Add_Shadow(DCE_Shadow_asset_2,DCE_Void_Shadow,DCE_x2,DCE_y2)
     for i in range(0,len(DCE_Shadow_asset_1)-1):
         for j in range(0,len(DCE_Shadow_asset_1[i])-1):

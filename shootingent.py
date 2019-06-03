@@ -266,9 +266,14 @@ def shoot(Entity) :
         name_asset = "Gun_Horizontal"
 
     asset = {}
+    ShadowAsset={}
     asset[name_asset] = Entity["assetShot"][name_asset]
+    ShadowAsset[name_asset]={}
+    ShadowAsset[name_asset]["Asset"]=hitbox.hit_box_complex(asset[name_asset]["Asset"],damage_Zone)
+    ShadowAsset[name_asset]["FrameNb"]=asset[name_asset]["FrameNb"]
     asset["Actual"] = Entity["assetShot"][name_asset]
-    bullet = entity.create_entity(bullet_name,x,y,asset)
+    ShadowAsset["Actual"]=ShadowAsset[name_asset]
+    bullet = entity.create_entity(bullet_name,x,y,asset,ShadowAsset )
     bullet = movingent.create_moving_ent(bullet, Vx, Vy, Entity["bulletSpeed"])
     bullet = create_bullet(bullet,Entity["damage"],Entity["Name"])
 
@@ -318,7 +323,7 @@ def hit(bullet, entities , gameBorder, walls ) :
                     HIT_log["entity"] = entity
             else:
                 HIT_log["is_hit"] = False
-                HIT_log["hit_entity"]=False  
+                HIT_log["hit_entity"]=False
                 HIT_log["entity"] = None
     else:
         HIT_log["is_hit"] = True

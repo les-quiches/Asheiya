@@ -21,6 +21,7 @@ import character
 import boon
 import files
 import windows
+import hitbox
 
 #importation des IAs
 import AI
@@ -49,7 +50,13 @@ player = None
 menu = None
 manche = None #permet de gerer la manche et si c'est la premiere boucle de la manche
 
-
+void_collision ="0"
+random_zone="O"
+damage_Zone= "¤"
+_wall = "X"
+Gostwall = "-"
+take_damage = "."
+Boon_Zone = "$"
 
 
 #______INIT________________________________________________________________________
@@ -70,7 +77,6 @@ def Init(): 	#initialisation des variables
 		Sans retour
 	"""
 	global color, window, allAssetGameZone, timeStep, timeScreen, timeGravity, allEntity, player, menu, manche, assetInfoStory
-
 
 	color["txt"]={"Black":30, "Red":31,"Green":32,"Yellow":33,"Blue":34,"Pink":35,"Cyan":36,"White":37}
 	color["background"]={"Black":40, "Red":41,"Green":42,"Yellow":43,"Blue":44,"Pink":45,"Cyan":46,"White":47}
@@ -118,11 +124,15 @@ def Init(): 	#initialisation des variables
 	xPlayer = 0
 	yPlayer = 0
 	assetPlayer = {}
+	ShadowAssetPlayer={}
 	assetPlayer["position"]=["Wait","Right",0] #correspond a sa representation : course/attente, orientation, position du bras
 	for Asheiya_doc in asheiyaAsset :
-		assetPlayer[Asheiya_doc]=entity.create_asset("Asheiya/Asset/" + Asheiya_doc + ".txt") #chargement Asset
+		assetPlayer[Asheiya_doc]=entity.create_asset("Asheiya/Asset/" + Asheiya_doc + ".txt") #chargement Asset et Shadow
+		ShadowAssetPlayer[Asheiya_doc]={}
+		ShadowAssetPlayer[Asheiya_doc]["Asset"]=hitbox.hit_box_complex(assetPlayer[Asheiya_doc]["Asset"],take_damage)
+		ShadowAssetPlayer[Asheiya_doc]["FrameNb"]=assetPlayer[Asheiya_doc]["FrameNb"]
 
-	player = entity.create_entity("Asheiya Briceval",xPlayer,yPlayer,assetPlayer)
+	player = entity.create_entity("Asheiya Briceval",xPlayer,yPlayer,assetPlayer,ShadowAssetPlayer)
 
 	vxPlayer = 0
 	vyPlayer = 0
@@ -135,8 +145,12 @@ def Init(): 	#initialisation des variables
 
 	damage = 5
 	assetShot = {}
+	ShadowAssetShot = {}
 	for Shot_doc in ["Gun_Horizontal","Gun_Slash","Gun_UnSlash","Gun_Vertical"] :
 		assetShot[Shot_doc] =entity.create_asset("Asheiya/Projectile/"+Shot_doc+".txt")
+		ShadowAssetShot[Shot_doc]={}
+		ShadowAssetShot[Shot_doc]["Asset"]=hitbox.hit_box_complex(assetShot[Shot_doc]["Asset"],damage_Zone)
+		ShadowAssetShot[Shot_doc]["FrameNb"]=assetShot[Shot_doc]["FrameNb"]
 	shotDelay = 3
 	bulletSpeed = 0.05
 
@@ -189,9 +203,14 @@ def Init_manche():
 		xbonus = 80
 		ybonus = 40
 		assetBonus = {}
+		ShadowAssetBonus={}
 		assetBonus["boon1"] = entity.create_asset("Boon/boon1.txt") #-afair en sorte que les accès soient automatisé
 		assetBonus["Actual"] = assetBonus["boon1"]
-		boon1 = entity.create_entity("boon1", xbonus, ybonus, assetBonus) #-afair en sorte que leurs noms s'incrémente tout seul
+		ShadowAssetBonus["boon1"]={}
+		ShadowAssetBonus["boon1"]["Asset"]=hitbox.hit_box_complex(assetBonus["boon1"]["Asset"],Boon_Zone)
+		ShadowAssetBonus["boon1"]["FrameNb"]=assetBonus["boon1"]["FrameNb"]
+		ShadowAssetBonus["Actual"]=ShadowAssetBonus["boon1"]
+		boon1 = entity.create_entity("boon1", xbonus, ybonus, assetBonus,ShadowAssetBonus) #-afair en sorte que leurs noms s'incrémente tout seul
 		boon1 = boon.create_boon(boon1, listeBonus)
 
 		allEntity.append(boon1)
@@ -202,18 +221,27 @@ def Init_manche():
 		assetBonus = {}
 		assetBonus["boonGenerator"] = entity.create_asset("Boon/boonGenerator.txt")
 		assetBonus["Actual"] = assetBonus["boonGenerator"]
+		ShadowAssetBonus["boonGenerator"]={}
+		ShadowAssetBonus["boonGenerator"]["Asset"]=hitbox.hit_box_complex(assetBonus["Actual"]["Asset"],Boon_Zone)
+		ShadowAssetBonus["boonGenerator"]["FrameNb"]=assetBonus["boonGenerator"]["FrameNb"]
+		ShadowAssetBonus["Actual"]=ShadowAssetBonus["boon1"]
 		geneSpeed = 2
-		boong = entity.create_entity("boong1", xbonus, ybonus, assetBonus)
+		boong = entity.create_entity("boong1", xbonus, ybonus, assetBonus, ShadowAssetBonus)
 		boong = boon.create_boon_generator(boong, listeBonus, geneSpeed)
 
 		allEntity.append(boong)
 
 		#/!\ juste un mob pour test, les valeurs sont débiles
 		assetMob1 = {}
+		ShadowAssetMob1={}
 		assetMob1["mob1"] = entity.create_asset("Mobs/mob1.txt")
 		assetMob1["Actual"]= assetMob1["mob1"]
+		ShadowAssetMob1["mob1"]={}
+		ShadowAssetMob1["mob1"]["Asset"]=hitbox.hit_box_complex(assetMob1["mob1"]["Asset"],take_damage)
+		ShadowAssetMob1["mob1"]["FrameNb"]=assetMob1["mob1"]["FrameNb"]
+		ShadowAssetMob1["Actual"]=ShadowAssetMob1["mob1"]
 
-		mob1 = entity.create_entity("testmob",20,20,assetMob1, "AItest")
+		mob1 = entity.create_entity("testmob",20,20,assetMob1,ShadowAssetMob1, "AItest")
 		mob1 = movingent.create_moving_ent(mob1,1,1,0.5, False)
 
 		allEntity.append(mob1)
@@ -275,6 +303,7 @@ def Game():
 	for ent in allEntity :
 		if "character" in ent["Type"] :
 			ent["Asset"]["Actual"] = character.get_asset(ent)
+			ent["ShadowAsset"]["Actual"] = character.get_shadow(ent)
 			pass #au cas ou on mette d'autre type ensuite, il faut pas que les assets actuels s'écrasent les uns les autres.
 
 
@@ -367,7 +396,7 @@ def Time_game():
 						Interact()
 					if (ent["Vx"]!=0 or ent["Vy"]!=0) :
 						ent = movingent.move_entity(ent,ent["Vx"], ent["Vy"])
-					if "bullet" in ent["Type"] : 
+					if "bullet" in ent["Type"] :
 						logHit = shootingent.hit(ent, allEntity, acutalAssetGameZone, walls)
 						if logHit["hit_entity"]:#une entite a etait touche
 							logHit["entity"]=livingent.hurt(logHit["entity"],ent["damageToInflict"])  #a tester -afair
@@ -377,8 +406,8 @@ def Time_game():
 						willCollide = movingent.collision(ent,allEntity,acutalAssetGameZone,walls)[0]
 						if willCollide :
 							ent = movingent.move_entity(ent,-ent["Vx"],-ent["Vy"])
-				#gravité							
-				if actualTime >timeGravity + 0.08 :												
+				#gravité
+				if actualTime >timeGravity + 0.08 :
 						if (ent["Gravity"]):
 							onTheGround = entity.is_ground_beneath(entity.feet(ent),acutalAssetGameZone,walls)
 							if ent["Jump"]>0 :
@@ -389,7 +418,7 @@ def Time_game():
 							elif not(onTheGround) :
 								movingent.move_entity(ent,0,1,True)
 							ent = movingent.gravity(ent,onTheGround) #on gère la valeur de Jump
-							
+
 						timeGravity = actualTime
 
 			#on remet le joueur en position d'attente s'il fait rien
@@ -409,10 +438,10 @@ def Time_game():
 					ent = boon.as_generate(ent)
 
 
-		#gestion des cadavres : 
+		#gestion des cadavres :
 		for deadEnt in toRemove :
 			allEntity.remove(deadEnt)
-		
+
 
 
 		#gestion de l'ultime
@@ -485,7 +514,7 @@ def Show() :
 			color_bg = color["background"]["Black"]
 			color_txt = color["txt"]["Yellow"]
 		entity.show_entity(ent,color_bg,color_txt)
-		
+
 
 	timeScreen = time.time()
 

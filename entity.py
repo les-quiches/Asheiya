@@ -165,7 +165,7 @@ def is_ground_beneath(IGB_feet,Asset_Game_Zone,walls) :
     """
     IGB_ground = IGB_feet[2]+1 #position en dessous des pieds
     IGB_length_feet = IGB_feet[1]-IGB_feet[0]
-    IGB_map = hitbox.Add_Shadow(walls,Asset_Game_Zone)
+    IGB_map = Asset_Game_Zone#hitbox.Add_Shadow(walls,Asset_Game_Zone)
     for a in range(IGB_length_feet):
         log = (IGB_feet[0]+a,IGB_feet[2])
         if IGB_map[IGB_feet[2]][IGB_feet[0]+a] != " " :
@@ -204,10 +204,11 @@ def show_entity(Entity, color_bg, color_txt):
     asset  = Entity["Asset"]["Actual"]
     X=Entity["x"]+1
     Y=Entity["y"]+1
+    s=""
     #couleur fond
-    sys.stdout.write("\033["+str(color_bg)+"m")
+    s+="\033["+str(color_bg)+"m"
 	#couleur texte
-    sys.stdout.write("\033["+str(color_txt)+"m")
+    s+="\033["+str(color_txt)+"m"
 
     Frame=asset["FrameNb"]
     if asset["FrameNb"]+1 < len(asset["Asset"]):
@@ -215,10 +216,11 @@ def show_entity(Entity, color_bg, color_txt):
     else:
         asset["FrameNb"]=0
     for j in range(0,len(asset["Asset"][Frame])):
-        s="\033["+str(Y+j)+";"+str(X)+"H"
-        sys.stdout.write(s)
-        sys.stdout.write(asset["Asset"][Frame][j])
-        sys.stdout.write("\n")
+        s+="\033["+str(Y+j)+";"+str(X)+"H"
+
+        s+=asset["Asset"][Frame][j]
+        s+="\n"
+    sys.stdout.write(s)
 
     return
 

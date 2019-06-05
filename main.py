@@ -76,7 +76,7 @@ def Init(): 	#initialisation des variables
 	======
 		Sans retour
 	"""
-	global color, window, allAssetGameZone, timeStep, timeScreen, timeGravity, allEntity, player, menu, manche, assetInfoStory
+	global color, window, allAssetGameZone, timeStep, timeScreen, timeGravity, allEntity, player, menu, manche, assetInfoStory, Shadow_background
 
 	color["txt"]={"Black":30, "Red":31,"Green":32,"Yellow":33,"Blue":34,"Pink":35,"Cyan":36,"White":37}
 	color["background"]={"Black":40, "Red":41,"Green":42,"Yellow":43,"Blue":44,"Pink":45,"Cyan":46,"White":47}
@@ -95,7 +95,7 @@ def Init(): 	#initialisation des variables
 	"Gun_Horizontal","Gun_Slach","Gun_UnSlash","Gun_Vertical"
 	]
 
-	timeStep = 0.01 # en secondes -> 100 images par secondes
+	timeStep = 0.03 # en secondes -> 20 images par secondes
 	timeScreen = time.time()
 	timeGravity = time.time()
 
@@ -129,14 +129,13 @@ def Init(): 	#initialisation des variables
 	for Asheiya_doc in asheiyaAsset :
 		assetPlayer[Asheiya_doc]=entity.create_asset("Asheiya/Asset/" + Asheiya_doc + ".txt") #chargement Asset et Shadow
 		ShadowAssetPlayer[Asheiya_doc]={}
-		ShadowAssetPlayer[Asheiya_doc]["Asset"]=hitbox.hit_box_complex(assetPlayer[Asheiya_doc]["Asset"],take_damage)
+		ShadowAssetPlayer[Asheiya_doc]["Asset"]=hitbox.Create_Shadow(assetPlayer[Asheiya_doc]["Asset"],take_damage)
 		ShadowAssetPlayer[Asheiya_doc]["FrameNb"]=assetPlayer[Asheiya_doc]["FrameNb"]
 
 	player = entity.create_entity("Asheiya Briceval",xPlayer,yPlayer,assetPlayer,ShadowAssetPlayer)
-
 	vxPlayer = 0
 	vyPlayer = 0
-	speedPlayer = 0.07 #deplaxcement pas seconde
+	speedPlayer = 0.1 #deplaxcement pas seconde
 	player = movingent.create_moving_ent(player,vxPlayer,vyPlayer,speedPlayer)
 
 	lifePlayer = 18
@@ -149,7 +148,7 @@ def Init(): 	#initialisation des variables
 	for Shot_doc in ["Gun_Horizontal","Gun_Slash","Gun_UnSlash","Gun_Vertical"] :
 		assetShot[Shot_doc] =entity.create_asset("Asheiya/Projectile/"+Shot_doc+".txt")
 		ShadowAssetShot[Shot_doc]={}
-		ShadowAssetShot[Shot_doc]["Asset"]=hitbox.hit_box_complex(assetShot[Shot_doc]["Asset"],damage_Zone)
+		ShadowAssetShot[Shot_doc]["Asset"]=hitbox.Create_Shadow(assetShot[Shot_doc]["Asset"],damage_Zone)
 		ShadowAssetShot[Shot_doc]["FrameNb"]=assetShot[Shot_doc]["FrameNb"]
 	shotDelay = 3
 	bulletSpeed = 0.05
@@ -162,6 +161,7 @@ def Init(): 	#initialisation des variables
 	player = character.create_character(player , spowerSpeed, spowerMax)
 
 	allEntity.append(player)
+	files.SAVE_FILE_JSON(player,"player")
 
 
 	#definition de la fenetre de jeu
@@ -189,12 +189,13 @@ def Init_manche():
 		Sans retour
 	"""
 	#-afaire
-	global manche, menu, player, walls, allAssetGameZone, acutalAssetGameZone, Story
+	global manche, menu, player, walls, allAssetGameZone, acutalAssetGameZone, Story, Shadow_background
 
 	if manche == 10 :
 		print allAssetGameZone["NumZone"]
 		walls = background.create_window("GameZone/Zone_"+str(allAssetGameZone["NumZone"])+"_TraversantPlateforme.txt")
 		acutalAssetGameZone= allAssetGameZone["Zone_"+str(allAssetGameZone["NumZone"])]
+		Shadow_background = hitbox.Zone_Collision(acutalAssetGameZone, walls)
 
 		player = movingent.tp_entity(player,20,37)
 
@@ -207,7 +208,7 @@ def Init_manche():
 		assetBonus["boon1"] = entity.create_asset("Boon/boon1.txt") #-afair en sorte que les accès soient automatisé
 		assetBonus["Actual"] = assetBonus["boon1"]
 		ShadowAssetBonus["boon1"]={}
-		ShadowAssetBonus["boon1"]["Asset"]=hitbox.hit_box_complex(assetBonus["boon1"]["Asset"],Boon_Zone)
+		ShadowAssetBonus["boon1"]["Asset"]=hitbox.Create_Shadow(assetBonus["boon1"]["Asset"],Boon_Zone)
 		ShadowAssetBonus["boon1"]["FrameNb"]=assetBonus["boon1"]["FrameNb"]
 		ShadowAssetBonus["Actual"]=ShadowAssetBonus["boon1"]
 		boon1 = entity.create_entity("boon1", xbonus, ybonus, assetBonus,ShadowAssetBonus) #-afair en sorte que leurs noms s'incrémente tout seul
@@ -222,7 +223,7 @@ def Init_manche():
 		assetBonus["boonGenerator"] = entity.create_asset("Boon/boonGenerator.txt")
 		assetBonus["Actual"] = assetBonus["boonGenerator"]
 		ShadowAssetBonus["boonGenerator"]={}
-		ShadowAssetBonus["boonGenerator"]["Asset"]=hitbox.hit_box_complex(assetBonus["Actual"]["Asset"],Boon_Zone)
+		ShadowAssetBonus["boonGenerator"]["Asset"]=hitbox.Create_Shadow(assetBonus["Actual"]["Asset"],Boon_Zone)
 		ShadowAssetBonus["boonGenerator"]["FrameNb"]=assetBonus["boonGenerator"]["FrameNb"]
 		ShadowAssetBonus["Actual"]=ShadowAssetBonus["boon1"]
 		geneSpeed = 2
@@ -237,7 +238,7 @@ def Init_manche():
 		assetMob1["mob1"] = entity.create_asset("Mobs/mob1.txt")
 		assetMob1["Actual"]= assetMob1["mob1"]
 		ShadowAssetMob1["mob1"]={}
-		ShadowAssetMob1["mob1"]["Asset"]=hitbox.hit_box_complex(assetMob1["mob1"]["Asset"],take_damage)
+		ShadowAssetMob1["mob1"]["Asset"]=hitbox.Create_Shadow(assetMob1["mob1"]["Asset"],take_damage)
 		ShadowAssetMob1["mob1"]["FrameNb"]=assetMob1["mob1"]["FrameNb"]
 		ShadowAssetMob1["Actual"]=ShadowAssetMob1["mob1"]
 
@@ -397,13 +398,13 @@ def Time_game():
 					if (ent["Vx"]!=0 or ent["Vy"]!=0) :
 						ent = movingent.move_entity(ent,ent["Vx"], ent["Vy"])
 					if "bullet" in ent["Type"] :
-						logHit = shootingent.hit(ent, allEntity, acutalAssetGameZone, walls)
+						logHit = hitbox.hit(ent, allEntity, Shadow_background)
 						if logHit["hit_entity"]:#une entite a etait touche
 							logHit["entity"]=livingent.hurt(logHit["entity"],ent["damageToInflict"])  #a tester -afair
 						if logHit["is_hit"]:#il y a eu collision
 							toRemove.append(ent)
 					else :
-						willCollide = movingent.collision(ent,allEntity,acutalAssetGameZone,walls)[0]
+						willCollide = hitbox.collision(ent,allEntity,Shadow_background)[0]
 						if willCollide :
 							ent = movingent.move_entity(ent,-ent["Vx"],-ent["Vy"])
 				#gravité
@@ -412,7 +413,7 @@ def Time_game():
 							onTheGround = entity.is_ground_beneath(entity.feet(ent),acutalAssetGameZone,walls)
 							if ent["Jump"]>0 :
 								movingent.move_entity(ent,0,-1,True)
-								willCollide = movingent.collision(ent,allEntity,acutalAssetGameZone,walls)[0]
+								willCollide = hitbox.collision(ent,allEntity,Shadow_background)[0]
 								if willCollide :
 									ent = movingent.move_entity(ent,0,1,False)
 							elif not(onTheGround) :
@@ -491,6 +492,8 @@ def Show() :
 	#on efface tout
 
 	background.show_pos(allAssetGameZone["Zone_"+str(allAssetGameZone["NumZone"])],0,0,color["background"]["Black"],color["txt"]["White"])
+	files.SAVE_FILE_JSON(allAssetGameZone["Zone_"+str(allAssetGameZone["NumZone"])],"asset_background")
+	#background.show_pos(Shadow_background[0],0,0,color["background"]["Black"],color["txt"]["White"])
 	background.show_pos(assetInfoStory["Info"],138,0,color["background"]["Black"],color["txt"]["White"])
 	background.show_pos(assetInfoStory["Story"],0,42,color["background"]["Black"],color["txt"]["White"])
 	Windows()
@@ -519,11 +522,11 @@ def Show() :
 	timeScreen = time.time()
 
 	#restoration couleur
-	sys.stdout.write("\033[37m")
-	sys.stdout.write("\033[40m")
+	#sys.stdout.write("\033[37m")
+	#sys.stdout.write("\033[40m")
 	#
 	#deplacement curseur
-	sys.stdout.write("\033[1;1H\n")
+	#sys.stdout.write("\033[1;1H\n")
 	return
 
 
@@ -656,19 +659,19 @@ def Interact():
 					player = character.switch_stand(player,"Wait")
 
 
-				# /!\ dans toute cette zone, gerer les collisions avant les deplacements avec movingent.collision -afair
+				# /!\ dans toute cette zone, gerer les collisions avant les deplacements avec hitbox.collision -afair
 				elif c == "d":
 					if not(player["Jump"]) :
 						player = character.switch_stand(player,"Run")
 					player = movingent.move_entity(player,1,0)
-					if movingent.collision(player, allEntity, acutalAssetGameZone, walls)[0] :
+					if hitbox.collision(player, allEntity, Shadow_background)[0] :
 						player = movingent.move_entity(player,-1,0)
 
 				elif c == "q":
 					if not(player["Jump"]) :
 						player = character.switch_stand(player,"Run")
 					player = movingent.move_entity(player,-1,0)
-					if movingent.collision(player, allEntity, acutalAssetGameZone, walls)[0] :
+					if hitbox.collision(player, allEntity, Shadow_background)[0] :
 						player = movingent.move_entity(player,1,0)
 
 				elif c == "z" and player["Jump"]==0 and player["Vy"]==0 :
@@ -677,7 +680,7 @@ def Interact():
 
 				elif c == "s" :
 					player = movingent.move_entity(player,0,1)
-					if movingent.collision(player, allEntity, acutalAssetGameZone, walls)[0] :
+					if hitbox.collision(player, allEntity,Shadow_background)[0] :
 						player = movingent.move_entity(player,0,-1)
 
 				# -afair on fait descendre de la plateforme si c'est sur une plateforme

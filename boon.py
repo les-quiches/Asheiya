@@ -227,7 +227,7 @@ def generate(boonG) :
 	name = "boon" +"_"+ boonG["Name"] +"_"+ str(boonG["GeneLastTime"][1])
 	Shadowasset={}
 	Shadowasset["boon1"]={}
-	Shadowasset["boon1"]["Asset"]=hitbox.hit_box_complex(asset["boon1"]["Asset"],Boon_Zone)
+	Shadowasset["boon1"]["Asset"]=hitbox.Create_Shadow(asset["boon1"]["Asset"],Boon_Zone)
 	Shadowasset["Actual"]=asset["boon1"]
 	boon = entity.create_entity(name,x,y,asset, Shadowasset)
 	boon = create_boon(boon, boonG["Bonus"])

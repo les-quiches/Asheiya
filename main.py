@@ -395,6 +395,12 @@ def Time_game():
 				if actualTime>ent["LastTime"] + ent["Speed"] :
 					if "character" in ent["Type"] :
 						Interact()
+						PlayeurDetect=hitbox.collision(player,allEntity,Shadow_background)
+						if PlayeurDetect[0]:
+							if (PlayeurDetect[1] != _wall or PlayeurDetect[1] != Gostwall):
+								if PlayeurDetect[1] == Boon_Zone:
+									BonusPlayer=PlayeurDetect[2]["Bonus"]
+									print BonusPlayer
 					if (ent["Vx"]!=0 or ent["Vy"]!=0) :
 						ent = movingent.move_entity(ent,ent["Vx"], ent["Vy"])
 					if "bullet" in ent["Type"] :
@@ -404,7 +410,7 @@ def Time_game():
 						if logHit["is_hit"]:#il y a eu collision
 							toRemove.append(ent)
 					else :
-						willCollide = hitbox.collision(ent,allEntity,Shadow_background)[0]
+						willCollide = hitbox.detect_collision_wall(ent,Shadow_background)[0]
 						if willCollide :
 							ent = movingent.move_entity(ent,-ent["Vx"],-ent["Vy"])
 				#gravité
@@ -413,7 +419,7 @@ def Time_game():
 							onTheGround = entity.is_ground_beneath(entity.feet(ent),acutalAssetGameZone,walls)
 							if ent["Jump"]>0 :
 								movingent.move_entity(ent,0,-1,True)
-								willCollide = hitbox.collision(ent,allEntity,Shadow_background)[0]
+								willCollide = hitbox.detect_collision_wall(ent,Shadow_background)[0]
 								if willCollide :
 									ent = movingent.move_entity(ent,0,1,False)
 							elif not(onTheGround) :
@@ -492,8 +498,6 @@ def Show() :
 	#on efface tout
 
 	background.show_pos(allAssetGameZone["Zone_"+str(allAssetGameZone["NumZone"])],0,0,color["background"]["Black"],color["txt"]["White"])
-	files.SAVE_FILE_JSON(allAssetGameZone["Zone_"+str(allAssetGameZone["NumZone"])],"asset_background")
-	#background.show_pos(Shadow_background[0],0,0,color["background"]["Black"],color["txt"]["White"])
 	background.show_pos(assetInfoStory["Info"],138,0,color["background"]["Black"],color["txt"]["White"])
 	background.show_pos(assetInfoStory["Story"],0,42,color["background"]["Black"],color["txt"]["White"])
 	Windows()
@@ -659,19 +663,19 @@ def Interact():
 					player = character.switch_stand(player,"Wait")
 
 
-				# /!\ dans toute cette zone, gerer les collisions avant les deplacements avec hitbox.collision -afair
+				# /!\ dans toute cette zone, gerer les collisions avant les deplacements avec hitbox.collision modification pour se soir detect_collision_wall
 				elif c == "d":
 					if not(player["Jump"]) :
 						player = character.switch_stand(player,"Run")
 					player = movingent.move_entity(player,1,0)
-					if hitbox.collision(player, allEntity, Shadow_background)[0] :
+					if hitbox.detect_collision_wall(player, Shadow_background) == _wall:
 						player = movingent.move_entity(player,-1,0)
 
 				elif c == "q":
 					if not(player["Jump"]) :
 						player = character.switch_stand(player,"Run")
 					player = movingent.move_entity(player,-1,0)
-					if hitbox.collision(player, allEntity, Shadow_background)[0] :
+					if hitbox.detect_collision_wall(player, Shadow_background) == _wall:
 						player = movingent.move_entity(player,1,0)
 
 				elif c == "z" and player["Jump"]==0 and player["Vy"]==0 :
@@ -680,10 +684,11 @@ def Interact():
 
 				elif c == "s" :
 					player = movingent.move_entity(player,0,1)
-					if hitbox.collision(player, allEntity,Shadow_background)[0] :
+					if hitbox.detect_collision_wall(player, Shadow_background) == _wall:
 						player = movingent.move_entity(player,0,-1)
+					elif hitbox.detect_collision_wall(player, Shadow_background) == Gostwall:
+						player = movingent.move_entity(player,0,1)
 
-				# -afair on fait descendre de la plateforme si c'est sur une plateforme
 			else :
 				None
 				#-afair : gestion des interactions lorsque l'on est en ulti

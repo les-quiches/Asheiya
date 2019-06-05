@@ -201,18 +201,22 @@ def collision(COLLI_ent, COLLI_allEntityTest, COLLI_Shadow_background) : #non te
 
     COLLI_hitentwall=detect_collision_wall(COLLI_ent,COLLI_Shadow_background)
 
-    COLLI_log=[]
-    COLLI_log.append(False)
-
+    COLLI_log=[False,None,None]
     if COLLI_hitentwall == _wall:
         #detect un mur
-        COLLI_log[0]=True
+        COLLI_log=[True,_wall,None]
+    elif COLLI_hitentwall == Gostwall:
+        COLLI_log=[True,Gostwall,None]
+
     elif COLLI_hitentwall == void_collision:
+        COLLI_detect =[]
         for COLLI_Entity in COLLI_allEntityTest:
             if COLLI_Entity != COLLI_ent :
-                if detect_collision_entity(COLLI_ent,COLLI_Entity):
-                   COLLI_log[0]=True
+                COLLI_detect = detect_collision_entity(COLLI_ent,COLLI_Entity)
+                if COLLI_detect != void_collision:
+                    COLLI_log=[True,COLLI_detect,COLLI_Entity]
                     #collision entre les deux entiter
+                    return COLLI_log
     else:
         files.SAVE_FILE_JSON(COLLI_ent,"log_wtf")
         # si on est ici c'est un BUG
@@ -256,7 +260,6 @@ def detect_collision_wall(Entity,Shadow_background):#ne fonctionne pas
                      return detect
                 elif Shadow_background[i+y][j+x][0] == Gostwall:
                     detect = Gostwall
-    print detect
     return detect
 
 
@@ -313,12 +316,12 @@ def detect_collision_entity(DCE_Entity_1, DCE_Entity_2):#non tester
     DCE_Shadow_asset_1 = DCE_Entity_1["ShadowAsset"]["Actual"]["Asset"][DCE_Entity_1["ShadowAsset"]["Actual"]["FrameNb"]]
     DCE_Shadow_asset_2 = DCE_Entity_2["ShadowAsset"]["Actual"]["Asset"][DCE_Entity_2["ShadowAsset"]["Actual"]["FrameNb"]]
     DCE_Shadow = Add_Shadow(DCE_Shadow_asset_2,DCE_Void_Shadow,DCE_x2,DCE_y2)
-    for i in range(0,len(DCE_Shadow_asset_1)-1):
-        for j in range(0,len(DCE_Shadow_asset_1[i])-1):
+    for i in range(0,len(DCE_Shadow_asset_1)):
+        for j in range(0,len(DCE_Shadow_asset_1[i])):
             if DCE_Shadow_asset_1[i][j][0] != void_collision:
                 if DCE_Shadow[i+DCE_y1][j+DCE_x1][0] != void_collision:
-                    return True
-    return False
+                    return DCE_Shadow[i+DCE_y1][j+DCE_x1][0]
+    return void_collision
 
 
 #ancien code mais toujours utiles

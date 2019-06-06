@@ -77,7 +77,7 @@ def Init(): 	#initialisation des variables
 	======
 		Sans retour
 	"""
-	global color, window, allAssetGameZone, timeStep, timeScreen, timeGravity, allEntity, player, menu, manche, assetInfoStory, allAssetMenu, gridGame
+	global color, window, allAssetGameZone, timeStep, timeScreen, timeGravity, allEntity, player, menu, manche, assetInfoStory, allAssetMenu,
 
 	color["txt"]={"Black":30, "Red":31,"Green":32,"Yellow":33,"Blue":34,"Pink":35,"Cyan":36,"White":37}
 	color["background"]={"Black":40, "Red":41,"Green":42,"Yellow":43,"Blue":44,"Pink":45,"Cyan":46,"White":47}
@@ -160,7 +160,10 @@ def Init_manche():
 	]
 
 	if manche == 10 :
-		gridGame = grid.Create_Grid(1)
+		gridGame =hitbox.Create_ShadowBackgrond(1)
+
+
+
 		print allAssetGameZone["NumZone"]
 		acutalAssetGameZone= allAssetGameZone["Zone_"+str(allAssetGameZone["NumZone"])]
 		#on concoit le joueur___________________________________________________________________________________________________________________________
@@ -176,7 +179,7 @@ def Init_manche():
 		vxPlayer = 0
 		vyPlayer = 0
 
-		player, gridGame = entity.create_entity("Asheiya Briceval",xPlayer,yPlayer,assetPlayer,gridGame)
+		player, gridGame = entity.create_entity("Asheiya Briceval",xPlayer,yPlayer,assetPlayer)
 
 		speedPlayer = 0.1 #deplaxcement pas seconde
 		player = movingent.create_moving_ent(player,vxPlayer,vyPlayer,speedPlayer)
@@ -212,7 +215,7 @@ def Init_manche():
 		assetBonus = {}
 		assetBonus["boon1"] = entity.create_asset("Boon/boon1.txt") #-afair en sorte que les accès soient automatisé
 		assetBonus["Actual"] = assetBonus["boon1"]
-		boon1,gridGame = entity.create_entity("boon1", xbonus, ybonus, assetBonus, gridGame) #-afair en sorte que leurs noms s'incrémente tout seul
+		boon1= entity.create_entity("boon1", xbonus, ybonus, assetBonus) #-afair en sorte que leurs noms s'incrémente tout seul
 		boon1 = boon.create_boon(boon1, listeBonus)
 
 		allEntity.append(boon1)
@@ -224,7 +227,7 @@ def Init_manche():
 		assetBonus["boonGenerator"] = entity.create_asset("Boon/boonGenerator.txt")
 		assetBonus["Actual"] = assetBonus["boonGenerator"]
 		geneSpeed = 2
-		boong,gridGame = entity.create_entity("boong1", xbonus, ybonus, assetBonus,gridGame)
+		boong = entity.create_entity("boong1", xbonus, ybonus, assetBonus)
 		boong = boon.create_boon_generator(boong, listeBonus, geneSpeed)
 
 		allEntity.append(boong)
@@ -236,13 +239,13 @@ def Init_manche():
 
 
 		Cristal_1 ={}
-		Cristal_1, gridGame = entity.create_entity("Cristal_1",42,24,assetCristal,gridGame)#position x=42,y=24
+		Cristal_1= entity.create_entity("Cristal_1",42,24,assetCristal)#position x=42,y=24
 		Cristal_1 = livingent.create_living_ent(Cristal_1,9,0)#9 point de vie, 0 point d'armure
 		allEntity.append(Cristal_1)
 
 
 		Cristal_2 ={}
-		Cristal_2, gridGame = entity.create_entity("Cristal_1",73,36,assetCristal,gridGame)#position x=73,y=37
+		Cristal_2= entity.create_entity("Cristal_1",73,36,assetCristal)#position x=73,y=37
 		Cristal_1 = livingent.create_living_ent(Cristal_2,12,0)#12 point de vie, 0 point d'armure
 		allEntity.append(Cristal_2)
 
@@ -399,6 +402,7 @@ def Time_game():
 				if actualTime>ent["LastTime"] + ent["Speed"] :
 					if "character" in ent["Type"] :
 						TG_whatcollide=TG_whatcollide + Interact()
+						print TG_whatcollide
 
 					if (ent["Vx"]!=0 or ent["Vy"]!=0) :
 						ent, gridGame, TG_toAdd = movingent.move_entity(ent,gridGame,ent["Vx"], ent["Vy"])

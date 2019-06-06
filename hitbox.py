@@ -49,6 +49,46 @@ def Create_Shadow(CS_asset):#fonctionne
                     CS_Claque[frame][i][j] = void_collision
     return(CS_Claque)
 
+def Create_ShadowBackgrond(CG_filenum):
+    """
+    DESCRIPTION
+    ===========
+        créé une grille du jeux
+
+    PARAM
+    =====
+
+    @param CG_filenum: Numéro de la liste a ouvrir
+    @type CG_filenum : int
+
+    RETOUR
+    ======
+
+    @return SEG_grid: grille du jeu
+    @rtype SEG_grid: list
+
+    """
+    ca=dict()
+    Background= files.OPEN_FILE_XML("GameZone/Zone_"+str(CG_filenum)+".txt")
+    BackgroundGost= files.OPEN_FILE_XML("GameZone/Zone_"+str(CG_filenum)+"_GostWall.txt")
+    mylist = Background.split("\r\n")
+    myGostlist = BackgroundGost.split("\r\n")
+    myGrid=[]
+    for y in range(len(mylist)):
+        myGrid.append([])
+        for x in range(len(mylist[y])):
+            element = mylist[y][x]
+            myGrid[y].append([])
+            if element == " ":
+                myGrid[y][x]=void_collision
+            else:
+                Gostelement =myGostlist[y][x]
+                if Gostelement != " " :
+                    myGrid[y][x]=Gostwall
+                else:
+                    myGrid[y][x]= _wall
+    return myGrid
+
 def Add_Shadow(Shadow_asset,Shadow_backgound,x=0,y=0):
     """
         G{classtree}
@@ -399,12 +439,10 @@ if (__name__=="__main__"):
     import background
     import time
     #init
-    test_void_shadow=create_void_shadow(50,50)
-    show_Shadow(test_void_shadow)
 
-
-
-    """
+    Shadow = Create_ShadowBackgrond(1)
+    background.show_window(Shadow)
+"""
     gameZone=[
     "Zone_1",
     ]
@@ -443,5 +481,4 @@ if (__name__=="__main__"):
         None
     shadow=Add_Shadow(assetc,shadow)
     show_Shadow(shadow)
-
-    """
+"""

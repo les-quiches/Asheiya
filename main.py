@@ -21,6 +21,7 @@ import character
 import boon
 import files
 import windows
+import hitbox
 
 #importation des IAs
 import AI
@@ -49,7 +50,13 @@ player = None
 menu = None
 manche = None #permet de gerer la manche et si c'est la premiere boucle de la manche
 
-
+void_collision ="0"
+random_zone="O"
+damage_Zone= "¤"
+_wall = "X"
+Gostwall = "-"
+take_damage = "."
+Boon_Zone = "$"
 
 
 #______INIT________________________________________________________________________
@@ -69,8 +76,7 @@ def Init(): 	#initialisation des variables
 	======
 		Sans retour
 	"""
-	global color, window, allAssetGameZone, timeStep, timeScreen, timeGravity, allEntity, player, menu, manche, assetInfoStory
-
+	global color, window, allAssetGameZone, timeStep, timeScreen, timeGravity, allEntity, player, menu, manche, assetInfoStory, Shadow_background
 
 	color["txt"]={"Black":30, "Red":31,"Green":32,"Yellow":33,"Blue":34,"Pink":35,"Cyan":36,"White":37}
 	color["background"]={"Black":40, "Red":41,"Green":42,"Yellow":43,"Blue":44,"Pink":45,"Cyan":46,"White":47}
@@ -89,7 +95,7 @@ def Init(): 	#initialisation des variables
 	"Gun_Horizontal","Gun_Slach","Gun_UnSlash","Gun_Vertical"
 	]
 
-	timeStep = 0.01 # en secondes -> 100 images par secondes
+	timeStep = 0.03 # en secondes -> 20 images par secondes
 	timeScreen = time.time()
 	timeGravity = time.time()
 
@@ -118,15 +124,18 @@ def Init(): 	#initialisation des variables
 	xPlayer = 0
 	yPlayer = 0
 	assetPlayer = {}
+	ShadowAssetPlayer={}
 	assetPlayer["position"]=["Wait","Right",0] #correspond a sa representation : course/attente, orientation, position du bras
 	for Asheiya_doc in asheiyaAsset :
-		assetPlayer[Asheiya_doc]=entity.create_asset("Asheiya/Asset/" + Asheiya_doc + ".txt") #chargement Asset
+		assetPlayer[Asheiya_doc]=entity.create_asset("Asheiya/Asset/" + Asheiya_doc + ".txt") #chargement Asset et Shadow
+		ShadowAssetPlayer[Asheiya_doc]={}
+		ShadowAssetPlayer[Asheiya_doc]["Asset"]=hitbox.Create_Shadow(assetPlayer[Asheiya_doc]["Asset"],take_damage)
+		ShadowAssetPlayer[Asheiya_doc]["FrameNb"]=assetPlayer[Asheiya_doc]["FrameNb"]
 
-	player = entity.create_entity("Asheiya Briceval",xPlayer,yPlayer,assetPlayer)
-
+	player = entity.create_entity("Asheiya Briceval",xPlayer,yPlayer,assetPlayer,ShadowAssetPlayer)
 	vxPlayer = 0
 	vyPlayer = 0
-	speedPlayer = 0.07 #deplaxcement pas seconde
+	speedPlayer = 0.1 #deplaxcement pas seconde
 	player = movingent.create_moving_ent(player,vxPlayer,vyPlayer,speedPlayer)
 
 	lifePlayer = 18
@@ -135,8 +144,12 @@ def Init(): 	#initialisation des variables
 
 	damage = 5
 	assetShot = {}
+	ShadowAssetShot = {}
 	for Shot_doc in ["Gun_Horizontal","Gun_Slash","Gun_UnSlash","Gun_Vertical"] :
 		assetShot[Shot_doc] =entity.create_asset("Asheiya/Projectile/"+Shot_doc+".txt")
+		ShadowAssetShot[Shot_doc]={}
+		ShadowAssetShot[Shot_doc]["Asset"]=hitbox.Create_Shadow(assetShot[Shot_doc]["Asset"],damage_Zone)
+		ShadowAssetShot[Shot_doc]["FrameNb"]=assetShot[Shot_doc]["FrameNb"]
 	shotDelay = 3
 	bulletSpeed = 0.05
 
@@ -148,6 +161,7 @@ def Init(): 	#initialisation des variables
 	player = character.create_character(player , spowerSpeed, spowerMax)
 
 	allEntity.append(player)
+	files.SAVE_FILE_JSON(player,"player")
 
 
 	#definition de la fenetre de jeu
@@ -175,12 +189,13 @@ def Init_manche():
 		Sans retour
 	"""
 	#-afaire
-	global manche, menu, player, walls, allAssetGameZone, acutalAssetGameZone, Story
+	global manche, menu, player, walls, allAssetGameZone, acutalAssetGameZone, Story, Shadow_background
 
 	if manche == 10 :
 		print allAssetGameZone["NumZone"]
 		walls = background.create_window("GameZone/Zone_"+str(allAssetGameZone["NumZone"])+"_TraversantPlateforme.txt")
 		acutalAssetGameZone= allAssetGameZone["Zone_"+str(allAssetGameZone["NumZone"])]
+		Shadow_background = hitbox.Zone_Collision(acutalAssetGameZone, walls)
 
 		player = movingent.tp_entity(player,20,37)
 
@@ -189,9 +204,14 @@ def Init_manche():
 		xbonus = 80
 		ybonus = 37
 		assetBonus = {}
+		ShadowAssetBonus={}
 		assetBonus["boon1"] = entity.create_asset("Boon/boon1.txt") #-afair en sorte que les accès soient automatisé
 		assetBonus["Actual"] = assetBonus["boon1"]
-		boon1 = entity.create_entity("boon1", xbonus, ybonus, assetBonus) #-afair en sorte que leurs noms s'incrémente tout seul
+		ShadowAssetBonus["boon1"]={}
+		ShadowAssetBonus["boon1"]["Asset"]=hitbox.Create_Shadow(assetBonus["boon1"]["Asset"],Boon_Zone)
+		ShadowAssetBonus["boon1"]["FrameNb"]=assetBonus["boon1"]["FrameNb"]
+		ShadowAssetBonus["Actual"]=ShadowAssetBonus["boon1"]
+		boon1 = entity.create_entity("boon1", xbonus, ybonus, assetBonus,ShadowAssetBonus) #-afair en sorte que leurs noms s'incrémente tout seul
 		boon1 = boon.create_boon(boon1, listeBonus)
 
 		allEntity.append(boon1)
@@ -202,18 +222,28 @@ def Init_manche():
 		assetBonus = {}
 		assetBonus["boonGenerator"] = entity.create_asset("Boon/boonGenerator.txt")
 		assetBonus["Actual"] = assetBonus["boonGenerator"]
+		ShadowAssetBonus["boonGenerator"]={}
+		ShadowAssetBonus["boonGenerator"]["Asset"]=hitbox.Create_Shadow(assetBonus["Actual"]["Asset"],Boon_Zone)
+		ShadowAssetBonus["boonGenerator"]["FrameNb"]=assetBonus["boonGenerator"]["FrameNb"]
+		ShadowAssetBonus["Actual"]=ShadowAssetBonus["boon1"]
 		geneSpeed = 2
-		boong = entity.create_entity("boong1", xbonus, ybonus, assetBonus)
+		boong = entity.create_entity("boong1", xbonus, ybonus, assetBonus, ShadowAssetBonus)
 		boong = boon.create_boon_generator(boong, listeBonus, geneSpeed)
 
 		allEntity.append(boong)
 
 		#/!\ juste un mob pour test, les valeurs sont débiles
 		assetMob1 = {}
+		ShadowAssetMob1={}
 		assetMob1["mob1"] = entity.create_asset("Mobs/mob1.txt")
 		assetMob1["Actual"]= assetMob1["mob1"]
+		ShadowAssetMob1["mob1"]={}
+		ShadowAssetMob1["mob1"]["Asset"]=hitbox.Create_Shadow(assetMob1["mob1"]["Asset"],take_damage)
+		ShadowAssetMob1["mob1"]["FrameNb"]=assetMob1["mob1"]["FrameNb"]
+		ShadowAssetMob1["Actual"]=ShadowAssetMob1["mob1"]
 
-		mob1 = entity.create_entity("testmob",30,37,assetMob1)
+
+		mob1 = entity.create_entity("testmob",20,20,assetMob1,ShadowAssetMob1, "AItest")
 		mob1 = movingent.create_moving_ent(mob1,1,1,0.5, False)
 
 		allEntity.append(mob1)
@@ -275,6 +305,7 @@ def Game():
 	for ent in allEntity :
 		if "character" in ent["Type"] :
 			ent["Asset"]["Actual"] = character.get_asset(ent)
+			ent["ShadowAsset"]["Actual"] = character.get_shadow(ent)
 			pass #au cas ou on mette d'autre type ensuite, il faut pas que les assets actuels s'écrasent les uns les autres.
 
 
@@ -365,35 +396,38 @@ def Time_game():
 				if actualTime>ent["LastTime"] + ent["Speed"] :
 					if "character" in ent["Type"] :
 						Interact()
+						PlayeurDetect=hitbox.collision(player,allEntity,Shadow_background)
+						if PlayeurDetect[0]:
+							if (PlayeurDetect[1] != _wall or PlayeurDetect[1] != Gostwall):
+								if PlayeurDetect[1] == Boon_Zone:
+									BonusPlayer=PlayeurDetect[2]["Bonus"]
+									print BonusPlayer
 					if (ent["Vx"]!=0 or ent["Vy"]!=0) :
 						ent = movingent.move_entity(ent,ent["Vx"], ent["Vy"])
-					if "bullet" in ent["Type"] : 
-						logHit = shootingent.hit(ent, allEntity, acutalAssetGameZone, walls)
+					if "bullet" in ent["Type"] :
+						logHit = hitbox.hit(ent, allEntity, Shadow_background)
 						if logHit["hit_entity"]:#une entite a etait touche
 							logHit["entity"]=livingent.hurt(logHit["entity"],ent["damageToInflict"])  #a tester -afair
 						if logHit["is_hit"]:#il y a eu collision
 							toRemove.append(ent)
 					else :
-						logHit = movingent.collision(ent,allEntity,acutalAssetGameZone,walls)
-						if logHit["is_hit"] :
-							ent = movingent.move_entity(ent,-ent["Vx"],-ent["Vy"])
-						if logHit["hit_entity"] :
-							if "boon" in logHit["entity"]["Type"] :
-								ent = boon.caught(logHit["entity"],ent)
 
-				#gravité							
-				if actualTime >timeGravity + 0.08 :												
+						willCollide = hitbox.detect_collision_wall(ent,Shadow_background)[0]
+						if willCollide :
+							ent = movingent.move_entity(ent,-ent["Vx"],-ent["Vy"])
+				#gravité
+				if actualTime >timeGravity + 0.08 :
 						if (ent["Gravity"]):
 							if ent["Jump"]>0 :
 								movingent.move_entity(ent,0,-1,True)
-								willCollide = movingent.collision(ent,allEntity,acutalAssetGameZone,walls)["is_hit"]
+								willCollide = hitbox.detect_collision_wall(ent,Shadow_background)[0]
 								if willCollide :
 									ent = movingent.move_entity(ent,0,1,False)
 							onTheGround = entity.is_ground_beneath(entity.feet(ent),acutalAssetGameZone,walls)
 							if not(onTheGround) and ent["Jump"]<=0 :
 								movingent.move_entity(ent,0,1,True)
 							ent = movingent.gravity(ent,onTheGround) #on gère la valeur de Jump
-							
+
 						timeGravity = actualTime
 
 			#on remet le joueur en position d'attente s'il fait rien
@@ -413,10 +447,10 @@ def Time_game():
 					ent = boon.as_generate(ent)
 
 
-		#gestion des cadavres : 
+		#gestion des cadavres :
 		for deadEnt in toRemove :
 			allEntity.remove(deadEnt)
-		
+
 
 
 		#gestion de l'ultime
@@ -489,16 +523,16 @@ def Show() :
 			color_bg = color["background"]["Black"]
 			color_txt = color["txt"]["Yellow"]
 		entity.show_entity(ent,color_bg,color_txt)
-		
+
 
 	timeScreen = time.time()
 
 	#restoration couleur
-	sys.stdout.write("\033[37m")
-	sys.stdout.write("\033[40m")
+	#sys.stdout.write("\033[37m")
+	#sys.stdout.write("\033[40m")
 	#
 	#deplacement curseur
-	sys.stdout.write("\033[1;1H\n")
+	#sys.stdout.write("\033[1;1H\n")
 	return
 
 
@@ -631,46 +665,34 @@ def Interact():
 					player = character.switch_stand(player,"Wait")
 
 
-				# /!\ dans toute cette zone, gerer les collisions avant les deplacements avec movingent.collision -afair
+				# /!\ dans toute cette zone, gerer les collisions avant les deplacements avec hitbox.collision modification pour se soir detect_collision_wall
 				elif c == "d":
 					if not(player["Jump"]) :
 						player = character.switch_stand(player,"Run")
 					player = movingent.move_entity(player,1,0)
-					#collision
-					logHit = movingent.collision(player,allEntity,acutalAssetGameZone,walls)
-					if logHit["is_hit"] :
-							player = movingent.move_entity(player,-1,0)
-					if logHit["hit_entity"] :
-						if "boon" in logHit["entity"]["Type"] :
-							player = boon.caught(logHit["entity"],player)
+					if hitbox.detect_collision_wall(player, Shadow_background) == _wall:
+						player = movingent.move_entity(player,-1,0)
+
 
 				elif c == "q":
 					if not(player["Jump"]) :
 						player = character.switch_stand(player,"Run")
 					player = movingent.move_entity(player,-1,0)
-					#collision
-					logHit = movingent.collision(player,allEntity,acutalAssetGameZone,walls)
-					if logHit["is_hit"] :
-							player = movingent.move_entity(player,-1,0)
-					if logHit["hit_entity"] :
-						if "boon" in logHit["entity"]["Type"] :
-							player = boon.caught(logHit["entity"],player)
 
-				elif c == "z" and player["Jump"]==0 and entity.is_ground_beneath(entity.feet(player),acutalAssetGameZone,walls):
+					if hitbox.detect_collision_wall(player, Shadow_background) == _wall:
+						player = movingent.move_entity(player,1,0)
+
+				elif c == "z" and player["Jump"]==0 and player["Vy"]==0 :
 					player = character.switch_stand(player, "Wait")
 					player = movingent.jump(player)
 
 				elif c == "s" :
 					player = movingent.move_entity(player,0,1)
-					#collision
-					logHit = movingent.collision(player,allEntity,acutalAssetGameZone,walls)
-					if logHit["is_hit"] :
-							player = movingent.move_entity(player,-1,0)
-					if logHit["hit_entity"] :
-						if "boon" in logHit["entity"]["Type"] :
-							player = boon.caught(logHit["entity"],player)
+					if hitbox.detect_collision_wall(player, Shadow_background) == _wall:
+						player = movingent.move_entity(player,0,-1)
+					elif hitbox.detect_collision_wall(player, Shadow_background) == Gostwall:
+						player = movingent.move_entity(player,0,1)
 
-				# -afair on fait descendre de la plateforme si c'est sur une plateforme
 			else :
 				None
 				#-afair : gestion des interactions lorsque l'on est en ulti

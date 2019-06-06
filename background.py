@@ -4,7 +4,16 @@ import sys
 import os
 
 import files
+import hitbox
 f =files
+
+void_collision ="0"
+random_zone="O"
+damage_Zone= "¤"
+_wall = "X"
+Gostwall = "-"
+take_damage = "."
+Boon_Zone = "$"
 
 def create_window(filename):
 
@@ -53,17 +62,18 @@ def show_window(doc):
     ======
         Sans retour
     """
+    s=""
     #couleur fond
-    sys.stdout.write("\033[40m")
+    s+="\033[40m"
     #couleur white
-    sys.stdout.write("\033[37m")
+    s+="\033[37m"
     #goto
     for y in range(0,len(doc)):
         for x in range(0,len(doc[y])):
-          s="\033["+str(y+1)+";"+str(x+1)+"H"
-          sys.stdout.write(s)
+          s+="\033["+str(y+1)+";"+str(x+1)+"H"
           #affiche
-          sys.stdout.write(doc[y][x])
+          s+=doc[y][x]
+    sys.stdout.write(s)
 
 def show_pos(doc, X, Y, color_bg, color_txt):
     """
@@ -84,7 +94,7 @@ def show_pos(doc, X, Y, color_bg, color_txt):
     @param Y: coordonnée y où installer la fenetre
     @type Y: int
 
-    @param color_bg : Couleur du backgound
+    @param color_bg : Couleur du background
     @type color_bg :int
 
     @param color_txt : Couleur des caractères
@@ -94,28 +104,34 @@ def show_pos(doc, X, Y, color_bg, color_txt):
     ======
         Sans retour
     """
+    txtes =""
     #couleur fond
-    sys.stdout.write("\033["+str(color_bg)+"m")
+    #sys.stdout.write("\033["+str(color_bg)+"m")
+    txtes += "\033["+str(color_bg)+"m"
     #couleur white
-    sys.stdout.write("\033["+str(color_txt)+"m")
+    #sys.stdout.write("\033["+str(color_txt)+"m")
+    txtes += "\033["+str(color_txt)+"m"
     for y in range(0,len(doc)):
         for x in range(0,len(doc[y])):
             s="\033["+str(Y+y+1)+";"+str(X+x+1)+"H"
-            sys.stdout.write(s)
+            txtes += s
+            #sys.stdout.write(s)
             #affiche
-            sys.stdout.write(doc[y][x])
+            txtes += doc[y][x]
+            #sys.stdout.write(doc[y][x])
+    sys.stdout.write(txtes)
 
 def infoPrint(doc,X,Y,color_bg, color_txt):
-        #couleur fond
-        sys.stdout.write("\033["+str(color_bg)+"m")
-        #couleur white
-        sys.stdout.write("\033["+str(color_txt)+"m")
-        for x in range(0,len(doc)-1):
-            s="\033["+str(Y+1)+";"+str(X+x+1)+"H"
-            sys.stdout.write(s)
-            #affiche
-            sys.stdout.write(doc[x])
-
+    s=""
+    #couleur fond
+    s+="\033["+str(color_bg)+"m"
+    #couleur white
+    s+="\033["+str(color_txt)+"m"
+    for x in range(0,len(doc)-1):
+        s+="\033["+str(Y+1)+";"+str(X+x+1)+"H"
+        #affiche
+        s+=doc[x]
+    sys.stdout.write(s)
 
 """ txt  bg
     30, 40 : noir ;

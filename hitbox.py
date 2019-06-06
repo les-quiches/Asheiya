@@ -5,8 +5,55 @@ damage_Zone= "¤"
 _wall = "X"
 Gostwall = "-"
 take_damage = "."
+Boon_Zone = "$"
 
 import files
+import sys
+
+def Create_Shadow(CS_asset,CS_type_hitbox):#envoyer Entity["Asset"]["Name asset"]["Asset"]
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de donner un calque d'un asset
+
+    PARAM
+    =====
+
+    @param CS_asset: Liste de tableau représentant un asset
+    @type CS_asset : list
+
+    @param CS_type_hitbox: type de l'hitbox
+    @type CS_type_hitbox: str
+
+    RETOUR
+    ======
+
+    @return CS_Claque: renvois un calque de l'asset
+    @rtype CS_Claque: list
+"""
+    CS_Claque=[]
+    for frame in range(0,len(CS_asset)):
+        c=0
+        a=[]
+        y=len(CS_asset[frame])
+        CS_Claque.append([])
+        for c in CS_asset[frame]:
+            a.append(len(c)) # "a" représente la liste des longeurs de chaques lignes
+        amax = 0
+        for b in a : #on prend la plus grande ligne
+            if b>amax :
+                amax = b
+                x = amax
+        CS_Claque[frame]= [[void_collision] * x for _ in range(y)] #créé un tableau de x par y remplie de 0
+                #maintenant que j'ai la taille de l'asset max je vais ramplacer les valeur interieur du CS_Claque
+        for i in range(0,len(CS_asset[frame])):
+            for j in range(0,len(CS_asset[frame][i])):
+                if CS_asset[frame][i][j] != " ":
+                    CS_Claque[frame][i][j] = CS_type_hitbox
+                else:
+                    CS_Claque[frame][i][j] = void_collision
+    return(CS_Claque)
 
 def Add_Shadow(Shadow_asset,Shadow_backgound,x=0,y=0):
     """
@@ -34,15 +81,151 @@ def Add_Shadow(Shadow_asset,Shadow_backgound,x=0,y=0):
         @return Shadow_backgound: Calque du background avec l'asset intégrer
         @rtype Shadow_backgound :list
     """
-    for i in range(0,len(Shadow_asset)-1):
-        for j in range(0,len(Shadow_asset[i])-1):
-            if Shadow_asset[i][j] != void_collision:
+    for i in range(0,len(Shadow_asset)):
+        for j in range(0,len(Shadow_asset[i])):
+            if Shadow_asset[i][j][0] != void_collision:
                 Shadow_backgound[i+y][j+x] = Shadow_asset[i][j]
 
     return(Shadow_backgound)
 
+def hit(bullet, entities , Shadow_backgound ) :#non tester
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de vérifier si un projectile rentre en collision avec quelquechose.
+        Si c'est le cas, prends des décisions en fonction de la nature de l'objet touché.
 
-def detect_collision_wall(Entity,Shadow_backgound):
+    PARAM
+    =====
+    @param bullet: le projectile dont on chercher à savoir la collision
+    @type bullet: dict
+
+    @param entities: toute les entités du jeu
+    @type entities : list
+
+
+    @param gameBorder:  Zone de l'ecran ou le joueur peu se mouvoir
+    @type gameBorder : list
+
+    @param walls: tableau ou sont réparti tout les mur, plateformes
+    @type walls: list
+
+    RETOUR
+
+    @return log  : contient trois informations comme suit : True si le projectile rentre en collision (False sinon), True si c'était une entité vivante(False sinon), l'identifiant de cette entité le cas échéant.
+    @rtype log : tuple
+    """
+    HIT_log = {}
+
+    if detect_collision_wall(bullet,Shadow_backgound) != _wall:
+        for entity in entities:
+            if detect_collision_entity(bullet,entity):#trouver asset général
+                if "livingEnt" in entity["Type"] :
+                    HIT_log["is_hit"] = True
+                    HIT_log["hit_entity"]=True  #test si la balle touche une entite ou pas
+                    HIT_log["entity"] = entity
+            else:
+                HIT_log["is_hit"] = False
+                HIT_log["hit_entity"]=False
+                HIT_log["entity"] = None
+    else:
+        HIT_log["is_hit"] = True
+        HIT_log["hit_entity"]=False  #test si la balle touche une entite ou pas
+        HIT_log["entity"] = None
+
+    return(HIT_log)
+
+#_____Collision______________________________________________________________________
+def Zone_Collision(ZC_Asset_Game_Zone,ZC_walls):#non tester
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de détecter la collision entre une entité et le background
+
+    PARAM
+    =====
+    @param ZC_ent:entité a tester
+    @type ZC_ent:dict
+
+    @param ZC_Asset_Game_Zone: asset de la zone de jeu
+    @type  ZC_Asset_Game_Zone:list
+
+    @param ZC_walls: asset des plateformes de jeu
+    @type  ZC_walls:list
+
+    RETOUR
+    ======
+
+    @return ZC_hitentwall : renvois ce qui a été détecter
+    @rtype ZC_hitentwall :str
+    """
+    ZC_Shadow_walls=Create_Shadow(ZC_walls,Gostwall)
+    ZC_Shadow_gameBorder=Create_Shadow(ZC_Asset_Game_Zone,_wall)
+    ZC_Shadow_background=Add_Shadow(ZC_Shadow_walls,ZC_Shadow_gameBorder)
+    return ZC_Shadow_background
+
+#_____Collision______________________________________________________________________
+def collision(COLLI_ent, COLLI_allEntityTest, COLLI_Shadow_background) : #non tester
+    #x et y correspondent aux prochaines positions, utiles seulement pour le joueur sinon on recupere via entity
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de détecter une collision
+
+    PARAM
+    =====
+    @param COLLI_ent: entité dont l'on veux tester si il y a une collision
+    @type COLLI_ent:dict
+
+    @param COLLI_allEntityTest: toutes les entités qui pourrais etre en collision
+    @type COLLI_allEntityTest: dict
+
+    @param COLLI_Shadow_background: calque du backgound
+    @type COLLI_Shadow_background : list
+
+    @param COLLI_x: coordonnés x
+    @type COLLI_x: int
+
+    @param COLLI_y: coordonnés y
+    @type COLLI_y: int
+
+    RETOUR
+    ======
+
+    @return COLLI_log : Renvoie une liste d'information : s'il y a eu une collision dur,
+    @rtype COLLI_log :bool
+    """
+
+    COLLI_hitentwall=detect_collision_wall(COLLI_ent,COLLI_Shadow_background)
+
+    COLLI_log=[False,None,None]
+    if COLLI_hitentwall == _wall:
+        #detect un mur
+        COLLI_log=[True,_wall,None]
+    elif COLLI_hitentwall == Gostwall:
+        COLLI_log=[True,Gostwall,None]
+
+    elif COLLI_hitentwall == void_collision:
+        COLLI_detect =[]
+        for COLLI_Entity in COLLI_allEntityTest:
+            if COLLI_Entity != COLLI_ent :
+                COLLI_detect = detect_collision_entity(COLLI_ent,COLLI_Entity)
+                if COLLI_detect != void_collision:
+                    COLLI_log=[True,COLLI_detect,COLLI_Entity]
+                    #collision entre les deux entiter
+                    return COLLI_log
+    else:
+        files.SAVE_FILE_JSON(COLLI_ent,"log_wtf")
+        # si on est ici c'est un BUG
+
+    return COLLI_log
+
+
+
+def detect_collision_wall(Entity,Shadow_background):#ne fonctionne pas
     """
     G{classtree}
     DESCRIPTION
@@ -63,19 +246,19 @@ def detect_collision_wall(Entity,Shadow_backgound):
     @return detect: True s'il y a une collision avec un mur, False sinon.
     @rtype detect: str
     """
-    asset = Entity["Asset"]["Actual"]["Asset"][Entity["Asset"]["Actual"]["FrameNb"]]
     x = Entity["x"]
     y = Entity["y"]
-    Shadow_entity = hit_box_complex(asset,random_zone)
+    Shadow_entity=[]
+    Shadow_entity = Entity["ShadowAsset"]["Actual"]["Asset"][Entity["ShadowAsset"]["Actual"]["FrameNb"]]
     detect = void_collision
     for i in range(0,len(Shadow_entity)):
         for j in range(0,len(Shadow_entity[i])):
             if Shadow_entity[i][j] != void_collision:
-                if Shadow_backgound[y+i][x+j] == _wall:
+                if Shadow_background[y+i][x+j][0] == _wall:
                      #detection collision wall
                      detect = _wall
                      return detect
-                elif Shadow_backgound[i+y][j+x] == Gostwall:
+                elif Shadow_background[i+y][j+x][0] == Gostwall:
                     detect = Gostwall
     return detect
 
@@ -103,7 +286,7 @@ def create_void_shadow(Xmax,Ymax):
     Shadow = [[void_collision] * Xmax for _ in range(Ymax)]
     return Shadow
 
-def detect_collision_entity(DCE_Entity_1, DCE_Entity_2):
+def detect_collision_entity(DCE_Entity_1, DCE_Entity_2):#non tester
     """
     G{classtree}
     DESCRIPTION
@@ -129,25 +312,19 @@ def detect_collision_entity(DCE_Entity_1, DCE_Entity_2):
     DCE_y1=DCE_Entity_1["y"]
     DCE_x2=DCE_Entity_2["x"]
     DCE_y2=DCE_Entity_2["y"]
-    DCE_asset_entity_1 = DCE_Entity_1["Asset"]["Actual"]["Asset"][DCE_Entity_1["Asset"]["Actual"]["FrameNb"]]
-    DCE_asset_entity_2 = DCE_Entity_2["Asset"]["Actual"]["Asset"][DCE_Entity_2["Asset"]["Actual"]["FrameNb"]]
-    #a,b,DCE_x_2,DCE_y_2=hit_box_simple(DCE_Entity_2)
-    #a,b,DCE_x_1,DCE_y_1=hit_box_simple(DCE_Entity_2)
-    #DCE_x = max(DCE_x_1,DCE_x_2)
-    #DCE_y = max(DCE_y_1,DCE_y_2)
-    DCE_Void_Shadow=create_void_shadow(140,42)
-    DCE_Shadow_asset_1 = hit_box_complex(DCE_asset_entity_1,random_zone)
-    DCE_Shadow_asset_2 = hit_box_complex(DCE_asset_entity_2,random_zone)
+    DCE_Void_Shadow=create_void_shadow(140,42) #genere un fond vierge pour eviter de le calculer a chaque boucle
+    DCE_Shadow_asset_1 = DCE_Entity_1["ShadowAsset"]["Actual"]["Asset"][DCE_Entity_1["ShadowAsset"]["Actual"]["FrameNb"]]
+    DCE_Shadow_asset_2 = DCE_Entity_2["ShadowAsset"]["Actual"]["Asset"][DCE_Entity_2["ShadowAsset"]["Actual"]["FrameNb"]]
     DCE_Shadow = Add_Shadow(DCE_Shadow_asset_2,DCE_Void_Shadow,DCE_x2,DCE_y2)
-    for i in range(0,len(DCE_Shadow_asset_1)-1):
-        for j in range(0,len(DCE_Shadow_asset_1[i])-1):
-            if DCE_Shadow_asset_1[i][j] != void_collision:
-                if DCE_Shadow[i+DCE_y1][j+DCE_x1] != void_collision:
-                    return True
-    return False
+    for i in range(0,len(DCE_Shadow_asset_1)):
+        for j in range(0,len(DCE_Shadow_asset_1[i])):
+            if DCE_Shadow_asset_1[i][j][0] != void_collision:
+                if DCE_Shadow[i+DCE_y1][j+DCE_x1][0] != void_collision:
+                    return DCE_Shadow[i+DCE_y1][j+DCE_x1][0]
+    return void_collision
 
 
-
+#ancien code mais toujours utiles
 def hit_box_simple(entity):  #####_____OBSOLETE______
     """
     G{classtree}
@@ -184,82 +361,85 @@ def hit_box_simple(entity):  #####_____OBSOLETE______
     hit_box_entity=[entity["x"], entity["y"], entity["x"]+x, entity["y"]+y]# plage de l'hitbox de l'asset (point en haut a gauche puit en bas a doite)
     return(hit_box_entity)
 
-def hit_box_complex(asset,type_hitbox):
+#pour les tests
+def show_Shadow(ss_Shadow):
     """
     G{classtree}
     DESCRIPTION
     ===========
-        Permet de donner un calque d'un asset
+        Permet d'afficher la fenetre principal
 
     PARAM
     =====
 
-    @param asset: Tableau représentant un asset
-    @type asset : list
-
-    @param type_hitbox: type de l'hitbox
-    @type type_hitbox: str
+    @param doc : Tableau représentant la fennetre principal
+    @type doc : list
 
     RETOUR
     ======
-
-    @return : renvois un calque de l'asset
-    @rtype : list
-"""
-    y=len(asset)
-    c=0
-    a=[]
-    for c in asset:
-        a.append(len(c)) # "a" représente la liste des longeurs de chaques lignes
-
-    # x = max(a)
-    # -afair , la fonction bug for no reason, elle vide la liste a
-    amax = 0
-    for b in a : #on prend la plus grande ligne
-        if b>amax :
-            amax = b
-    x = amax
-
-    bloc=[]
-    bloc= [[void_collision] * x for _ in range(y)] #créé un tableau de x par y remplie de 0
-    #maintenant que j'ai la taille de l'asset max je vais ramplacer les valeur interieur du bloc
-    for i in range(0,len(asset)):
-        for j in range(0,len(asset[i])):
-            if asset[i][j] != " ":
-                bloc[i][j] = type_hitbox
-            else:
-                bloc[i][j] = void_collision
-    return(bloc)
+        Sans retour
+    """
+    s=""
+    #couleur fond
+    s+="\033[40m"
+    #couleur white
+    s+="\033[37m"
+    #goto
+    for y in range(0,len(ss_Shadow)):
+        for x in range(0,len(ss_Shadow[y])):
+          s+="\033["+str(y+1)+";"+str(x+1)+"H"
+          #affiche
+          s+=ss_Shadow[y][x][0]
+    sys.stdout.write(s)
 
 
 if (__name__=="__main__"):
     import background
     import time
     #init
+    test_void_shadow=create_void_shadow(50,50)
+    show_Shadow(test_void_shadow)
+
+
+
+    """
     gameZone=[
     "Zone_1",
     ]
     a = time.time()
-    window=background.create_window("Windows.txt")
     assetGameZone={}
-    assetb=background.create_window("GameZone/Zone_1_TraversantPleteforme.txt")
     for GameZone_doc in gameZone :
         assetGameZone[GameZone_doc]=background.create_window("GameZone/" + GameZone_doc + ".txt")
     assetGameZone["NumZone"]=1
     asset =assetGameZone["Zone_"+str(assetGameZone["NumZone"])]
     background.show_window(asset)
 
+
     while a > time.time()-3:
         None
-    asset=hit_box_complex(asset,"X")
-    background.show_window(asset)
+    shadow=Create_Shadow(asset,"X")
+    files.SAVE_FILE_JSON(shadow,"log_shadow")
+    show_Shadow(shadow)
+
 
     a = time.time()
     while a > time.time()-3:
         None
-    assetb=hit_box_complex(assetb,"=")
-    asset=Add_Shadow(assetb,asset)
-    background.show_window(asset)
+    a = time.time()
+    assetb= background.create_window("GameZone/Zone_1_TraversantPlateforme.txt")
+    files.SAVE_FILE_JSON(assetb,"logGamentPlateforme.txt")
 
-    assetBullet = bullet["Asset"]["Actual"]["Asset"]
-    Shadow_bullet=hitbox.hit_box_complex(assetBullet,damage_Zone)
+
+    while a > time.time()-3:
+        None
+    assetc=Create_Shadow(assetb,"=")
+    show_Shadow(assetc)
+
+
+    a = time.time()
+    while a > time.time()-3:
+        None
+    shadow=Add_Shadow(assetc,shadow)
+    show_Shadow(shadow)
+
+    """

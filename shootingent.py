@@ -266,69 +266,18 @@ def shoot(Entity) :
         name_asset = "Gun_Horizontal"
 
     asset = {}
+    ShadowAsset={}
     asset[name_asset] = Entity["assetShot"][name_asset]
+    ShadowAsset[name_asset]={}
+    ShadowAsset[name_asset]["Asset"]=hitbox.Create_Shadow(asset[name_asset]["Asset"],damage_Zone)
+    ShadowAsset[name_asset]["FrameNb"]=asset[name_asset]["FrameNb"]
     asset["Actual"] = Entity["assetShot"][name_asset]
-    bullet = entity.create_entity(bullet_name,x,y,asset)
+    ShadowAsset["Actual"]=ShadowAsset[name_asset]
+    bullet = entity.create_entity(bullet_name,x,y,asset,ShadowAsset )
     bullet = movingent.create_moving_ent(bullet, Vx, Vy, Entity["bulletSpeed"])
     bullet = create_bullet(bullet,Entity["damage"],Entity["Name"])
 
     return bullet
-
-
-def hit(bullet, entities , gameBorder, walls ) :
-    """
-    G{classtree}
-    DESCRIPTION
-    ===========
-        Permet de vérifier si un projectile rentre en collision avec quelquechose.
-        Si c'est le cas, prends des décisions en fonction de la nature de l'objet touché.
-
-    PARAM
-    =====
-    @param bullet: le projectile dont on chercher à savoir la collision
-    @type bullet: dict
-
-    @param entities: toute les entités du jeu
-    @type entities : list
-
-
-    @param gameBorder:  Zone de l'ecran ou le joueur peu se mouvoir
-    @type gameBorder : list
-
-    @param walls: tableau ou sont réparti tout les mur, plateformes
-    @type walls: list
-
-    RETOUR
-
-    @return log  : contient trois informations comme suit : True si le projectile rentre en collision (False sinon), True si c'était une entité vivante(False sinon), l'identifiant de cette entité le cas échéant.
-    @rtype log : tuple
-    """
-    Shadow_walls=hitbox.hit_box_complex(walls,Gostwall)
-    Shadow_gameBorder=hitbox.hit_box_complex(gameBorder,_wall)
-    Shadow_backgound=hitbox.Add_Shadow(Shadow_walls,Shadow_gameBorder)
-
-    HIT_log = {}
-
-    if hitbox.detect_collision_wall(bullet,Shadow_backgound) != _wall:
-        for entity in entities:
-            if hitbox.detect_collision_entity(bullet,entity):#trouver asset général
-                if "livingEnt" in entity["Type"] :
-                    HIT_log["is_hit"] = True
-                    HIT_log["hit_entity"]=True  #test si la balle touche une entite ou pas
-                    HIT_log["entity"] = entity
-            else:
-                HIT_log["is_hit"] = False
-                HIT_log["hit_entity"]=False
-                HIT_log["entity"] = None
-    else:
-        HIT_log["is_hit"] = True
-        HIT_log["hit_entity"]=False  #test si la balle touche une entite ou pas
-        HIT_log["entity"] = None
-
-    return(HIT_log)
-
-
-
 
 
 #____Jeux de Test________________________________________________________________

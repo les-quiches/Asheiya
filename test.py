@@ -1,13 +1,20 @@
 #-*- coding:utf-8 -*
 import test2
 
+liste=[230,816,899,105,879]
+print liste
+
+
+
 def execute(liste) :
-	joueur = test2.find_player(liste)
-	joueur["pv"] = 150
+	for a in liste :
+		if a>300 :
+			liste.remove(a)
+		print a
 	return liste
 
-
-
+execute(liste)
+print liste
 
 
 """

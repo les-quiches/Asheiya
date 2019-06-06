@@ -96,7 +96,7 @@ def Init(): 	#initialisation des variables
 	"Gun_Horizontal","Gun_Slach","Gun_UnSlash","Gun_Vertical"
 	]
 
-	assetMenu=["Menu","Game_dev"]
+	assetMenu=["Menu","Game_dev","Game_dev2","YouWin","youLose"]
 
 
 	#Time_game___________________________________________________________________________________________________________________
@@ -106,7 +106,7 @@ def Init(): 	#initialisation des variables
 
 
 	#start menu_____________________________________________________________________________________________________________________________
-	menu="Game_dev"
+	menu="Game_dev2"
 	manche = 10 #1 pour premiere manche, 0 pour le nb de fois qu'on est passe dans la boucle
 
 
@@ -285,7 +285,7 @@ def Game():
 
 	#gestion de debut de manche
 
-	if menu=="Game_dev" :
+	if menu in ["Game_dev","Game_dev2"]  :
 		None
 
 		#animation de demarage + elements loristiques et tout
@@ -350,13 +350,13 @@ def Game():
 		manche +=9 #on passe a la manche suivante
 		if manche >= 40 :
 			#-afair
-			menu = "youWin"
+			None
 		else :
 			None
 			#afficher les resultats de la manche precedente,
 			#-afair, appeler les fonctions, puis derniere fonction appeler fait passer menu a manche
 
-	elif menu == "youLose" :
+	elif menu == "EndGame" :
 		# -afair : afficher ecran de defaite attendre confirmation puis :
 		Quit_game()
 
@@ -552,11 +552,16 @@ def Windows():
 		Sans retour.
 	"""
 	global menu, manche,allAssetMenu
-
 	if menu == "Game_dev":
 		background.show_pos(allAssetMenu["Game_dev"],0,0,color["background"]["Black"],color["txt"]["Yellow"])
+	elif menu == "Game_dev2":
+		background.show_pos(allAssetMenu["Game_dev2"],0,0,color["background"]["Black"],color["txt"]["Yellow"])
 	elif menu == "Menu":
 		background.show_pos(allAssetMenu["Menu"],0,0,color["background"]["Black"],color["txt"]["White"])
+	elif menu == "YouWin":
+		background.show_pos(allAssetMenu["YouWin"],0,0,color["background"]["Black"],color["txt"]["Yellow"])
+	elif menu == "youLose":
+		background.show_pos(allAssetMenu["youLose"],0,0,color["background"]["Black"],color["txt"]["Red"])
 	elif menu == "manche":
 
 		background.show_pos(allAssetGameZone["Zone_"+str(allAssetGameZone["NumZone"])],0,0,color["background"]["Black"],color["txt"]["White"])
@@ -646,7 +651,7 @@ def Interact():
 
 		if c == '\x1b': # \x1b = esc
 			Quit_game()
-		if menu == "Game_dev":
+		if menu in ["Game_dev","Game_dev2"]:
 			menu = "Menu"
 			sys.stdout.write("\033[1;1H")
 			sys.stdout.write("\033[2J")
@@ -656,6 +661,12 @@ def Interact():
 			sys.stdout.write("\033[1;1H")
 			sys.stdout.write("\033[2J")
 			menu = "manche"
+
+		elif menu == "YouWin":
+			menu = "transition"
+
+		elif menu == "youLose":
+			menu = "EndGame"
 
 
 		elif ((manche%10)==1 and menu=="manche") : #on est en jeu
@@ -716,7 +727,7 @@ def Interact():
 				None
 				#-afair : gestion des interactions lorsque l'on est en ulti
 
-		if menu in ["youLose", "youWin" , "transition"] : #-afair, si on est dans un menu textuel
+		if menu in ["youLose", "YouWin" , "transition"] : #-afair, si on est dans un menu textuel
 		#deplacer le pointeur suivant l'endroit
 		#passer a la suite si c'est une transitioin, quitte le jeu si c'est une fin de jeu
 			if c=="z":

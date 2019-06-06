@@ -38,7 +38,7 @@ def Create_Grid(CG_filename):
 				myGrid[y][x]["Backgound"]=void_collision
 			elif element == "=":
 				myGrid[y][x]["Backgound"]=Gostwall
-			elif element in ["X","-","+"]:
+			elif element in ["X","-","+","|"]:
 				myGrid[y][x]["Backgound"]=_wall
 			myGrid[y][x]["Entity"]={}
 	return

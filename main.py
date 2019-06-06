@@ -77,6 +77,7 @@ def Init(): 	#initialisation des variables
 	"""
 	global color, window, allAssetGameZone, timeStep, timeScreen, timeGravity, allEntity, player, menu, manche, assetInfoStory, allAssetMenu
 
+
 	color["txt"]={"Black":30, "Red":31,"Green":32,"Yellow":33,"Blue":34,"Pink":35,"Cyan":36,"White":37}
 	color["background"]={"Black":40, "Red":41,"Green":42,"Yellow":43,"Blue":44,"Pink":45,"Cyan":46,"White":47}
 
@@ -158,6 +159,7 @@ def Init_manche():
 	]
 
 	if manche == 10 :
+
 		print allAssetGameZone["NumZone"]
 		acutalAssetGameZone= allAssetGameZone["Zone_"+str(allAssetGameZone["NumZone"])]
 		#on concoit le joueur___________________________________________________________________________________________________________________________
@@ -174,6 +176,7 @@ def Init_manche():
 		vyPlayer = 0
 
 		player = entity.create_entity("Asheiya Briceval",xPlayer,yPlayer,assetPlayer)
+
 
 		speedPlayer = 0.1 #deplaxcement pas seconde
 		player = movingent.create_moving_ent(player,vxPlayer,vyPlayer,speedPlayer)
@@ -234,6 +237,7 @@ def Init_manche():
 
 		Cristal_1 ={}
 		Cristal_1 = entity.create_entity("Cristal_1",42,24,assetCristal)#position x=42,y=24
+
 		Cristal_1 = livingent.create_living_ent(Cristal_1,9,0)#9 point de vie, 0 point d'armure
 		allEntity.append(Cristal_1)
 
@@ -395,6 +399,7 @@ def Time_game():
 				if actualTime>ent["LastTime"] + ent["Speed"] :
 					if "character" in ent["Type"] :
 						TG_whatcollide=TG_whatcollide + Interact()
+						print TG_whatcollide
 
 					if (ent["Vx"]!=0 or ent["Vy"]!=0) :
 						ent = movingent.move_entity(ent, ent["Vx"], ent["Vy"])

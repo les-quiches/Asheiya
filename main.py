@@ -22,6 +22,7 @@ import boon
 import files
 import windows
 import hitbox
+import grid
 
 #importation des IAs
 import AI
@@ -206,9 +207,9 @@ def Init_manche():
 		player = movingent.tp_entity(player,20,37)
 
 		#placement des bonus :  #-afair quand on les placera tous, automatiser le tout
-		listeBonus = {"speedUp" : 0.02, "fireRateUp" : 1}
+		listeBonus = {"speedUp" : 0.02, "fireRateUp" : 1, "lifeUp":5}
 		xbonus = 80
-		ybonus = 40
+		ybonus = 37
 		assetBonus = {}
 		ShadowAssetBonus={}
 		assetBonus["boon1"] = entity.create_asset("Boon/boon1.txt") #-afair en sorte que les accès soient automatisé
@@ -239,6 +240,7 @@ def Init_manche():
 		ShadowAssetMob1["mob1"]["Asset"]=hitbox.Create_Shadow(assetMob1["mob1"]["Asset"],take_damage)
 		ShadowAssetMob1["mob1"]["FrameNb"]=assetMob1["mob1"]["FrameNb"]
 		ShadowAssetMob1["Actual"]=ShadowAssetMob1["mob1"]
+
 
 		mob1 = entity.create_entity("testmob",20,20,assetMob1,ShadowAssetMob1, "AItest")
 		mob1 = movingent.create_moving_ent(mob1,1,1,0.5, False)
@@ -400,7 +402,8 @@ def Time_game():
 							if (PlayeurDetect[1] != _wall or PlayeurDetect[1] != Gostwall):
 								if PlayeurDetect[1] == Boon_Zone:
 									BonusPlayer=PlayeurDetect[2]["Bonus"]
-									print BonusPlayer
+									ent = boon.caught(PlayeurDetect[2],ent)
+									toRemove.append(PlayeurDetect[2])
 					if (ent["Vx"]!=0 or ent["Vy"]!=0) :
 						ent = movingent.move_entity(ent,ent["Vx"], ent["Vy"])
 					if "bullet" in ent["Type"] :
@@ -410,19 +413,20 @@ def Time_game():
 						if logHit["is_hit"]:#il y a eu collision
 							toRemove.append(ent)
 					else :
+
 						willCollide = hitbox.detect_collision_wall(ent,Shadow_background)[0]
 						if willCollide :
 							ent = movingent.move_entity(ent,-ent["Vx"],-ent["Vy"])
 				#gravité
 				if actualTime >timeGravity + 0.08 :
 						if (ent["Gravity"]):
-							onTheGround = entity.is_ground_beneath(entity.feet(ent),acutalAssetGameZone,walls)
 							if ent["Jump"]>0 :
 								movingent.move_entity(ent,0,-1,True)
 								willCollide = hitbox.detect_collision_wall(ent,Shadow_background)[0]
 								if willCollide :
 									ent = movingent.move_entity(ent,0,1,False)
-							elif not(onTheGround) :
+							onTheGround = entity.is_ground_beneath(entity.feet(ent),acutalAssetGameZone,walls)
+							if not(onTheGround) and ent["Jump"]<=0 :
 								movingent.move_entity(ent,0,1,True)
 							ent = movingent.gravity(ent,onTheGround) #on gère la valeur de Jump
 
@@ -688,10 +692,12 @@ def Interact():
 					if hitbox.detect_collision_wall(player, Shadow_background) == _wall:
 						player = movingent.move_entity(player,-1,0)
 
+
 				elif c == "q":
 					if not(player["Jump"]) :
 						player = character.switch_stand(player,"Run")
 					player = movingent.move_entity(player,-1,0)
+
 					if hitbox.detect_collision_wall(player, Shadow_background) == _wall:
 						player = movingent.move_entity(player,1,0)
 

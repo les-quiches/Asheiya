@@ -111,22 +111,31 @@ def hit(bullet, entities , Shadow_backgound ) :#non tester
     @rtype log : tuple
     """
     HIT_log = {}
+    HIT_log["is_hit"] = False
+    HIT_log["hit_entity"]=False
+    HIT_log["entity"] = None
 
-    if detect_collision_wall(bullet,Shadow_backgound) != _wall:
-        for entity in entities:
-            if detect_collision_entity(bullet,entity):#trouver asset général
-                if "livingEnt" in entity["Type"] :
-                    HIT_log["is_hit"] = True
-                    HIT_log["hit_entity"]=True  #test si la balle touche une entite ou pas
-                    HIT_log["entity"] = entity
-            else:
-                HIT_log["is_hit"] = False
-                HIT_log["hit_entity"]=False
-                HIT_log["entity"] = None
-    else:
-        HIT_log["is_hit"] = True
-        HIT_log["hit_entity"]=False  #test si la balle touche une entite ou pas
-        HIT_log["entity"] = None
+    HIT_collision_wall = detect_collision_wall(bullet,Shadow_backgound)
+
+    if HIT_collision_wall != void_collision :
+        if HIT_collision_wall != _wall:
+            for HIT_entity in entities:
+                HIT_collision_entity = detect_collision_entity(bullet,HIT_entity)
+                if HIT_collision_entity :
+                    if bullet["origine"] == HIT_entity["Name"]:
+                        HIT_log["is_hit"] = False
+                        HIT_log["hit_entity"]=False
+                        HIT_log["entity"] = None
+                        pass
+                    if "livingEnt" in HIT_entity["Type"] :
+                        HIT_log["is_hit"] = True
+                        HIT_log["hit_entity"]=True  #test si la balle touche une entite ou pas
+                        HIT_log["entity"] = HIT_entity
+                        pass
+        else:
+            HIT_log["is_hit"] = True
+            HIT_log["hit_entity"]=False  #test si la balle touche une entite ou pas
+            HIT_log["entity"] = None
 
     return(HIT_log)
 

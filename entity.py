@@ -173,7 +173,7 @@ def is_ground_beneath(IGB_feet,IGB_grid) :
     IGB_ground = IGB_feet[2]+1 #position en dessous des pieds
     IGB_length_feet = IGB_feet[1]-IGB_feet[0]
     for a in range(IGB_length_feet):
-        if IGB_grid[IGB_feet[0]+a][IGB_feet[2]]["Backgound"] != void_collision :
+        if IGB_grid[IGB_feet[0]+a][IGB_feet[2]]["Background"] != void_collision :
             return True
     return False
 
@@ -192,7 +192,7 @@ def show_entity(Entity, color_bg, color_txt):
     @param Entity : Entitée
     @type Entity :dict
 
-    @param color_bg : Couleur du backgound
+    @param color_bg : Couleur du background
     @type color_bg :int
 
     @param color_txt : Couleur de l'asset

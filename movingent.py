@@ -93,7 +93,7 @@ def speedUp(SU_Entity, SU_amount) :
 
 
 #_____Move______________________________________________________________________
-def move_entity(ME_Entity,ME_grid,ME_x,ME_y,ME_isGravity=False,ME_isCollision=False):
+def move_entity(ME_Entity,ME_grid,ME_x,ME_y,ME_isGravity=False,ME_isCollision=True):
 
     """
     G{classtree}

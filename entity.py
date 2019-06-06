@@ -9,9 +9,14 @@ import hitbox
 import files
 f=files
 
+void_collision ="0"
+_wall = "X"
+Gostwall = "-"
+EntityHitbox = "E"
+
 
 #_____Create____________________________________________________________________
-def create_entity(Name, X, Y, Asset,ShadowAsset, AI = None):
+def create_entity(Name, X, Y, Asset, AI = None):
     """
     G{classtree}
     DESCRIPTION
@@ -33,6 +38,9 @@ def create_entity(Name, X, Y, Asset,ShadowAsset, AI = None):
     @param Asset : variables contenant toutes les representations de l'entite
     @type Asset : dict
 
+    @param Asset : grille représentant le jeu
+    @type Asset : list
+
     @param AI : si l'entite est automatiquement controle, chemin d'acces vers le fichier qui la controle
     @type AI : str
 
@@ -50,7 +58,6 @@ def create_entity(Name, X, Y, Asset,ShadowAsset, AI = None):
     Entity["x"]= X
     Entity["y"]= Y
     Entity["Asset"]= Asset
-    Entity["ShadowAsset"] = ShadowAsset
     Entity["AI"]=AI
 
     return(Entity)
@@ -139,7 +146,7 @@ def feet(FEET_entity) :#renvoi les "pieds" de l'entite
     FEET_feet=[FEET_x,FEET_xmax,FEET_ymax]
     return FEET_feet
 
-def is_ground_beneath(IGB_feet,Asset_Game_Zone,walls) :
+def is_ground_beneath(IGB_feet,IGB_grid) :
     """
     G{classtree}
     DESCRIPTION
@@ -152,25 +159,21 @@ def is_ground_beneath(IGB_feet,Asset_Game_Zone,walls) :
     @param pos : position de l'endroit où l'on veut savoir s'il y a une plateforme en dessous
     @type pos : list
 
-    @param Asset_Game_Zone:  Asset de l'ecran ou le joueur peut se mouvoir
-    @type Asset_Game_Zone : list
+    @param IGB_grid: grille représentant le jeu
+    @type IGB_grid : dict
 
-    @param walls : Ensemble des plateformes du jeu
-    @type walls : array
 
     RETOUR
     ======
-    @return : True s'il y a bien un sol solide en dessous, False sinon.
+    @return : True s'il y a bien un sol en dessous, False sinon.
     @rtype :bool
     """
+
     IGB_ground = IGB_feet[2]+1 #position en dessous des pieds
     IGB_length_feet = IGB_feet[1]-IGB_feet[0]
-    IGB_map = Asset_Game_Zone#hitbox.Add_Shadow(walls,Asset_Game_Zone)
     for a in range(IGB_length_feet):
-        log = (IGB_feet[0]+a,IGB_feet[2])
-        if IGB_map[IGB_feet[2]][IGB_feet[0]+a] != " " :
+        if IGB_grid[IGB_feet[0]+a][IGB_feet[2]]["Backgound"] != void_collision :
             return True
-    # -afair : test si en dessous de pos il y a ou pas une plateforme et renvoie True or False en consequence
     return False
 
 

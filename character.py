@@ -240,10 +240,6 @@ def get_asset(player):
     asset = player["Asset"][player["Asset"]["position"][0]+"_"+player["Asset"]["position"][1]+"_"+str(player["Asset"]["position"][2])]
     return(asset)
 
-def get_shadow(GS_player):
-    GS_shadow=GS_player["ShadowAsset"][GS_player["Asset"]["position"][0]+"_"+GS_player["Asset"]["position"][1]+"_"+str(GS_player["Asset"]["position"][2])]
-    return(GS_shadow)
-
 #____Switch_____________________________________________________
 def switch_orientation(player, orientation) :
     """

@@ -77,7 +77,7 @@ def Init(): 	#initialisation des variables
 	======
 		Sans retour
 	"""
-	global color, window, allAssetGameZone, timeStep, timeScreen, timeGravity, allEntity, player, menu, manche, assetInfoStory, allAssetMenu
+	global color, window, allAssetGameZone, timeStep, timeScreen, timeGravity, allEntity, player, menu, manche, assetInfoStory, allAssetMenu, gridGame
 
 	color["txt"]={"Black":30, "Red":31,"Green":32,"Yellow":33,"Blue":34,"Pink":35,"Cyan":36,"White":37}
 	color["background"]={"Black":40, "Red":41,"Green":42,"Yellow":43,"Blue":44,"Pink":45,"Cyan":46,"White":47}
@@ -231,18 +231,18 @@ def Init_manche():
 
 		assetCristal = {}
 		assetCristal["Cristal"] = entity.create_asset("Mobs/Cristal.txt")
-		assetCristal["Actual"]= assetMob1["mob1"]
+		assetCristal["Actual"]= assetCristal["Cristal"]
 
 
 
 		Cristal_1 ={}
-		Cristal_1 = entity.create_entity("Cristal_1",24,42,assetCristal)#position x=24,y=42
+		Cristal_1, gridGame = entity.create_entity("Cristal_1",42,24,assetCristal,gridGame)#position x=42,y=24
 		Cristal_1 = livingent.create_living_ent(Cristal_1,9,0)#9 point de vie, 0 point d'armure
 		allEntity.append(Cristal_1)
 
 
 		Cristal_2 ={}
-		Cristal_2 = entity.create_entity("Cristal_1",37,73,assetCristal)#position x=37,y=73
+		Cristal_2, gridGame = entity.create_entity("Cristal_1",73,37,assetCristal,gridGame)#position x=73,y=37
 		Cristal_1 = livingent.create_living_ent(Cristal_2,12,0)#12 point de vie, 0 point d'armure
 		allEntity.append(Cristal_2)
 
@@ -438,14 +438,15 @@ def Time_game():
 			#gestion des tirs
 			if "shootingEnt" in ent["Type"] :
 				if actualTime>ent["shotDelay"]+ent["lastShot"][0] :
-					newBullet, grid = shootingent.shoot(ent)
+					newBullet, grid = shootingent.shoot(ent, gridGame)
 					allEntity.append(newBullet)
 					ent = shootingent.as_shot(ent)
 
 			#gestion des bonus
 			if "boonGenerator" in ent["Type"] :
 				if (actualTime and not(ent["isGenerated"]) > ent["GeneLastTime"][0]+ent["GeneSpeed"]) :
-					allEntity.append(boon.generate(ent))
+					newBoon, gridGame = boon.generate(ent,gridGame)
+					allEntity.append(newBoon)
 					ent = boon.as_generate(ent)
 
 

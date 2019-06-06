@@ -201,7 +201,7 @@ def caught(boon, Entity) :
 	return Entity
 
 
-def generate(boonG) :
+def generate(boonG,grid) :
 	"""
 	G{classtree}
 	DESCRIPTION
@@ -212,6 +212,10 @@ def generate(boonG) :
 	=====
 	@param boonG : le générateur de bonus qui va générer
 	@type boonG : dict
+
+	@param boonG : la grille du jeu
+	@type boonG : list
+
 
 	RETOUR
 	======
@@ -227,10 +231,10 @@ def generate(boonG) :
 	asset["boon1"] = entity.create_asset("Boon/boon1.txt")
 	asset["Actual"] = asset["boon1"]
 	name = "boon" +"_"+ boonG["Name"] +"_"+ str(boonG["GeneLastTime"][1])
-	boon = entity.create_entity(name,x,y,asset)
+	boon,grid = entity.create_entity(name,x,y,asset, grid)
 	boon = create_boon(boon, boonG["Bonus"])
 
-	return boon
+	return (boon,grid)
 
 
 

@@ -175,7 +175,7 @@ def head(HEAD_entity) :
     HEAD_entity=[HEAD_x,HEAD_xmax,HEAD_y]
     return HEAD_entity
 
-def is_ground_above(IGA_head,IGA_grid) :
+def is_ground_above(IGA_head) :
     """
     G{classtree}
     DESCRIPTION
@@ -204,7 +204,7 @@ def is_ground_above(IGA_head,IGA_grid) :
             return True
     return False
 
-def is_ground_beneath(IGB_feet,IGB_grid) :
+def is_ground_beneath(IGB_feet) :
     """
     G{classtree}
     DESCRIPTION
@@ -257,7 +257,7 @@ def RightSide(RightSide_entity) :#renvoi les "pieds" de l'entite
     RightSide_right=[RightSide_y,RightSide_xmax,RightSide_ymax]
     return RightSide_right
 
-def is_ground_right(IGR_pos,IGR_grid) :
+def is_ground_right(IGR_pos) :
     """
     G{classtree}
     DESCRIPTION
@@ -310,7 +310,7 @@ def LeftSide(LeftSide_entity) :#renvoi les "pieds" de l'entite
     LeftSide_Left=[LeftSide_x,LeftSide_y,LeftSide_ymax]
     return LeftSide_Left
 
-def is_ground_left(IGL_pos,IGB_grid) :
+def is_ground_left(IGL_pos) :
     """
     G{classtree}
     DESCRIPTION

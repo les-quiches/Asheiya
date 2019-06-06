@@ -201,7 +201,7 @@ def caught(boon, Entity) :
 	return Entity
 
 
-def generate(boonG,grid) :
+def generate(boonG) :
 	"""
 	G{classtree}
 	DESCRIPTION
@@ -234,7 +234,7 @@ def generate(boonG,grid) :
 	boon = entity.create_entity(name,x,y,asset)
 	boon = create_boon(boon, boonG["Bonus"])
 
-	return (boon,grid)
+	return boon
 
 
 

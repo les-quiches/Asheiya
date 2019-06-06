@@ -383,7 +383,7 @@ def Time_game():
 	======
 		Sans retour
 	"""
-	global window, timeStep, timeScreen, allEntity, player, menu, timeGravity, acutalAssetGameZone, Story
+	global window, timeStep, timeScreen, allEntity, player, menu, timeGravity, acutalAssetGameZone, Story, Shadow_background
 	actualTime=time.time()
 	if menu == "manche":
 		#on est en jeu
@@ -398,12 +398,23 @@ def Time_game():
 			if "movingEnt" in ent["Type"] :
 				if actualTime>ent["LastTime"] + ent["Speed"] :
 					if "character" in ent["Type"] :
-						TG_whatcollide=TG_whatcollide + Interact()
+						Interact()
 						print TG_whatcollide
 
 					if (ent["Vx"]!=0 or ent["Vy"]!=0) :
 						ent = movingent.move_entity(ent, ent["Vx"], ent["Vy"])
-						TG_whatcollide=TG_whatcollide + TG_toAdd
+					if "bullet" in ent["Type"] :
+						logHit = hitbox.hit(ent, allEntity, Shadow_background)
+						if logHit["hit_entity"]:#une entite a etait touche
+							logHit["entity"]=livingent.hurt(logHit["entity"],ent["damageToInflict"])  #a tester -afair
+						if logHit["is_hit"]:#il y a eu collision
+							toRemove.append(ent)
+					else :
+
+						willCollide = hitbox.detect_collision_wall(ent,Shadow_background)[0]
+						if willCollide :
+							ent = movingent.move_entity(ent,-ent["Vx"],-ent["Vy"])
+
 
 				#gravité
 				if actualTime >timeGravity + 0.08 :
@@ -422,12 +433,6 @@ def Time_game():
 					timeGravity = actualTime
 
 				#gestion conséquences collisions
-				for TG_collidedEnt in TG_whatcollide :
-					if "bullet" in ent["Type"] :
-						if "livingEnt" in TG_collidedEnt["Type"] :
-							TG_collidedEnt=livingent.hurt(logHit["entity"],ent["damageToInflict"])
-						TG_toRemove.append(ent)
-
 					if "boon" in TG_collidedEnt :
 						ent = boon.caught(TG_collidedEnt,ent)
 						TG_toRemove.append(ent)

@@ -35,6 +35,7 @@ oldSettings = termios.tcgetattr(sys.stdin)
 window= None #contete du jeu manche/menu
 allAssetGameZone = None
 acutalAssetGameZone = None
+Shadow_background = None
 
 
 timeStep = None
@@ -146,7 +147,9 @@ def Init_manche():
 		Sans retour
 	"""
 	#-afaire
-	global manche, menu, player, allAssetGameZone, acutalAssetGameZone, Story,Shadow_background
+
+	global manche, menu, player, allAssetGameZone, acutalAssetGameZone, Story, Shadow_background
+
 
 	asheiyaAsset=[
 	"Run_Right_0", "Run_Right_45", "Run_Right_90",  "Run_Right_-45", "Run_Right_-90",
@@ -160,7 +163,6 @@ def Init_manche():
 
 	if manche == 10 :
 		Shadow_background=hitbox.Create_ShadowBackgrond(1)
-		print allAssetGameZone["NumZone"]
 		acutalAssetGameZone= allAssetGameZone["Zone_"+str(allAssetGameZone["NumZone"])]
 		#on concoit le joueur___________________________________________________________________________________________________________________________
 
@@ -282,7 +284,7 @@ def Game():
 	======
 		Sans retour.
 	"""
-	global menu, player, manche, allEntity
+	global menu, player, manche, allEntity, Shadow_background
 
 	#gestion de debut de manche
 
@@ -431,7 +433,7 @@ def Time_game():
 				#gravité
 				if actualTime >timeGravity + 0.08 :
 					if (ent["Gravity"]):
-						onTheGround = entity.is_ground_beneath(entity.feet(ent))
+						onTheGround = entity.is_ground_beneath(entity.feet(ent), Shadow_background)
 						if ent["Jump"]>0 :
 							if gridGame[ent["y"]-1][ent["x"]]["Background"] != _wall :
 								ent = movingent.move_entity(ent,0,-1,True)
@@ -443,11 +445,6 @@ def Time_game():
 						ent = movingent.gravity(ent,onTheGround)
 
 					timeGravity = actualTime
-
-				#gestion conséquences collisions
-					if "boon" in TG_collidedEnt :
-						ent = boon.caught(TG_collidedEnt,ent)
-						TG_toRemove.append(ent)
 
 			#on remet le joueur en position d'attente s'il fait rien
 			if actualTime>player["LastTime"]+0.03 :

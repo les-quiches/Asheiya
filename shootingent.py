@@ -272,7 +272,7 @@ def shoot(Entity) :
     bullet = movingent.create_moving_ent(bullet, Vx, Vy, Entity["bulletSpeed"])
     bullet = create_bullet(bullet,Entity["damage"],Entity["Name"])
 
-    return bullet,grid
+    return bullet
 
 
 #____Jeux de Test________________________________________________________________

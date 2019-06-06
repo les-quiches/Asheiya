@@ -6,7 +6,7 @@ EntityHitbox = "E"
 
 import files
 
-def Create_Grid(CG_filename):
+def Create_Grid(CG_filenum):
 	"""
     DESCRIPTION
     ===========
@@ -15,8 +15,8 @@ def Create_Grid(CG_filename):
     PARAM
     =====
 
-    @param CG_filenamet: fichier a faire la grille
-    @type CG_filename : str
+    @param CG_filenum: Numéro de la liste a ouvrir
+    @type CG_filenum : int
 
     RETOUR
     ======
@@ -26,8 +26,10 @@ def Create_Grid(CG_filename):
 
 	"""
 	ca=dict()
-	myfile= files.OPEN_FILE_XML(CG_filename)
-	mylist = myfile.split("\r\n")
+	Background= files.OPEN_FILE_XML("GameZone/Zone_"+str(CG_filenum)+".txt")
+	BackgroundGost= files.OPEN_FILE_XML("GameZone/Zone_"+str(CG_filenum)+"_GostWall.txt")
+	mylist = Background.split("\r\n")
+	myGostlist = BackgroundGost.split("\r\n")
 	myGrid=[]
 	for y in range(len(mylist)):
 		myGrid.append([])
@@ -37,10 +39,12 @@ def Create_Grid(CG_filename):
 			element = mylist[y][x]
 			if element == " ":
 				myGrid[y][x]["Backgound"]=void_collision
-			elif element == "=":
-				myGrid[y][x]["Backgound"]=Gostwall
-			elif element in ["X","-","+"]:
-				myGrid[y][x]["Backgound"]=_wall
+			else:
+				Gostelement =myGostlist[y][x]
+				if Gostelement!=void_collision
+					myGrid[y][x]["Backgound"]=Gostwall
+				else:
+					myGrid[y][x]["Backgound"]=_wall
 			myGrid[y][x]["Entity"]={}
 	return myGrid
 

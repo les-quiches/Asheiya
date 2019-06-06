@@ -92,6 +92,7 @@ def create_asset(filename):
         del a[-1]
         ca["Asset"].append(a)
     ca["FrameNb"]= 0
+    ca["Shadow"]=hitbox.Create_Shadow(ca["Asset"])
     return(ca)
 
 #____getter___________________________________________________

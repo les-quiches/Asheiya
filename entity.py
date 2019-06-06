@@ -175,11 +175,10 @@ def is_ground_beneath(IGB_feet,IGB_grid) :
     @return : True s'il y a bien un sol en dessous, False sinon.
     @rtype :bool
     """
-
     IGB_ground = IGB_feet[2]+1 #position en dessous des pieds
     IGB_length_feet = IGB_feet[1]-IGB_feet[0]
     for a in range(IGB_length_feet):
-        if IGB_grid[IGB_feet[0]+a-1][IGB_feet[2]]["Background"] != void_collision :
+        if IGB_grid[IGB_feet[2]][IGB_feet[0]+a-1]["Background"] != void_collision :
             return True
     return False
 

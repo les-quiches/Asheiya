@@ -328,7 +328,7 @@ def detect_collision_entity(DCE_Entity_1, DCE_Entity_2):#non tester
 
 
 #ancien code mais toujours utiles
-def hit_box_simple(entity):  #####_____OBSOLETE______
+def hit_box_simple(entity):
     """
     G{classtree}
     DESCRIPTION
@@ -354,7 +354,6 @@ def hit_box_simple(entity):  #####_____OBSOLETE______
     for i in asset:
         a.append(len(i))
 
-    # x = max(a) -afair , la fonction bug for no reason, elle vide la liste a
     amax=0
     for b in a :
         if b>amax :
@@ -362,7 +361,8 @@ def hit_box_simple(entity):  #####_____OBSOLETE______
     x = amax
 
     hit_box_entity=[entity["x"], entity["y"], entity["x"]+x, entity["y"]+y]# plage de l'hitbox de l'asset (point en haut a gauche puit en bas a doite)
-    return(hit_box_entity)
+    files.SAVE_FILE_JSON(hit_box_entity,"alolo")
+    return hit_box_entity
 
 #pour les tests
 def show_Shadow(ss_Shadow):

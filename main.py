@@ -401,7 +401,8 @@ def Time_game():
 							if (PlayeurDetect[1] != _wall or PlayeurDetect[1] != Gostwall):
 								if PlayeurDetect[1] == Boon_Zone:
 									BonusPlayer=PlayeurDetect[2]["Bonus"]
-									print BonusPlayer
+									ent = boon.caught(PlayeurDetect[2],ent)
+									toRemove.append(PlayeurDetect[2])
 					if (ent["Vx"]!=0 or ent["Vy"]!=0) :
 						ent = movingent.move_entity(ent,ent["Vx"], ent["Vy"])
 					if "bullet" in ent["Type"] :

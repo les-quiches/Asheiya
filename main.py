@@ -22,6 +22,7 @@ import boon
 import files
 import windows
 import hitbox
+import grid
 
 #importation des IAs
 import AI

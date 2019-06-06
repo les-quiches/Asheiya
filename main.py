@@ -76,7 +76,7 @@ def Init(): 	#initialisation des variables
 	======
 		Sans retour
 	"""
-	global color, window, allAssetGameZone, timeStep, timeScreen, timeGravity, allEntity, player, menu, manche, assetInfoStory, Shadow_background
+	global color, window, allAssetGameZone, timeStep, timeScreen, timeGravity, allEntity, player, menu, manche, assetInfoStory, Shadow_background, allAssetMenu
 
 	color["txt"]={"Black":30, "Red":31,"Green":32,"Yellow":33,"Blue":34,"Pink":35,"Cyan":36,"White":37}
 	color["background"]={"Black":40, "Red":41,"Green":42,"Yellow":43,"Blue":44,"Pink":45,"Cyan":46,"White":47}
@@ -95,12 +95,14 @@ def Init(): 	#initialisation des variables
 	"Gun_Horizontal","Gun_Slach","Gun_UnSlash","Gun_Vertical"
 	]
 
+	assetMenu=["Menu","Game_dev"]
+
 	timeStep = 0.03 # en secondes -> 20 images par secondes
 	timeScreen = time.time()
 	timeGravity = time.time()
 
 	#start menu
-	menu="start"
+	menu="Game_dev"
 	manche = 10 #1 pour premiere manche, 0 pour le nb de fois qu'on est passe dans la boucle
 
 
@@ -115,6 +117,11 @@ def Init(): 	#initialisation des variables
 	assetInfoStory={}
 	assetInfoStory["Info"]=background.create_window("Info/info.txt")
 	assetInfoStory["Story"]=background.create_window("Story/story.txt")
+
+	allAssetMenu={}
+	for selectAssetMenu in assetMenu:
+		allAssetMenu[selectAssetMenu]=background.create_window("Menu/" + selectAssetMenu + ".txt")
+
 
 	#interaction clavier
 	tty.setcbreak(sys.stdin.fileno())
@@ -285,9 +292,11 @@ def Game():
 
 	#gestion de debut de manche
 
-	if menu=="start" :
+	if menu=="Game_dev" :
+		None
+
 		#animation de demarage + elements loristiques et tout
-		menu = "manche" #a integrer dans la derniere fonction qui sera appele par startMenu -afair
+		#a integrer dans la derniere fonction qui sera appele par startMenu -afair
 
 	if menu == "manche" and (manche%10 == 0) : #on est dans une mancge non initialise
 		Init_manche()
@@ -497,30 +506,27 @@ def Show() :
 
 	#on efface tout
 
-	background.show_pos(allAssetGameZone["Zone_"+str(allAssetGameZone["NumZone"])],0,0,color["background"]["Black"],color["txt"]["White"])
-	background.show_pos(assetInfoStory["Info"],138,0,color["background"]["Black"],color["txt"]["White"])
-	background.show_pos(assetInfoStory["Story"],0,42,color["background"]["Black"],color["txt"]["White"])
 	Windows()
 
+	if menu == "manche":
+		#on affiche les entités
+		for ent in allEntity :
+			if "boon" in ent["Type"] :
+				color_bg = color["background"]["Black"]
+				color_txt = color["txt"]["Green"]
 
-	#on affiche les entités
-	for ent in allEntity :
-		if "boon" in ent["Type"] :
-			color_bg = color["background"]["Black"]
-			color_txt = color["txt"]["Green"]
+			elif "bullet" in ent["Type"] :
+				color_bg = color["background"]["Black"]
+				color_txt = color["txt"]["Red"]
 
-		elif "bullet" in ent["Type"] :
-			color_bg = color["background"]["Black"]
-			color_txt = color["txt"]["Red"]
+			else :
+				color_bg = color["background"]["Black"]
+				color_txt = color["txt"]["Cyan"]
 
-		else :
-			color_bg = color["background"]["Black"]
-			color_txt = color["txt"]["Cyan"]
-
-		if "character" in ent["Type"]:
-			color_bg = color["background"]["Black"]
-			color_txt = color["txt"]["Yellow"]
-		entity.show_entity(ent,color_bg,color_txt)
+			if "character" in ent["Type"]:
+				color_bg = color["background"]["Black"]
+				color_txt = color["txt"]["Yellow"]
+			entity.show_entity(ent,color_bg,color_txt)
 
 
 	timeScreen = time.time()
@@ -550,62 +556,71 @@ def Windows():
 	======
 		Sans retour.
 	"""
-	x=140
-	y=13
+	global menu, manche,allAssetMenu
 
-	#info
-	txt= "Vie: "+str(player["Life"])+" / "+str(player["LifeMax"])+"."
-	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
-	y+=2
+	if menu == "Game_dev":
+		background.show_pos(allAssetMenu["Game_dev"],0,0,color["background"]["Black"],color["txt"]["Yellow"])
+	elif menu == "Menu":
+		background.show_pos(allAssetMenu["Menu"],0,0,color["background"]["Black"],color["txt"]["White"])
+	elif menu == "manche":
 
-	txt= "Armure: "+str(player["Armor"])+" / "+str(player["ArmorMax"])+"."
-	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
-	y+=2
+		background.show_pos(allAssetGameZone["Zone_"+str(allAssetGameZone["NumZone"])],0,0,color["background"]["Black"],color["txt"]["White"])
+		background.show_pos(assetInfoStory["Info"],138,0,color["background"]["Black"],color["txt"]["White"])
+		background.show_pos(assetInfoStory["Story"],0,42,color["background"]["Black"],color["txt"]["White"])
 
-	txt= "SUPER: "+str(player["spowerCharge"])+" / "+str(100)+"."
-	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
-	y+=2
+		x=140
+		y=13
 
-	txt= "Jump: "+str(player["Jump"]) + "."
-	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
-	y+=2
+		#info
+		txt= "Vie: "+str(player["Life"])+" / "+str(player["LifeMax"])+"."
+		background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+		y+=2
 
-	txt= "Speed: "+str(int(1/player["Speed"])) + "."
-	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
-	y+=2
+		txt= "Armure: "+str(player["Armor"])+" / "+str(player["ArmorMax"])+"."
+		background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+		y+=2
 
-	txt= "X: "+str(player["x"]) + "."
-	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
-	y+=2
+		txt= "SUPER: "+str(player["spowerCharge"])+" / "+str(100)+"."
+		background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+		y+=2
 
-	txt= "Y: "+str(player["y"]) + "."
-	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
-	y+=2
+		txt= "Jump: "+str(player["Jump"]) + "."
+		background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+		y+=2
 
-	txt= "Vy: "+str(player["Vy"]) + "."
-	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
-	y+=2
+		txt= "Speed: "+str(int(1/player["Speed"])) + "."
+		background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+		y+=2
 
+		txt= "X: "+str(player["x"]) + "."
+		background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+		y+=2
 
+		txt= "Y: "+str(player["y"]) + "."
+		background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+		y+=2
 
+		txt= "Vy: "+str(player["Vy"]) + "."
+		background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+		y+=2
 	#story
-	x=2
-	y=42
-	txt= Story["Txt"][0]
-	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
-	y+=1
-	txt= Story["Txt"][1]
-	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
-	y+=1
-	txt= Story["Txt"][2]
-	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
-	y+=1
-	txt= Story["Txt"][3]
-	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
-	y+=1
-	txt= Story["Txt"][4]
-	background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
-	y+=1
+		x=2
+		y=42
+		txt= Story["Txt"][0]
+		background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+		y+=1
+		txt= Story["Txt"][1]
+		background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+		y+=1
+		txt= Story["Txt"][2]
+		background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+		y+=1
+		txt= Story["Txt"][3]
+		background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+		y+=1
+		txt= Story["Txt"][4]
+		background.infoPrint(txt,x,y,color["background"]["Black"],color["txt"]["White"])
+		y+=1
 
 #______INTERACT________________________________________________________________________
 def Interact():
@@ -636,8 +651,19 @@ def Interact():
 
 		if c == '\x1b': # \x1b = esc
 			Quit_game()
+		if menu == "Game_dev":
+			menu = "Menu"
+			sys.stdout.write("\033[1;1H")
+			sys.stdout.write("\033[2J")
 
-		if ((manche%10)==1 and menu=="manche") : #on est en jeu
+
+		elif menu == "Menu":
+			sys.stdout.write("\033[1;1H")
+			sys.stdout.write("\033[2J")
+			menu = "manche"
+
+
+		elif ((manche%10)==1 and menu=="manche") : #on est en jeu
 
 			if (c == "\n" and player["spowerCharge"]>=player["spowerMax"]) : #-afair : si on appuie sur espace on balance l'ultime
 				player["spowerCharge"]=0

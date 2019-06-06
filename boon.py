@@ -231,7 +231,7 @@ def generate(boonG,grid) :
 	asset["boon1"] = entity.create_asset("Boon/boon1.txt")
 	asset["Actual"] = asset["boon1"]
 	name = "boon" +"_"+ boonG["Name"] +"_"+ str(boonG["GeneLastTime"][1])
-	boon,grid = entity.create_entity(name,x,y,asset, grid)
+	boon = entity.create_entity(name,x,y,asset)
 	boon = create_boon(boon, boonG["Bonus"])
 
 	return (boon,grid)

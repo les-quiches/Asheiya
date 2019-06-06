@@ -22,7 +22,6 @@ import boon
 import files
 import windows
 import hitbox
-import grid
 
 #importation des IAs
 import AI
@@ -34,7 +33,6 @@ oldSettings = termios.tcgetattr(sys.stdin)
 #Globals
 
 window= None #contete du jeu manche/menu
-gridGame = None #grile comportant dans chaqune de ses cases un dictionnaire, celui-ci a deux clés : Background contenant le caractère correspondant au type de fond, et Entity, une liste contenant les entités présentes sur cette case.
 allAssetGameZone = None
 acutalAssetGameZone = None
 
@@ -77,7 +75,7 @@ def Init(): 	#initialisation des variables
 	======
 		Sans retour
 	"""
-	global color, window, allAssetGameZone, timeStep, timeScreen, timeGravity, allEntity, player, menu, manche, assetInfoStory, allAssetMenu, gridGame
+	global color, window, allAssetGameZone, timeStep, timeScreen, timeGravity, allEntity, player, menu, manche, assetInfoStory, allAssetMenu
 
 	color["txt"]={"Black":30, "Red":31,"Green":32,"Yellow":33,"Blue":34,"Pink":35,"Cyan":36,"White":37}
 	color["background"]={"Black":40, "Red":41,"Green":42,"Yellow":43,"Blue":44,"Pink":45,"Cyan":46,"White":47}
@@ -147,7 +145,7 @@ def Init_manche():
 		Sans retour
 	"""
 	#-afaire
-	global manche, menu, player, allAssetGameZone, acutalAssetGameZone, Story, gridGame
+	global manche, menu, player, allAssetGameZone, acutalAssetGameZone, Story
 
 	asheiyaAsset=[
 	"Run_Right_0", "Run_Right_45", "Run_Right_90",  "Run_Right_-45", "Run_Right_-90",
@@ -160,7 +158,6 @@ def Init_manche():
 	]
 
 	if manche == 10 :
-		gridGame = grid.Create_Grid(1)
 		print allAssetGameZone["NumZone"]
 		acutalAssetGameZone= allAssetGameZone["Zone_"+str(allAssetGameZone["NumZone"])]
 		#on concoit le joueur___________________________________________________________________________________________________________________________
@@ -176,7 +173,7 @@ def Init_manche():
 		vxPlayer = 0
 		vyPlayer = 0
 
-		player, gridGame = entity.create_entity("Asheiya Briceval",xPlayer,yPlayer,assetPlayer,gridGame)
+		player = entity.create_entity("Asheiya Briceval",xPlayer,yPlayer,assetPlayer)
 
 		speedPlayer = 0.1 #deplaxcement pas seconde
 		player = movingent.create_moving_ent(player,vxPlayer,vyPlayer,speedPlayer)
@@ -212,7 +209,7 @@ def Init_manche():
 		assetBonus = {}
 		assetBonus["boon1"] = entity.create_asset("Boon/boon1.txt") #-afair en sorte que les accès soient automatisé
 		assetBonus["Actual"] = assetBonus["boon1"]
-		boon1,gridGame = entity.create_entity("boon1", xbonus, ybonus, assetBonus, gridGame) #-afair en sorte que leurs noms s'incrémente tout seul
+		boon1= entity.create_entity("boon1", xbonus, ybonus, assetBonus) #-afair en sorte que leurs noms s'incrémente tout seul
 		boon1 = boon.create_boon(boon1, listeBonus)
 
 		allEntity.append(boon1)
@@ -224,7 +221,7 @@ def Init_manche():
 		assetBonus["boonGenerator"] = entity.create_asset("Boon/boonGenerator.txt")
 		assetBonus["Actual"] = assetBonus["boonGenerator"]
 		geneSpeed = 2
-		boong,gridGame = entity.create_entity("boong1", xbonus, ybonus, assetBonus,gridGame)
+		boong = entity.create_entity("boong1", xbonus, ybonus, assetBonus)
 		boong = boon.create_boon_generator(boong, listeBonus, geneSpeed)
 
 		allEntity.append(boong)
@@ -236,13 +233,13 @@ def Init_manche():
 
 
 		Cristal_1 ={}
-		Cristal_1, gridGame = entity.create_entity("Cristal_1",42,24,assetCristal,gridGame)#position x=42,y=24
+		Cristal_1 = entity.create_entity("Cristal_1",42,24,assetCristal)#position x=42,y=24
 		Cristal_1 = livingent.create_living_ent(Cristal_1,9,0)#9 point de vie, 0 point d'armure
 		allEntity.append(Cristal_1)
 
 
 		Cristal_2 ={}
-		Cristal_2, gridGame = entity.create_entity("Cristal_1",73,36,assetCristal,gridGame)#position x=73,y=37
+		Cristal_2 = entity.create_entity("Cristal_1",73,36,assetCristal)#position x=73,y=37
 		Cristal_1 = livingent.create_living_ent(Cristal_2,12,0)#12 point de vie, 0 point d'armure
 		allEntity.append(Cristal_2)
 
@@ -258,7 +255,6 @@ def Init_manche():
 		#initialiser la deuxieme manche
 		manche = 21
 
-	files.SAVE_FILE_JSON(gridGame,"logilola")
 
 	return
 
@@ -383,7 +379,7 @@ def Time_game():
 	======
 		Sans retour
 	"""
-	global window, timeStep, timeScreen, allEntity, player, menu, timeGravity, acutalAssetGameZone, Story, gridGame
+	global window, timeStep, timeScreen, allEntity, player, menu, timeGravity, acutalAssetGameZone, Story
 	actualTime=time.time()
 	if menu == "manche":
 		#on est en jeu
@@ -401,20 +397,20 @@ def Time_game():
 						TG_whatcollide=TG_whatcollide + Interact()
 
 					if (ent["Vx"]!=0 or ent["Vy"]!=0) :
-						ent, gridGame, TG_toAdd = movingent.move_entity(ent,gridGame,ent["Vx"], ent["Vy"])
+						ent = movingent.move_entity(ent, ent["Vx"], ent["Vy"])
 						TG_whatcollide=TG_whatcollide + TG_toAdd
 
 				#gravité
 				if actualTime >timeGravity + 0.08 :
 					if (ent["Gravity"]):
-						onTheGround = entity.is_ground_beneath(entity.feet(ent),gridGame)
+						onTheGround = entity.is_ground_beneath(entity.feet(ent))
 						if ent["Jump"]>0 :
 							if gridGame[ent["y"]-1][ent["x"]]["Background"] != _wall :
-								ent, gridGame, TG_toAdd = movingent.move_entity(ent,gridGame,0,-1,True)
+								ent = movingent.move_entity(ent,0,-1,True)
 								TG_whatcollide=TG_whatcollide + TG_toAdd
 
 						elif not(onTheGround):
-							ent, gridGame, TG_toAdd = movingent.move_entity(ent,gridGame,0,1,True)
+							ent = movingent.move_entity(ent,0,1,True)
 
 						ent = movingent.gravity(ent,onTheGround)
 
@@ -438,14 +434,14 @@ def Time_game():
 			#gestion des tirs
 			if "shootingEnt" in ent["Type"] :
 				if actualTime>ent["shotDelay"]+ent["lastShot"][0] :
-					newBullet, grid = shootingent.shoot(ent, gridGame)
+					newBullet = shootingent.shoot(ent)
 					allEntity.append(newBullet)
 					ent = shootingent.as_shot(ent)
 
 			#gestion des bonus
 			if "boonGenerator" in ent["Type"] :
 				if (actualTime and not(ent["isGenerated"]) > ent["GeneLastTime"][0]+ent["GeneSpeed"]) :
-					newBoon, gridGame = boon.generate(ent,gridGame)
+					newBoon = boon.generate(ent)
 					allEntity.append(newBoon)
 					ent = boon.as_generate(ent)
 
@@ -644,7 +640,7 @@ def Interact():
 		#recuperation evenement clavier
 		return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
 
-	global player, menu, manche, acutalAssetGameZone, gridGame
+	global player, menu, manche, acutalAssetGameZone
 
 	INT_whatcollide = []
 	if isData() :
@@ -679,56 +675,45 @@ def Interact():
 
 			if not(player["spowerOn"]):
 				if c == "l":
-					gridGame = grid.Supr_Ent_Grid(player, gridGame)
 					player = character.switch_orientation(player,"Right")
 					player = character.switch_stand(player,"Wait")
-					player,gridGame,INT_whatcollide=movingent.move_entity(player,gridGame,0,0)
 
 				elif c == "j":
-					gridGame = grid.Supr_Ent_Grid(player, gridGame)
 					player = character.switch_orientation(player,"Left")
 					player = character.switch_stand(player,"Wait")
-					player,gridGame,INT_whatcollide=movingent.move_entity(player,gridGame,0,0)
 
 				elif c == "i":
-					gridGame = grid.Supr_Ent_Grid(player, gridGame)
 					player = character.switch_fire_angle(player,45)
 					player = character.switch_stand(player,"Wait")
-					player,gridGame,INT_whatcollide=movingent.move_entity(player,gridGame,0,0)
 
 				elif c == "k":
-					gridGame = grid.Supr_Ent_Grid(player, gridGame)
 					player = character.switch_fire_angle(player,-45)
 					player = character.switch_stand(player,"Wait")
-					player,gridGame,INT_whatcollide=movingent.move_entity(player,gridGame,0,0)
 
 
 				# /!\ dans toute cette zone, gerer les collisions avant les deplacements avec hitbox.collision modification pour se soir detect_collision_wall
 				elif c == "d":
 					if not(player["Jump"]) :
-						gridGame = grid.Supr_Ent_Grid(player, gridGame)
 						player = character.switch_stand(player,"Run")
-					if not(entity.is_ground_right(entity.RightSide(player),gridGame)):
-						player,gridGame,INT_whatcollide=movingent.move_entity(player,gridGame,1,0)
+					if not(entity.is_ground_right(entity.RightSide(player))):
+						player=movingent.move_entity(player,1,0)
 
 
 				elif c == "q":
 					if not(player["Jump"]) :
-						gridGame = grid.Supr_Ent_Grid(player, gridGame)
 						player = character.switch_stand(player,"Run")
 					if gridGame[player["y"]][player["x"]-1]["Background"] != _wall:
-						player,gridGame,INT_whatcollide=movingent.move_entity(player,gridGame,-1,0)
+						player=movingent.move_entity(player,-1,0)
 
 
 				elif c == "z" and player["Jump"]==0 and player["Vy"]==0 :
-					gridGame = grid.Supr_Ent_Grid(player, gridGame)
 					player = character.switch_stand(player, "Wait")
 					player = movingent.jump(player)
-					player,gridGame,INT_whatcollide=movingent.move_entity(player,gridGame,0,0)
+					player=movingent.move_entity(player,0,0)
 
 				elif c == "s" :
 					if gridGame[player["y"]+1][player["x"]]["Background"] == Gostwall:
-						player,gridGame,INT_whatcollide=movingent.move_entity(player,gridGame,0,1,)
+						player=movingent.move_entity(player,0,1,)
 
 
 				termios.tcflush(sys.stdin.fileno(),termios.TCIFLUSH) #on vide le buffer d'entree

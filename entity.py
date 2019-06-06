@@ -17,7 +17,7 @@ EntityHitbox = "E"
 
 
 #_____Create____________________________________________________________________
-def create_entity(Name, X, Y, Asset, CE_grid, AI = None):
+def create_entity(Name, X, Y, Asset, AI = None):
     """
     G{classtree}
     DESCRIPTION
@@ -64,9 +64,7 @@ def create_entity(Name, X, Y, Asset, CE_grid, AI = None):
     Entity["Asset"]= Asset
     Entity["AI"]=AI
 
-    CE_grid, trash = grid.Add_Ent_Grid(Entity,CE_grid,False)
-
-    return(Entity,CE_grid)
+    return Entity
 
 def create_asset(filename):
     """

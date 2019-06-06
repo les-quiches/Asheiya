@@ -146,7 +146,7 @@ def Init_manche():
 		Sans retour
 	"""
 	#-afaire
-	global manche, menu, player, allAssetGameZone, acutalAssetGameZone, Story
+	global manche, menu, player, allAssetGameZone, acutalAssetGameZone, Story,Shadow_background
 
 	asheiyaAsset=[
 	"Run_Right_0", "Run_Right_45", "Run_Right_90",  "Run_Right_-45", "Run_Right_-90",
@@ -159,7 +159,7 @@ def Init_manche():
 	]
 
 	if manche == 10 :
-
+		Shadow_background=hitbox.Create_ShadowBackgrond(1)
 		print allAssetGameZone["NumZone"]
 		acutalAssetGameZone= allAssetGameZone["Zone_"+str(allAssetGameZone["NumZone"])]
 		#on concoit le joueur___________________________________________________________________________________________________________________________
@@ -411,7 +411,7 @@ def Time_game():
 							toRemove.append(ent)
 					else :
 
-						willCollide = hitbox.detect_collision_wall(ent,Shadow_background)[0]
+						willCollide = hitbox.detect_collision_wall(ent,Shadow_background)
 						if willCollide :
 							ent = movingent.move_entity(ent,-ent["Vx"],-ent["Vy"])
 

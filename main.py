@@ -295,6 +295,9 @@ def Game():
 	if menu == "manche" and (manche%10 == 0) : #on est dans une mancge non initialise
 		Init_manche()
 
+	elif:
+
+
 	#gestion des IAs :
 	for ent in allEntity:
 		if ent["AI"]!=None :
@@ -335,6 +338,14 @@ def Game():
 		for deadEnt in toRemove :
 			allEntity.remove(deadEnt)
 
+		finManche = True
+		for ent in allEntity :
+			if "livingEnt" in ent["Type"]:
+				finManche = False
+				pass
+		if finManche :
+			manche = "YouWin"
+
 
 		# #gestion des fins de manches
 
@@ -345,7 +356,7 @@ def Game():
 		if not(livingent.is_alive(player)):
 			menu = "youLose"
 			# -afair
-
+	"""
 	if menu == "transition" :
 		manche +=9 #on passe a la manche suivante
 		if manche >= 40 :
@@ -355,8 +366,9 @@ def Game():
 			None
 			#afficher les resultats de la manche precedente,
 			#-afair, appeler les fonctions, puis derniere fonction appeler fait passer menu a manche
+	"""
 
-	elif menu == "EndGame" :
+	if menu == "EndGame" :
 		# -afair : afficher ecran de defaite attendre confirmation puis :
 		Quit_game()
 

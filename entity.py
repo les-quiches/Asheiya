@@ -204,7 +204,7 @@ def is_ground_above(IGA_head) :
             return True
     return False
 
-def is_ground_beneath(IGB_feet) :
+def is_ground_beneath(IGB_feet, IGB_shadow) :
     """
     G{classtree}
     DESCRIPTION
@@ -229,7 +229,7 @@ def is_ground_beneath(IGB_feet) :
     IGB_ground = IGB_feet[2]+1 #position en dessous des pieds
     IGB_length_feet = IGB_feet[1]-IGB_feet[0]
     for a in range(IGB_length_feet):
-        if IGB_grid[IGB_ground][IGB_feet[0]+a-1] != void_collision :
+        if IGB_shadow[IGB_ground][IGB_feet[0]+a-1] != void_collision :
             return True
     return False
 

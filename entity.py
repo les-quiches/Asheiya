@@ -229,9 +229,9 @@ def is_ground_right(IGR_pos,IGR_grid) :
     @rtype :bool
     """
     IGR_wall = IGR_pos[1]+1 #position a droite
-    IGR_length_right = IGR_wall[2]-IGR_wall[0]
+    IGR_length_right = IGR_pos[2]-IGR_pos[0]
     for a in range(IGB_length_right):
-        if IGR_grid[IGR_wall[0]+a-1][IGR_wall[1]]["Background"] != void_collision :
+        if IGR_grid[IGR_pos[0]+a-1][IGR_pos[1]]["Background"] != void_collision :
             return True
     return False
 
@@ -282,9 +282,9 @@ def is_ground_left(IGL_pos,IGB_grid) :
     @rtype :bool
     """
     IGL_wall = IGR_pos[0]-1 #position a gauche
-    IGL_length_right = IGL_wall[2]-IGL_wall[1]
+    IGL_length_right = IGL_pos[2]-IGL_pos[1]
     for a in range(IGL_length_right):
-        if IGL_grid[IGL_wall[1]+a-1][IGL_wall[0]]["Background"] != void_collision :
+        if IGL_grid[IGL_pos[1]+a-1][IGL_pos[0]]["Background"] != void_collision :
             return True
     return False
 

@@ -175,7 +175,7 @@ def head(HEAD_entity) :
     HEAD_entity=[HEAD_x,HEAD_xmax,HEAD_y]
     return HEAD_entity
 
-def is_ground_above(IGA_head) :
+def is_ground_above(IGA_head,IGA_shadow) :
     """
     G{classtree}
     DESCRIPTION
@@ -200,7 +200,7 @@ def is_ground_above(IGA_head) :
     IGA_ground = IGA_head[2]-1 #position au dessus des pieds
     IGA_length_feet = IGA_feet[1]-IGA_feet[0]
     for a in range(IGA_length_feet):
-        if IGA_grid[IGA_ground][IGA_feet[0]+a-1] == _wall :
+        if IGA_shadow[IGA_ground][IGA_feet[0]+a-1] == _wall :
             return True
     return False
 
@@ -257,7 +257,7 @@ def RightSide(RightSide_entity) :#renvoi les "pieds" de l'entite
     RightSide_right=[RightSide_y,RightSide_xmax,RightSide_ymax]
     return RightSide_right
 
-def is_ground_right(IGR_pos,IGR_grid) :
+def is_ground_right(IGR_pos,IGR_shadow) :
     """
     G{classtree}
     DESCRIPTION
@@ -270,8 +270,8 @@ def is_ground_right(IGR_pos,IGR_grid) :
     @param IGR_pos : position de l'endroit où l'on veut savoir s'il y a un mur a droite
     @type IGR_pos : list
 
-    @param IGB_grid: grille représentant le jeu
-    @type IGB_grid : dict
+    @param IGB_shadow: grille représentant le jeu
+    @type IGB_shadow : dict
 
 
     RETOUR
@@ -282,7 +282,7 @@ def is_ground_right(IGR_pos,IGR_grid) :
     IGR_wall = IGR_pos[1]+1 #position a droite
     IGR_length_right = IGR_pos[2]-IGR_pos[0]
     for a in range(IGR_length_right):
-        if IGR_grid[IGR_pos[0]+a-1][IGR_wall] != void_collision :
+        if IGR_shadow[IGR_pos[0]+a-1][IGR_wall] != void_collision :
             return True
     return False
 
@@ -310,7 +310,7 @@ def LeftSide(LeftSide_entity) :#renvoi les "pieds" de l'entite
     LeftSide_Left=[LeftSide_x,LeftSide_y,LeftSide_ymax]
     return LeftSide_Left
 
-def is_ground_left(IGL_pos,IGL_grid) :
+def is_ground_left(IGL_pos,IGL_shadow) :
     """
     G{classtree}
     DESCRIPTION
@@ -323,8 +323,8 @@ def is_ground_left(IGL_pos,IGL_grid) :
     @param IGR_pos : position de l'endroit où l'on veut savoir s'il y a un mur a gauche
     @type IGR_pos : list
 
-    @param IGB_grid: grille représentant le jeu
-    @type IGB_grid : dict
+    @param IGB_shadow: grille représentant le jeu
+    @type IGB_shadow : dict
 
 
     RETOUR
@@ -335,7 +335,7 @@ def is_ground_left(IGL_pos,IGL_grid) :
     IGL_wall = IGL_pos[0]-1 #position a gauche
     IGL_length_left = IGL_pos[2]-IGL_pos[1]
     for a in range(IGL_length_left):
-        if IGL_grid[IGL_pos[1]+a-1][IGL_wall]!= void_collision :
+        if IGL_shadow[IGL_pos[1]+a-1][IGL_wall]!= void_collision :
             return True
     return False
 

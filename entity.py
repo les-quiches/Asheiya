@@ -235,6 +235,111 @@ def is_ground_beneath(IGB_feet,IGB_grid) :
             return True
     return False
 
+def RightSide(RightSide_entity) :#renvoi les "pieds" de l'entite
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de donner la position a droite d'un asset
+
+    PARAM
+    =====
+
+    @param RightSide_entity: Entite dont on veut obtenir la position
+    @type RightSide_entity: dict
+
+
+    RETOUR
+    ======
+
+    @return FEET_feet : renvoi la position a droite de l'asset
+    @rtype FEET_feet : list
+    """
+    RightSide_x,RightSide_y,RightSide_xmax,RightSide_ymax=hitbox.hit_box_simple(RightSide_entity)
+    RightSide_right=[RightSide_y,RightSide_xmax,RightSide_ymax]
+    return RightSide_right
+
+def is_ground_right(IGR_pos,IGR_grid) :
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de savoir si il y a un mur a droite
+
+    PARAM
+    =====
+
+    @param IGR_pos : position de l'endroit où l'on veut savoir s'il y a un mur a droite
+    @type IGR_pos : list
+
+    @param IGB_grid: grille représentant le jeu
+    @type IGB_grid : dict
+
+
+    RETOUR
+    ======
+    @return : True s'il y a bien un mur a droite, False sinon.
+    @rtype :bool
+    """
+    IGR_wall = IGR_pos[1]+1 #position a droite
+    IGR_length_right = IGR_wall[2]-IGR_wall[0]
+    for a in range(IGB_length_right):
+        if IGR_grid[IGR_wall[0]+a-1][IGR_wall[1]]["Background"] != void_collision :
+            return True
+    return False
+
+def LeftSide(LeftSide_entity) :#renvoi les "pieds" de l'entite
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de donner la position a gauche d'un asset
+
+    PARAM
+    =====
+
+    @param LeftSide_entity: Entite dont on veut obtenir la position
+    @type LeftSide_entity: dict
+
+
+    RETOUR
+    ======
+
+    @return FEET_feet : renvoi la position a gauche de l'asset
+    @rtype FEET_feet : list
+    """
+    LeftSide_x,LeftSide_y,LeftSide_xmax,LeftSide_ymax=hitbox.hit_box_simple(LeftSide_entity)
+    LeftSide_Left=[LeftSide_x,LeftSide_y,LeftSide_ymax]
+    return LeftSide_Left
+
+def is_ground_left(IGL_pos,IGB_grid) :
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de savoir si il y a un mur a gauche
+
+    PARAM
+    =====
+
+    @param IGR_pos : position de l'endroit où l'on veut savoir s'il y a un mur a gauche
+    @type IGR_pos : list
+
+    @param IGB_grid: grille représentant le jeu
+    @type IGB_grid : dict
+
+
+    RETOUR
+    ======
+    @return : True s'il y a bien un mur a gauche, False sinon.
+    @rtype :bool
+    """
+    IGL_wall = IGR_pos[0]-1 #position a gauche
+    IGL_length_right = IGL_wall[2]-IGL_wall[1]
+    for a in range(IGL_length_right):
+        if IGL_grid[IGL_wall[1]+a-1][IGL_wall[0]]["Background"] != void_collision :
+            return True
+    return False
 
 #_____Show______________________________________________________________________
 def show_entity(Entity, color_bg, color_txt):

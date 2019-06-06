@@ -195,7 +195,7 @@ def Init_manche():
 
 		damage = 5
 		shotDelay = 3
-		bulletSpeed = 0.05
+		bulletSpeed = 0.04
 		player = shootingent.create_shooting_ent(player,damage,bulletSpeed,assetShot,shotDelay)
 
 
@@ -260,8 +260,6 @@ def Init_manche():
 	if manche == 20 :
 		#initialiser la deuxieme manche
 		manche = 21
-
-
 	return
 
 
@@ -296,8 +294,6 @@ def Game():
 
 	if menu == "manche" and (manche%10 == 0) : #on est dans une mancge non initialise
 		Init_manche()
-
-	elif:
 
 
 	#gestion des IAs :
@@ -405,7 +401,6 @@ def Time_game():
 		TG_toRemove = []
 		TG_whatcollide=[]
 		TG_toAdd = []
-
 		for ent in allEntity :
 
 			#deplacement des entitées
@@ -413,7 +408,6 @@ def Time_game():
 				if actualTime>ent["LastTime"] + ent["Speed"] :
 					if "character" in ent["Type"] :
 						Interact()
-						print TG_whatcollide
 
 					if (ent["Vx"]!=0 or ent["Vy"]!=0) :
 						ent = movingent.move_entity(ent, ent["Vx"], ent["Vy"])
@@ -422,7 +416,7 @@ def Time_game():
 						if logHit["hit_entity"]:#une entite a etait touche
 							logHit["entity"]=livingent.hurt(logHit["entity"],ent["damageToInflict"])  #a tester -afair
 						if logHit["is_hit"]:#il y a eu collision
-							toRemove.append(ent)
+							TG_toRemove.append(ent)
 					else :
 
 						willCollide = hitbox.detect_collision_wall(ent,Shadow_background)
@@ -714,14 +708,13 @@ def Interact():
 				elif c == "d":
 					if not(player["Jump"]) :
 						player = character.switch_stand(player,"Run")
-					if not(entity.is_ground_right(entity.RightSide(player))):
+					if not(entity.is_ground_right(entity.RightSide(player),Shadow_background)):
 						player=movingent.move_entity(player,1,0)
 
 
 				elif c == "q":
 					if not(player["Jump"]) :
 						player = character.switch_stand(player,"Run")
-					if gridGame[player["y"]][player["x"]-1]["Background"] != _wall:
 						player=movingent.move_entity(player,-1,0)
 
 
@@ -731,7 +724,7 @@ def Interact():
 					player=movingent.move_entity(player,0,0)
 
 				elif c == "s" :
-					if gridGame[player["y"]+1][player["x"]]["Background"] == Gostwall:
+					if gridGame[player["y"]+1][player["x"]]== Gostwall:
 						player=movingent.move_entity(player,0,1,)
 
 

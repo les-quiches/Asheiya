@@ -257,7 +257,7 @@ def RightSide(RightSide_entity) :#renvoi les "pieds" de l'entite
     RightSide_right=[RightSide_y,RightSide_xmax,RightSide_ymax]
     return RightSide_right
 
-def is_ground_right(IGR_pos) :
+def is_ground_right(IGR_pos,IGR_grid) :
     """
     G{classtree}
     DESCRIPTION
@@ -310,7 +310,7 @@ def LeftSide(LeftSide_entity) :#renvoi les "pieds" de l'entite
     LeftSide_Left=[LeftSide_x,LeftSide_y,LeftSide_ymax]
     return LeftSide_Left
 
-def is_ground_left(IGL_pos) :
+def is_ground_left(IGL_pos,IGL_grid) :
     """
     G{classtree}
     DESCRIPTION

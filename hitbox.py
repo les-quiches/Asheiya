@@ -161,6 +161,7 @@ def hit(bullet, entities , Shadow_backgound ) :#non tester
         if HIT_collision_wall != _wall:
             for HIT_entity in entities:
                 HIT_collision_entity = detect_collision_entity(bullet,HIT_entity)
+                print "sdjvhsdjvbsdhv         ",HIT_collision_entity
                 if HIT_collision_entity :
                     if bullet["origine"] == HIT_entity["Name"]:
                         HIT_log["is_hit"] = False
@@ -168,14 +169,15 @@ def hit(bullet, entities , Shadow_backgound ) :#non tester
                         HIT_log["entity"] = None
                         pass
                     if "livingEnt" in HIT_entity["Type"] :
+                        print "defegsgqsvgx"
                         HIT_log["is_hit"] = True
                         HIT_log["hit_entity"]=True  #test si la balle touche une entite ou pas
                         HIT_log["entity"] = HIT_entity
                         pass
-                else:
-                    HIT_log["is_hit"] = True
-                    HIT_log["hit_entity"]=False  #test si la balle touche une entite ou pas
-                    HIT_log["entity"] = None
+        else:
+            HIT_log["is_hit"] = True
+            HIT_log["hit_entity"]=False  #test si la balle touche une entite ou pas
+            HIT_log["entity"] = None
 
     return(HIT_log)
 

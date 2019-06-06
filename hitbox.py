@@ -349,7 +349,7 @@ def hit_box_simple(entity):
     @rtype : list
     """
     asset= entity["Asset"]["Actual"]["Asset"][entity["Asset"]["Actual"]["FrameNb"]]
-    y=len(asset)
+    y=len(asset)-1
     a=[]
     for i in asset:
         a.append(len(i))
@@ -361,7 +361,6 @@ def hit_box_simple(entity):
     x = amax
 
     hit_box_entity=[entity["x"], entity["y"], entity["x"]+x, entity["y"]+y]# plage de l'hitbox de l'asset (point en haut a gauche puit en bas a doite)
-    files.SAVE_FILE_JSON(hit_box_entity,"alolo")
     return hit_box_entity
 
 #pour les tests

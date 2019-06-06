@@ -428,7 +428,7 @@ def Time_game():
 						TG_toRemove.append(ent)
 
 					if "boon" in TG_collidedEnt :
-						ent = caught(TG_collidedEnt,ent)
+						ent = boon.caught(TG_collidedEnt,ent)
 						TG_toRemove.append(ent)
 
 			#on remet le joueur en position d'attente s'il fait rien
@@ -708,7 +708,7 @@ def Interact():
 					if not(player["Jump"]) :
 						gridGame = grid.Supr_Ent_Grid(player, gridGame)
 						player = character.switch_stand(player,"Run")
-					if gridGame[player["y"]][player["x"]+1]["Background"] != _wall:
+					if not(entity.is_ground_right(entity.RightSide(player),gridGame)):
 						player,gridGame,INT_whatcollide=movingent.move_entity(player,gridGame,1,0)
 
 

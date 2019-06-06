@@ -153,6 +153,59 @@ def feet(FEET_entity) :#renvoi les "pieds" de l'entite
     FEET_feet=[FEET_x,FEET_xmax,FEET_ymax]
     return FEET_feet
 
+def head(HEAD_entity) :
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de donner la position de la tête d'un asset
+
+    PARAM
+    =====
+
+    @param FEET_entity: Entite dont on veut obtenir la position de la tête
+    @type FEET_entity: dict
+
+
+    RETOUR
+    ======
+
+    @return FEET_feet : renvoi la position de la tête de l'entité
+    @rtype FEET_feet : list
+    """
+    HEAD_x,HEAD_y,HEAD_xmax,HEAD_ymax=hitbox.hit_box_simple(HEAD_entity)
+    HEAD_entity=[HEAD_x,HEAD_xmax,HEAD_y]
+    return HEAD_entity
+
+def is_ground_above(IGA_head,IGA_grid) :
+    """
+    G{classtree}
+    DESCRIPTION
+    ===========
+        Permet de savoir si il y a une plateforme solide au dessus de la position Pos
+
+    PARAM
+    =====
+
+    @param pos : position de l'endroit où l'on veut savoir s'il y a un mur au dessus
+    @type pos : list
+
+    @param IGB_grid: grille représentant le jeu
+    @type IGB_grid : dict
+
+
+    RETOUR
+    ======
+    @return : True s'il y a bien un sol en dessous, False sinon.
+    @rtype :bool
+    """
+    IGA_ground = IGA_head[2]-1 #position au dessus des pieds
+    IGA_length_feet = IGA_feet[1]-IGA_feet[0]
+    for a in range(IGA_length_feet):
+        if IGA_grid[IGA_ground][IGA_feet[0]+a-1]["Background"] == _wall :
+            return True
+    return False
+
 def is_ground_beneath(IGB_feet,IGB_grid) :
     """
     G{classtree}
@@ -178,7 +231,7 @@ def is_ground_beneath(IGB_feet,IGB_grid) :
     IGB_ground = IGB_feet[2]+1 #position en dessous des pieds
     IGB_length_feet = IGB_feet[1]-IGB_feet[0]
     for a in range(IGB_length_feet):
-        if IGB_grid[IGB_feet[2]][IGB_feet[0]+a-1]["Background"] != void_collision :
+        if IGB_grid[IGB_ground][IGB_feet[0]+a-1]["Background"] != void_collision :
             return True
     return False
 

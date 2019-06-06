@@ -106,7 +106,7 @@ def Init(): 	#initialisation des variables
 
 
 	#start menu_____________________________________________________________________________________________________________________________
-	menu="Game_dev2"
+	menu= "manche"
 	manche = 10 #1 pour premiere manche, 0 pour le nb de fois qu'on est passe dans la boucle
 
 
@@ -196,9 +196,10 @@ def Init_manche():
 		Sans retour
 	"""
 	#-afaire
-	global manche, menu, player, allAssetGameZone, acutalAssetGameZone, Story, Shadow_background
+	global manche, menu, player, allAssetGameZone, acutalAssetGameZone, Story, gridGame
 
 	if manche == 10 :
+		gridGame = grid.Create_Grid(1)
 		print allAssetGameZone["NumZone"]
 		acutalAssetGameZone= allAssetGameZone["Zone_"+str(allAssetGameZone["NumZone"])]
 
@@ -206,8 +207,8 @@ def Init_manche():
 
 		#placement des bonus :  #-afair quand on les placera tous, automatiser le tout
 		listeBonus = {"speedUp" : 0.02, "fireRateUp" : 1, "lifeUp":5}
-		xbonus = 80
-		ybonus = 37
+		xbonus = 9
+		ybonus = 33
 		assetBonus = {}
 		ShadowAssetBonus={}
 		assetBonus["boon1"] = entity.create_asset("Boon/boon1.txt") #-afair en sorte que les accès soient automatisé
@@ -218,8 +219,8 @@ def Init_manche():
 		allEntity.append(boon1)
 
 		listeBonus = {"lifeUp" : 5, "armorMaxUp" : 2}
-		xbonus = 80
-		ybonus = 34
+		xbonus = 9
+		ybonus = 27
 		assetBonus = {}
 		assetBonus["boonGenerator"] = entity.create_asset("Boon/boonGenerator.txt")
 		assetBonus["Actual"] = assetBonus["boonGenerator"]
@@ -390,11 +391,11 @@ def Time_game():
 			if "movingEnt" in ent["Type"] :
 				if actualTime>ent["LastTime"] + ent["Speed"] :
 					if "character" in ent["Type"] :
-						TG_whatcollide+=Interact()
+						TG_whatcollide=TG_whatcollide + Interact()
 
 					if (ent["Vx"]!=0 or ent["Vy"]!=0) :
 						ent, gridGame, TG_toAdd = movingent.move_entity(ent,gridGame,ent["Vx"], ent["Vy"])
-						TG_whatcollide+=TG_toAdd
+						TG_whatcollide=TG_whatcollide + TG_toAdd
 
 				#gravité
 				if actualTime >timeGravity + 0.08 :
@@ -403,7 +404,7 @@ def Time_game():
 						if ent["Jump"]>0 :
 							if gridGame[ent["x"]][ent["y"]-1]["Background"] != _wall :
 								ent, gridGame, TG_toAdd = movingent.move_entity(ent,gridGame,0,-1,True)
-								TG_whatcollide+=TG_toAdd
+								TG_whatcollide=TG_whatcollide + TG_toAdd
 
 						elif not(onTheGround):
 							ent, gridGame, TG_toAdd = movingent.move_entity(ent,gridGame,0,1,True)
@@ -630,13 +631,13 @@ def Interact():
 	======
 		Sans retour
 	"""
-
 	def isData():
 		#recuperation evenement clavier
 		return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
 
 	global player, menu, manche, acutalAssetGameZone, gridGame
 
+	INT_whatcollide = []
 	if isData() :
 		c = sys.stdin.read(1)
 
@@ -661,7 +662,6 @@ def Interact():
 
 
 		elif ((manche%10)==1 and menu=="manche") : #on est en jeu
-			INT_whatcollide=[]
 			if (c == "\n" and player["spowerCharge"]>=player["spowerMax"]) : #-afair : si on appuie sur espace on balance l'ultime
 				player["spowerCharge"]=0
 				player["spowerDelay"]=4
@@ -723,7 +723,6 @@ def Interact():
 
 
 				termios.tcflush(sys.stdin.fileno(),termios.TCIFLUSH) #on vide le buffer d'entree
-				return INT_whatcollide
 
 			else :
 				None
@@ -739,7 +738,7 @@ def Interact():
 			elif c=="d" :
 				None
 
-	termios.tcflush(sys.stdin.fileno(),termios.TCIFLUSH) #on vide le buffer d'entree
+	return INT_whatcollide
 
 
 

@@ -41,7 +41,7 @@ def Create_Grid(CG_filenum):
 				myGrid[y][x]["Backgound"]=void_collision
 			else:
 				Gostelement =myGostlist[y][x]
-				if Gostelement!=void_collision
+				if Gostelement!=void_collision :
 					myGrid[y][x]["Backgound"]=Gostwall
 				else:
 					myGrid[y][x]["Backgound"]=_wall
@@ -70,8 +70,10 @@ def Supr_Ent_Grid(SEG_ent, SEG_grid) :
     @return SEG_grid: grille du jeu avec l'entité en moins
     @rtype SEG_grid: list
 """
-	for SEG_y in SEG_ent["Asset"][ActualAsset]["Shadow"] :
+	files.SAVE_FILE_JSON(SEG_ent["Asset"]["Actual"]["Shadow"],"logilolo")
+	for SEG_y in SEG_ent["Asset"]["Actual"]["Shadow"] :
 		for SEG_x in SEG_y :
+			files.SAVE_FILE_JSON((SEG_y,SEG_x),"logilol")
 			if SEG_x != void_collision and (SEG_ent in SEG_grid[SEG_ent["y"]+SEG_y][SEG_ent["x"]+SEG_x]["Entity"]) :
 				SEG_grid[SEG_ent["x"]+SEG_x][SEG_ent["y"]+SEG_y]["Entity"].remove(SEG_ent)
 

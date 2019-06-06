@@ -210,7 +210,7 @@ def fireRateUp(Entity, amount) :
     return Entity
 
 #_____Action____________________________________________________________________
-def shoot(Entity) :
+def shoot(Entity,grid) :
     """
     G{classtree}
     DESCRIPTION
@@ -268,11 +268,11 @@ def shoot(Entity) :
     asset = {}
     asset[name_asset] = Entity["assetShot"][name_asset]
     asset["Actual"] = Entity["assetShot"][name_asset]
-    bullet = entity.create_entity(bullet_name,x,y,asset)
+    bullet,grid = entity.create_entity(bullet_name,x,y,asset,grid)
     bullet = movingent.create_moving_ent(bullet, Vx, Vy, Entity["bulletSpeed"])
     bullet = create_bullet(bullet,Entity["damage"],Entity["Name"])
 
-    return bullet
+    return bullet,grid
 
 
 #____Jeux de Test________________________________________________________________

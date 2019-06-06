@@ -142,7 +142,7 @@ def Init(): 	#initialisation des variables
 	yPlayer = 0
 	vxPlayer = 0
 	vyPlayer = 0
-	player = entity.create_entity("Asheiya Briceval",xPlayer,yPlayer,assetPlayer)
+	player, gridGame = entity.create_entity("Asheiya Briceval",xPlayer,yPlayer,assetPlayer,gridGame)
 
 	speedPlayer = 0.1 #deplaxcement pas seconde
 	player = movingent.create_moving_ent(player,vxPlayer,vyPlayer,speedPlayer)
@@ -212,7 +212,7 @@ def Init_manche():
 		assetBonus = {}
 		assetBonus["boon1"] = entity.create_asset("Boon/boon1.txt") #-afair en sorte que les accès soient automatisé
 		assetBonus["Actual"] = assetBonus["boon1"]
-		boon1 = entity.create_entity("boon1", xbonus, ybonus, assetBonus) #-afair en sorte que leurs noms s'incrémente tout seul
+		boon1,gridGame = entity.create_entity("boon1", xbonus, ybonus, assetBonus, gridGame) #-afair en sorte que leurs noms s'incrémente tout seul
 		boon1 = boon.create_boon(boon1, listeBonus)
 
 		allEntity.append(boon1)
@@ -224,7 +224,7 @@ def Init_manche():
 		assetBonus["boonGenerator"] = entity.create_asset("Boon/boonGenerator.txt")
 		assetBonus["Actual"] = assetBonus["boonGenerator"]
 		geneSpeed = 2
-		boong = entity.create_entity("boong1", xbonus, ybonus, assetBonus)
+		boong,gridGame = entity.create_entity("boong1", xbonus, ybonus, assetBonus,gridGame)
 		boong = boon.create_boon_generator(boong, listeBonus, geneSpeed)
 
 		allEntity.append(boong)
@@ -234,7 +234,7 @@ def Init_manche():
 		assetMob1["mob1"] = entity.create_asset("Mobs/mob1.txt")
 		assetMob1["Actual"]= assetMob1["mob1"]
 
-		mob1 = entity.create_entity("testmob",20,20,assetMob1, "AItest")
+		mob1,gridGame = entity.create_entity("testmob",20,20,assetMob1,gridGame, "AItest")
 		mob1 = movingent.create_moving_ent(mob1,1,1,0.5, False)
 
 		allEntity.append(mob1)
@@ -250,6 +250,8 @@ def Init_manche():
 	if manche == 20 :
 		#initialiser la deuxieme manche
 		manche = 21
+
+	files.SAVE_FILE_JSON(gridGame,"logilola")
 
 	return
 
@@ -429,7 +431,8 @@ def Time_game():
 			#gestion des tirs
 			if "shootingEnt" in ent["Type"] :
 				if actualTime>ent["shotDelay"]+ent["lastShot"][0] :
-					allEntity.append(shootingent.shoot(ent))
+					newBullet, grid = shootingent.shoot(ent)
+					allEntity.append(newBullet)
 					ent = shootingent.as_shot(ent)
 
 			#gestion des bonus

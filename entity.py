@@ -16,7 +16,7 @@ EntityHitbox = "E"
 
 
 #_____Create____________________________________________________________________
-def create_entity(Name, X, Y, Asset, AI = None):
+def create_entity(Name, X, Y, Asset, grid, AI = None):
     """
     G{classtree}
     DESCRIPTION
@@ -41,6 +41,9 @@ def create_entity(Name, X, Y, Asset, AI = None):
     @param Asset : grille représentant le jeu
     @type Asset : list
 
+    @param grid : grille du jeu
+    @type  grid : list
+
     @param AI : si l'entite est automatiquement controle, chemin d'acces vers le fichier qui la controle
     @type AI : str
 
@@ -60,7 +63,7 @@ def create_entity(Name, X, Y, Asset, AI = None):
     Entity["Asset"]= Asset
     Entity["AI"]=AI
 
-    return(Entity)
+    return(Entity,grid)
 
 def create_asset(filename):
     """
@@ -173,7 +176,7 @@ def is_ground_beneath(IGB_feet,IGB_grid) :
     IGB_ground = IGB_feet[2]+1 #position en dessous des pieds
     IGB_length_feet = IGB_feet[1]-IGB_feet[0]
     for a in range(IGB_length_feet):
-        if IGB_grid[IGB_feet[0]+a][IGB_feet[2]]["Background"] != void_collision :
+        if IGB_grid[IGB_feet[0]+a-1][IGB_feet[2]]["Background"] != void_collision :
             return True
     return False
 

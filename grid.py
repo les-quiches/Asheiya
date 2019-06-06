@@ -38,14 +38,14 @@ def Create_Grid(CG_filenum):
 			myGrid[y][x]={}
 			element = mylist[y][x]
 			if element == " ":
-				myGrid[y][x]["Backgound"]=void_collision
+				myGrid[y][x]["Background"]=void_collision
 			else:
 				Gostelement =myGostlist[y][x]
 				if Gostelement!=void_collision :
-					myGrid[y][x]["Backgound"]=Gostwall
+					myGrid[y][x]["Background"]=Gostwall
 				else:
-					myGrid[y][x]["Backgound"]=_wall
-			myGrid[y][x]["Entity"]={}
+					myGrid[y][x]["Background"]=_wall
+			myGrid[y][x]["Entity"]=[]
 	return myGrid
 
 
@@ -70,17 +70,16 @@ def Supr_Ent_Grid(SEG_ent, SEG_grid) :
     @return SEG_grid: grille du jeu avec l'entité en moins
     @rtype SEG_grid: list
 """
-	files.SAVE_FILE_JSON(SEG_ent["Asset"]["Actual"]["Shadow"],"logilolo")
-	for SEG_y in SEG_ent["Asset"]["Actual"]["Shadow"] :
-		for SEG_x in SEG_y :
-			files.SAVE_FILE_JSON((SEG_y,SEG_x),"logilol")
-			if SEG_x != void_collision and (SEG_ent in SEG_grid[SEG_ent["y"]+SEG_y][SEG_ent["x"]+SEG_x]["Entity"]) :
-				SEG_grid[SEG_ent["x"]+SEG_x][SEG_ent["y"]+SEG_y]["Entity"].remove(SEG_ent)
+	SEG_shadowEnt = SEG_ent["Asset"]["Actual"]["Shadow"][SEG_ent["Asset"]["Actual"]["FrameNb"]]
+	for y in range(len(SEG_shadowEnt)-1):
+		for x in range(len(SEG_shadowEnt[y])-1) :
+			if SEG_grid[SEG_ent["y"]+y][SEG_ent["x"]+x]["Background"] != void_collision and not(SEG_ent in SEG_grid[SEG_ent["y"]+y][SEG_ent["x"]+x]["Entity"]) :
+				SEG_grid[SEG_ent["y"]+y][SEG_ent["x"]+x]["Entity"].remove(SEG_ent)
 
 	return SEG_grid
 
 
-def Add_Ent_Grid(SEG_ent, SEG_grid, SEG_collision=False) :
+def Add_Ent_Grid(AEG_ent, AEG_grid, AEG_collision=False) :
 	"""
     DESCRIPTION
     ===========
@@ -89,30 +88,31 @@ def Add_Ent_Grid(SEG_ent, SEG_grid, SEG_collision=False) :
     PARAM
     =====
 
-    @param SEG_ent: entité à ajouter à la grille
-    @type SEG_ent : dict
+    @param AEG_ent: entité à ajouter à la grille
+    @type AEG_ent : dict
 
-    @param SEG_grid: grille du jeu
-    @type SEG_grid: str
+    @param AEG_grid: grille du jeu
+    @type AEG_grid: str
 
-    @param SEG_collision: liste des entités présents sur les cases ou l'entité a été ajouté
-    @type SEG_collision: list
+    @param AEG_collision: liste des entités présents sur les cases ou l'entité a été ajouté
+    @type AEG_collision: list
 
     RETOUR
     ======
 
-    @return SEG_grid: tuple composé de la grille avec l'entité en plus et si demandé, les entités déjà présentent sur les cases où a été ajouté l'entité
-    @rtype SEG_grid: tuple
+    @return AEG_grid: tuple composé de la grille avec l'entité en plus et si demandé, les entités déjà présentent sur les cases où a été ajouté l'entité
+    @rtype AEG_grid: tuple
 """
-	SEG_collided_ent=[]
+	AEG_collided_ent=[]
 
-	for SEG_y in SEG_ent["Asset"][ActualAsset]["Shadow"] :
-		for SEG_x in SEG_y :
-			if SEG_x != void_collision :
-				if SEG_collision :
-					for SEG_what_ent in SEG_grid[SEG_ent["y"]+SEG_y][SEG_ent["x"]+SEG_x]["Entity"] :
-						SEG_collided_ent.append(SEG_what_ent)
-				SEG_grid[SEG_ent["x"]+SEG_x][SEG_ent["y"]+SEG_y]["Entity"].append(SEG_ent)
+	AEG_shadowEnt = AEG_ent["Asset"]["Actual"]["Shadow"][AEG_ent["Asset"]["Actual"]["FrameNb"]]
+	for y in range(len(AEG_shadowEnt)-1):
+		for x in range(len(AEG_shadowEnt[y])-1) :
+			if AEG_grid[AEG_ent["y"]+y][AEG_ent["x"]+x]["Background"] != void_collision and not(AEG_ent in AEG_grid[AEG_ent["y"]+y][AEG_ent["x"]+x]["Entity"]) :
+				if (AEG_collision):
+					for AEG_what_ent in AEG_grid[AEG_ent["y"]+y][AEG_ent["x"]+x]["Entity"] :
+						AEG_collided_ent.append(AEG_what_ent)
+				AEG_grid[AEG_ent["y"]+y][AEG_ent["x"]+x]["Entity"].append(AEG_ent)
 
 
-	return (SEG_grid, SEG_collided_ent)
+	return (AEG_grid, AEG_collided_ent)

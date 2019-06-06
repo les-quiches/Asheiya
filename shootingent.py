@@ -266,14 +266,9 @@ def shoot(Entity) :
         name_asset = "Gun_Horizontal"
 
     asset = {}
-    ShadowAsset={}
     asset[name_asset] = Entity["assetShot"][name_asset]
-    ShadowAsset[name_asset]={}
-    ShadowAsset[name_asset]["Asset"]=hitbox.Create_Shadow(asset[name_asset]["Asset"],damage_Zone)
-    ShadowAsset[name_asset]["FrameNb"]=asset[name_asset]["FrameNb"]
     asset["Actual"] = Entity["assetShot"][name_asset]
-    ShadowAsset["Actual"]=ShadowAsset[name_asset]
-    bullet = entity.create_entity(bullet_name,x,y,asset,ShadowAsset )
+    bullet = entity.create_entity(bullet_name,x,y,asset)
     bullet = movingent.create_moving_ent(bullet, Vx, Vy, Entity["bulletSpeed"])
     bullet = create_bullet(bullet,Entity["damage"],Entity["Name"])
 

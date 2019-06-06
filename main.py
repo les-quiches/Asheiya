@@ -77,7 +77,7 @@ def Init(): 	#initialisation des variables
 	======
 		Sans retour
 	"""
-	global color, window, allAssetGameZone, timeStep, timeScreen, timeGravity, allEntity, player, menu, manche, assetInfoStory, Shadow_background, allAssetMenu
+	global color, window, allAssetGameZone, timeStep, timeScreen, timeGravity, allEntity, player, menu, manche, assetInfoStory, allAssetMenu
 
 	color["txt"]={"Black":30, "Red":31,"Green":32,"Yellow":33,"Blue":34,"Pink":35,"Cyan":36,"White":37}
 	color["background"]={"Black":40, "Red":41,"Green":42,"Yellow":43,"Blue":44,"Pink":45,"Cyan":46,"White":47}
@@ -210,7 +210,6 @@ def Init_manche():
 		xbonus = 9
 		ybonus = 33
 		assetBonus = {}
-		ShadowAssetBonus={}
 		assetBonus["boon1"] = entity.create_asset("Boon/boon1.txt") #-afair en sorte que les accès soient automatisé
 		assetBonus["Actual"] = assetBonus["boon1"]
 		boon1 = entity.create_entity("boon1", xbonus, ybonus, assetBonus) #-afair en sorte que leurs noms s'incrémente tout seul
@@ -230,10 +229,17 @@ def Init_manche():
 
 		allEntity.append(boong)
 
+<<<<<<< HEAD
 		#asset mob
 		assetCristal = {}
 		assetCristal["Cristal"] = entity.create_asset("Mobs/Cristal.txt")
 		assetCristal["Actual"]= assetMob1["mob1"]
+=======
+		#/!\ juste un mob pour test, les valeurs sont débiles
+		assetMob1 = {}
+		assetMob1["mob1"] = entity.create_asset("Mobs/mob1.txt")
+		assetMob1["Actual"]= assetMob1["mob1"]
+>>>>>>> 7008dfca28700fb8695e51c112d9340665884cab
 
 		Cristal_1 ={}
 		Cristal_1 = entity.create_entity("Cristal_1",24,42,assetCristal)#position x=24,y=42

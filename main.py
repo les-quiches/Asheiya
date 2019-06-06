@@ -429,7 +429,7 @@ def Time_game():
 					if (ent["Gravity"]):
 						onTheGround = entity.is_ground_beneath(entity.feet(ent), Shadow_background)
 						if ent["Jump"]>0 :
-							if gridGame[ent["y"]-1][ent["x"]]["Background"] != _wall :
+							if Shadow_background[ent["y"]-1][ent["x"]] != _wall :
 								ent = movingent.move_entity(ent,0,-1,True)
 								TG_whatcollide=TG_whatcollide + TG_toAdd
 
@@ -715,13 +715,14 @@ def Interact():
 				elif c == "q":
 					if not(player["Jump"]) :
 						player = character.switch_stand(player,"Run")
+					if not(entity.is_ground_left(entity.LeftSide(player),Shadow_background)):
 						player=movingent.move_entity(player,-1,0)
 
 
-				elif c == "z" and player["Jump"]==0 and player["Vy"]==0 :
+				elif c == "z" and player["Jump"]==0 and entity.is_ground_beneath(entity.feet(player), Shadow_background):
 					player = character.switch_stand(player, "Wait")
 					player = movingent.jump(player)
-					player=movingent.move_entity(player,0,0)
+					player=movingent.move_entity(player,0,-1)
 
 				elif c == "s" :
 					if gridGame[player["y"]+1][player["x"]]== Gostwall:

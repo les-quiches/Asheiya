@@ -200,7 +200,7 @@ def is_ground_above(IGA_head,IGA_grid) :
     IGA_ground = IGA_head[2]-1 #position au dessus des pieds
     IGA_length_feet = IGA_feet[1]-IGA_feet[0]
     for a in range(IGA_length_feet):
-        if IGA_grid[IGA_ground][IGA_feet[0]+a-1]["Background"] == _wall :
+        if IGA_grid[IGA_ground][IGA_feet[0]+a-1] == _wall :
             return True
     return False
 
@@ -229,7 +229,7 @@ def is_ground_beneath(IGB_feet,IGB_grid) :
     IGB_ground = IGB_feet[2]+1 #position en dessous des pieds
     IGB_length_feet = IGB_feet[1]-IGB_feet[0]
     for a in range(IGB_length_feet):
-        if IGB_grid[IGB_ground][IGB_feet[0]+a-1]["Background"] != void_collision :
+        if IGB_grid[IGB_ground][IGB_feet[0]+a-1] != void_collision :
             return True
     return False
 
@@ -282,7 +282,7 @@ def is_ground_right(IGR_pos,IGR_grid) :
     IGR_wall = IGR_pos[1]+1 #position a droite
     IGR_length_right = IGR_pos[2]-IGR_pos[0]
     for a in range(IGR_length_right):
-        if IGR_grid[IGR_pos[0]+a-1][IGR_wall]["Background"] != void_collision :
+        if IGR_grid[IGR_pos[0]+a-1][IGR_wall] != void_collision :
             return True
     return False
 
@@ -335,7 +335,7 @@ def is_ground_left(IGL_pos,IGB_grid) :
     IGL_wall = IGL_pos[0]-1 #position a gauche
     IGL_length_left = IGL_pos[2]-IGL_pos[1]
     for a in range(IGL_length_left):
-        if IGL_grid[IGL_pos[1]+a-1][IGL_wall]["Background"] != void_collision :
+        if IGL_grid[IGL_pos[1]+a-1][IGL_wall]!= void_collision :
             return True
     return False
 

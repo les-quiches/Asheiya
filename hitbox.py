@@ -117,7 +117,7 @@ def Add_Shadow(Shadow_asset,Shadow_backgound,x=0,y=0):
     """
     for i in range(0,len(Shadow_asset)):
         for j in range(0,len(Shadow_asset[i])):
-            if Shadow_asset[i][j][0] != void_collision:
+            if Shadow_asset[i][j] != void_collision:
                 Shadow_backgound[i+y][j+x] = Shadow_asset[i][j]
 
     return(Shadow_backgound)
@@ -292,16 +292,16 @@ def detect_collision_wall(Entity,Shadow_background):#ne fonctionne pas
     x = Entity["x"]
     y = Entity["y"]
     Shadow_entity=[]
-    Shadow_entity = Entity["ShadowAsset"]["Actual"]["Asset"][Entity["ShadowAsset"]["Actual"]["FrameNb"]]
+    Shadow_entity = Entity["Asset"]["Actual"]["Shadow"][Entity["Asset"]["Actual"]["FrameNb"]]
     detect = void_collision
     for i in range(0,len(Shadow_entity)):
         for j in range(0,len(Shadow_entity[i])):
             if Shadow_entity[i][j] != void_collision:
-                if Shadow_background[y+i][x+j][0] == _wall:
+                if Shadow_background[y+i][x+j] == _wall:
                      #detection collision wall
                      detect = _wall
                      return detect
-                elif Shadow_background[i+y][j+x][0] == Gostwall:
+                elif Shadow_background[i+y][j+x] == Gostwall:
                     detect = Gostwall
     return detect
 
@@ -326,7 +326,7 @@ def create_void_shadow(Xmax,Ymax):
     @return Shadow: Calque de dimmantion Xmax, Ymax
     @rtype Shadow:list
     """
-    Shadow = [[void_collision] * Xmax for _ in range(Ymax)]
+    Shadow = [void_collision * Xmax for _ in range(Ymax)]
     return Shadow
 
 def detect_collision_entity(DCE_Entity_1, DCE_Entity_2):#non tester
@@ -356,14 +356,14 @@ def detect_collision_entity(DCE_Entity_1, DCE_Entity_2):#non tester
     DCE_x2=DCE_Entity_2["x"]
     DCE_y2=DCE_Entity_2["y"]
     DCE_Void_Shadow=create_void_shadow(140,42) #genere un fond vierge pour eviter de le calculer a chaque boucle
-    DCE_Shadow_asset_1 = DCE_Entity_1["ShadowAsset"]["Actual"]["Asset"][DCE_Entity_1["ShadowAsset"]["Actual"]["FrameNb"]]
-    DCE_Shadow_asset_2 = DCE_Entity_2["ShadowAsset"]["Actual"]["Asset"][DCE_Entity_2["ShadowAsset"]["Actual"]["FrameNb"]]
+    DCE_Shadow_asset_1 = DCE_Entity_1["Asset"]["Actual"]["Shadow"][DCE_Entity_1["Asset"]["Actual"]["FrameNb"]]
+    DCE_Shadow_asset_2 = DCE_Entity_2["Asset"]["Actual"]["Shadow"][DCE_Entity_2["Asset"]["Actual"]["FrameNb"]]
     DCE_Shadow = Add_Shadow(DCE_Shadow_asset_2,DCE_Void_Shadow,DCE_x2,DCE_y2)
     for i in range(0,len(DCE_Shadow_asset_1)):
         for j in range(0,len(DCE_Shadow_asset_1[i])):
-            if DCE_Shadow_asset_1[i][j][0] != void_collision:
-                if DCE_Shadow[i+DCE_y1][j+DCE_x1][0] != void_collision:
-                    return DCE_Shadow[i+DCE_y1][j+DCE_x1][0]
+            if DCE_Shadow_asset_1[i][j] != void_collision:
+                if DCE_Shadow[i+DCE_y1][j+DCE_x1] != void_collision:
+                    return DCE_Shadow[i+DCE_y1][j+DCE_x1]
     return void_collision
 
 

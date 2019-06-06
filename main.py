@@ -230,16 +230,20 @@ def Init_manche():
 
 		allEntity.append(boong)
 
-		#/!\ juste un mob pour test, les valeurs sont débiles
-		assetMob1 = {}
-		ShadowAssetMob1={}
-		assetMob1["mob1"] = entity.create_asset("Mobs/mob1.txt")
-		assetMob1["Actual"]= assetMob1["mob1"]
+		#asset mob
+		assetCristal = {}
+		assetCristal["Cristal"] = entity.create_asset("Mobs/Cristal.txt")
+		assetCristal["Actual"]= assetMob1["mob1"]
 
-		mob1 = entity.create_entity("testmob",20,20,assetMob1, "AItest")
-		mob1 = movingent.create_moving_ent(mob1,1,1,0.5, False)
+		Cristal_1 ={}
+		Cristal_1 = entity.create_entity("Cristal_1",24,42,assetCristal)#position x=24,y=42
+		Cristal_1 = livingent.create_living_ent(Cristal_1,9,0)#9 point de vie, 0 point d'armure
+		allEntity.append(Cristal_1)
 
-		allEntity.append(mob1)
+		Cristal_2 ={}
+		Cristal_2 = entity.create_entity("Cristal_1",37,73,assetCristal)#position x=37,y=73
+		Cristal_1 = livingent.create_living_ent(Cristal_2,12,0)#12 point de vie, 0 point d'armure
+		allEntity.append(Cristal_2)
 
 		#Story
 		storyFile = "Story/Zone_1.txt"
@@ -420,7 +424,7 @@ def Time_game():
 							TG_collidedEnt=livingent.hurt(logHit["entity"],ent["damageToInflict"])
 						TG_toRemove.append(ent)
 
-					if "boon" in TG_collidedEnt : 
+					if "boon" in TG_collidedEnt :
 						ent = caught(TG_collidedEnt,ent)
 						TG_toRemove.append(ent)
 

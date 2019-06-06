@@ -41,10 +41,10 @@ def Create_Grid(CG_filenum):
 				myGrid[y][x]["Background"]=void_collision
 			else:
 				Gostelement =myGostlist[y][x]
-				if Gostelement!=void_collision :
+				if Gostelement != " " :
 					myGrid[y][x]["Background"]=Gostwall
 				else:
-					myGrid[y][x]["Background"]=_wall
+					myGrid[y][x]["Background"] = _wall
 			myGrid[y][x]["Entity"]=[]
 	return myGrid
 

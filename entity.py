@@ -3,6 +3,7 @@
 import sys
 import os
 import character
+import grid
 import hitbox
 
 
@@ -16,7 +17,7 @@ EntityHitbox = "E"
 
 
 #_____Create____________________________________________________________________
-def create_entity(Name, X, Y, Asset, grid, AI = None):
+def create_entity(Name, X, Y, Asset, CE_grid, AI = None):
     """
     G{classtree}
     DESCRIPTION
@@ -63,7 +64,9 @@ def create_entity(Name, X, Y, Asset, grid, AI = None):
     Entity["Asset"]= Asset
     Entity["AI"]=AI
 
-    return(Entity,grid)
+    CE_grid, trash = grid.Add_Ent_Grid(Entity,CE_grid,False)
+
+    return(Entity,CE_grid)
 
 def create_asset(filename):
     """

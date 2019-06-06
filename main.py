@@ -82,18 +82,9 @@ def Init(): 	#initialisation des variables
 	color["txt"]={"Black":30, "Red":31,"Green":32,"Yellow":33,"Blue":34,"Pink":35,"Cyan":36,"White":37}
 	color["background"]={"Black":40, "Red":41,"Green":42,"Yellow":43,"Blue":44,"Pink":45,"Cyan":46,"White":47}
 
-	asheiyaAsset=[
-	"Run_Right_0", "Run_Right_45", "Run_Right_90",  "Run_Right_-45", "Run_Right_-90",
- 	"Run_Left_0", "Run_Left_45", "Run_Left_90", "Run_Left_-45", "Run_Left_-90",
-	"Wait_Right_0", "Wait_Right_45", "Wait_Right_90", "Wait_Right_-45", "Wait_Right_-90",
- 	"Wait_Left_0", "Wait_Left_45", "Wait_Left_90", "Wait_Left_-45", "Wait_Left_-90",
-	]
 
 	gameZone=[
 	"Zone_1",
-	]
-	projectileAsset=[
-	"Gun_Horizontal","Gun_Slach","Gun_UnSlash","Gun_Vertical"
 	]
 
 	assetMenu=["Menu","Game_dev","Game_dev2","YouWin","youLose"]
@@ -131,46 +122,6 @@ def Init(): 	#initialisation des variables
 	tty.setcbreak(sys.stdin.fileno())
 
 
-	#on concoit le joueur___________________________________________________________________________________________________________________________
-
-	assetPlayer = {}
-	assetPlayer["position"]=["Wait","Right",0] #correspond a sa representation : course/attente, orientation, position du bras
-	for Asheiya_doc in asheiyaAsset :
-		assetPlayer[Asheiya_doc]=entity.create_asset("Asheiya/Asset/" + Asheiya_doc + ".txt")
-
-	xPlayer = 0
-	yPlayer = 0
-	vxPlayer = 0
-	vyPlayer = 0
-	player, gridGame = entity.create_entity("Asheiya Briceval",xPlayer,yPlayer,assetPlayer,gridGame)
-
-	speedPlayer = 0.1 #deplaxcement pas seconde
-	player = movingent.create_moving_ent(player,vxPlayer,vyPlayer,speedPlayer)
-
-
-	lifePlayer = 18
-	armorPlayer =25
-	player = livingent.create_living_ent(player,lifePlayer,armorPlayer)
-
-
-	assetShot = {}
-	for Shot_doc in ["Gun_Horizontal","Gun_Slash","Gun_UnSlash","Gun_Vertical"] :
-		assetShot[Shot_doc] =entity.create_asset("Asheiya/Projectile/"+Shot_doc+".txt")
-
-	damage = 5
-	shotDelay = 3
-	bulletSpeed = 0.05
-	player = shootingent.create_shooting_ent(player,damage,bulletSpeed,assetShot,shotDelay)
-
-
-	spowerSpeed = 1 #toutes les secondes on augmente de 1 la charge du super
-	spowerMax = 100 #au bout de 100 charges on peut utiliser l'ultime
-	player = character.create_character(player , spowerSpeed, spowerMax)
-
-	allEntity.append(player)
-	files.SAVE_FILE_JSON(player,"player")
-
-
 	#definition de la fenetre de jeu
 
 	#on efface la console
@@ -198,10 +149,59 @@ def Init_manche():
 	#-afaire
 	global manche, menu, player, allAssetGameZone, acutalAssetGameZone, Story, gridGame
 
+	asheiyaAsset=[
+	"Run_Right_0", "Run_Right_45", "Run_Right_90",  "Run_Right_-45", "Run_Right_-90",
+ 	"Run_Left_0", "Run_Left_45", "Run_Left_90", "Run_Left_-45", "Run_Left_-90",
+	"Wait_Right_0", "Wait_Right_45", "Wait_Right_90", "Wait_Right_-45", "Wait_Right_-90",
+ 	"Wait_Left_0", "Wait_Left_45", "Wait_Left_90", "Wait_Left_-45", "Wait_Left_-90",
+	]
+	projectileAsset=[
+	"Gun_Horizontal","Gun_Slach","Gun_UnSlash","Gun_Vertical"
+	]
+
 	if manche == 10 :
 		gridGame = grid.Create_Grid(1)
 		print allAssetGameZone["NumZone"]
 		acutalAssetGameZone= allAssetGameZone["Zone_"+str(allAssetGameZone["NumZone"])]
+		#on concoit le joueur___________________________________________________________________________________________________________________________
+
+		assetPlayer = {}
+		assetPlayer["position"]=["Wait","Right",0] #correspond a sa representation : course/attente, orientation, position du bras
+		for Asheiya_doc in asheiyaAsset :
+			assetPlayer[Asheiya_doc]=entity.create_asset("Asheiya/Asset/" + Asheiya_doc + ".txt")
+		assetPlayer["Actual"] = assetPlayer[assetPlayer["position"][0]+"_"+assetPlayer["position"][1]+"_"+str(assetPlayer["position"][2])]
+
+		xPlayer = 0
+		yPlayer = 0
+		vxPlayer = 0
+		vyPlayer = 0
+
+		player, gridGame = entity.create_entity("Asheiya Briceval",xPlayer,yPlayer,assetPlayer,gridGame)
+
+		speedPlayer = 0.1 #deplaxcement pas seconde
+		player = movingent.create_moving_ent(player,vxPlayer,vyPlayer,speedPlayer)
+
+
+		lifePlayer = 18
+		armorPlayer =25
+		player = livingent.create_living_ent(player,lifePlayer,armorPlayer)
+
+
+		assetShot = {}
+		for Shot_doc in ["Gun_Horizontal","Gun_Slash","Gun_UnSlash","Gun_Vertical"] :
+			assetShot[Shot_doc] =entity.create_asset("Asheiya/Projectile/"+Shot_doc+".txt")
+
+		damage = 5
+		shotDelay = 3
+		bulletSpeed = 0.05
+		player = shootingent.create_shooting_ent(player,damage,bulletSpeed,assetShot,shotDelay)
+
+
+		spowerSpeed = 1 #toutes les secondes on augmente de 1 la charge du super
+		spowerMax = 100 #au bout de 100 charges on peut utiliser l'ultime
+		player = character.create_character(player , spowerSpeed, spowerMax)
+
+		allEntity.append(player)
 
 		player = movingent.tp_entity(player,20,37)
 
@@ -242,7 +242,7 @@ def Init_manche():
 
 
 		Cristal_2 ={}
-		Cristal_2, gridGame = entity.create_entity("Cristal_1",73,37,assetCristal,gridGame)#position x=73,y=37
+		Cristal_2, gridGame = entity.create_entity("Cristal_1",73,36,assetCristal,gridGame)#position x=73,y=37
 		Cristal_1 = livingent.create_living_ent(Cristal_2,12,0)#12 point de vie, 0 point d'armure
 		allEntity.append(Cristal_2)
 
@@ -409,7 +409,7 @@ def Time_game():
 					if (ent["Gravity"]):
 						onTheGround = entity.is_ground_beneath(entity.feet(ent),gridGame)
 						if ent["Jump"]>0 :
-							if gridGame[ent["x"]][ent["y"]-1]["Background"] != _wall :
+							if gridGame[ent["y"]-1][ent["x"]]["Background"] != _wall :
 								ent, gridGame, TG_toAdd = movingent.move_entity(ent,gridGame,0,-1,True)
 								TG_whatcollide=TG_whatcollide + TG_toAdd
 
@@ -708,7 +708,7 @@ def Interact():
 					if not(player["Jump"]) :
 						gridGame = grid.Supr_Ent_Grid(player, gridGame)
 						player = character.switch_stand(player,"Run")
-					if gridGame[player["x"]+1][player["y"]]["Background"] != _wall:
+					if gridGame[player["y"]][player["x"]+1]["Background"] != _wall:
 						player,gridGame,INT_whatcollide=movingent.move_entity(player,gridGame,1,0)
 
 
@@ -716,7 +716,7 @@ def Interact():
 					if not(player["Jump"]) :
 						gridGame = grid.Supr_Ent_Grid(player, gridGame)
 						player = character.switch_stand(player,"Run")
-					if gridGame[player["x"]-1][player["y"]]["Background"] != _wall:
+					if gridGame[player["y"]][player["x"]-1]["Background"] != _wall:
 						player,gridGame,INT_whatcollide=movingent.move_entity(player,gridGame,-1,0)
 
 
@@ -727,7 +727,7 @@ def Interact():
 					player,gridGame,INT_whatcollide=movingent.move_entity(player,gridGame,0,0)
 
 				elif c == "s" :
-					if gridGame[player["x"]][player["y"]+1]["Background"] == Gostwall:
+					if gridGame[player["y"]+1][player["x"]]["Background"] == Gostwall:
 						player,gridGame,INT_whatcollide=movingent.move_entity(player,gridGame,0,1,)
 
 

@@ -355,6 +355,7 @@ def detect_collision_entity(DCE_Entity_1, DCE_Entity_2):#non tester
     DCE_Shadow_asset_1 = DCE_Entity_1["Asset"]["Actual"]["Shadow"][DCE_Entity_1["Asset"]["Actual"]["FrameNb"]]
     DCE_Shadow_asset_2 = DCE_Entity_2["Asset"]["Actual"]["Shadow"][DCE_Entity_2["Asset"]["Actual"]["FrameNb"]]
     DCE_Shadow = Add_Shadow(DCE_Shadow_asset_2,DCE_Void_Shadow,DCE_x2,DCE_y2)
+    show_Shadow(DCE_Shadow_asset_2)
     for i in range(0,len(DCE_Shadow_asset_1)):
         for j in range(0,len(DCE_Shadow_asset_1[i])):
             if DCE_Shadow_asset_1[i][j] != void_collision:
@@ -400,7 +401,7 @@ def hit_box_simple(entity):
     return hit_box_entity
 
 #pour les tests
-def show_Shadow(ss_Shadow):
+def show_Shadow(ss_Shadow,X=0,Y=0):
     """
     G{classtree}
     DESCRIPTION
@@ -425,9 +426,9 @@ def show_Shadow(ss_Shadow):
     #goto
     for y in range(0,len(ss_Shadow)):
         for x in range(0,len(ss_Shadow[y])):
-          s+="\033["+str(y+1)+";"+str(x+1)+"H"
+          s+="\033["+str(y+Y+1)+";"+str(x+X+1)+"H"
           #affiche
-          s+=ss_Shadow[y][x][0]
+          s+=ss_Shadow[y][x]
     sys.stdout.write(s)
 
 

@@ -708,7 +708,7 @@ def Interact():
 					if not(player["Jump"]) :
 						gridGame = grid.Supr_Ent_Grid(player, gridGame)
 						player = character.switch_stand(player,"Run")
-					if gridGame[player["y"]][player["x"]+1]["Background"] != _wall:
+					if not(entity.is_ground_right(entity.RightSide(player),gridGame)):
 						player,gridGame,INT_whatcollide=movingent.move_entity(player,gridGame,1,0)
 
 

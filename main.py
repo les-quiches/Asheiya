@@ -428,7 +428,7 @@ def Time_game():
 						TG_toRemove.append(ent)
 
 					if "boon" in TG_collidedEnt :
-						ent = caught(TG_collidedEnt,ent)
+						ent = boon.caught(TG_collidedEnt,ent)
 						TG_toRemove.append(ent)
 
 			#on remet le joueur en position d'attente s'il fait rien

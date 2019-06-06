@@ -35,6 +35,7 @@ oldSettings = termios.tcgetattr(sys.stdin)
 window= None #contete du jeu manche/menu
 allAssetGameZone = None
 acutalAssetGameZone = None
+Shadow_background = None
 
 
 timeStep = None
@@ -146,7 +147,7 @@ def Init_manche():
 		Sans retour
 	"""
 	#-afaire
-	global manche, menu, player, allAssetGameZone, acutalAssetGameZone, Story
+	global manche, menu, player, allAssetGameZone, acutalAssetGameZone, Story, Shadow_background
 
 	asheiyaAsset=[
 	"Run_Right_0", "Run_Right_45", "Run_Right_90",  "Run_Right_-45", "Run_Right_-90",
@@ -282,7 +283,7 @@ def Game():
 	======
 		Sans retour.
 	"""
-	global menu, player, manche, allEntity
+	global menu, player, manche, allEntity, Shadow_background
 
 	#gestion de debut de manche
 

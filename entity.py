@@ -11,7 +11,7 @@ f=files
 
 
 #_____Create____________________________________________________________________
-def create_entity(Name, X, Y, Asset,ShadowAsset, AI = None):
+def create_entity(Name, X, Y, Asset, AI = None):
     """
     G{classtree}
     DESCRIPTION
@@ -50,7 +50,6 @@ def create_entity(Name, X, Y, Asset,ShadowAsset, AI = None):
     Entity["x"]= X
     Entity["y"]= Y
     Entity["Asset"]= Asset
-    Entity["ShadowAsset"] = ShadowAsset
     Entity["AI"]=AI
 
     return(Entity)
@@ -85,6 +84,7 @@ def create_asset(filename):
         del a[-1]
         ca["Asset"].append(a)
     ca["FrameNb"]= 0
+    ca["Shadow"]=hitbox.Create_Shadow(ca["Asset"])
     return(ca)
 
 #____getter___________________________________________________

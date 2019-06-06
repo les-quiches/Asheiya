@@ -138,12 +138,12 @@ def Init(): 	#initialisation des variables
 	for Asheiya_doc in asheiyaAsset :
 		assetPlayer[Asheiya_doc]=entity.create_asset("Asheiya/Asset/" + Asheiya_doc + ".txt")
 
-	player = entity.create_entity("Asheiya Briceval",xPlayer,yPlayer,assetPlayer)
-
 	xPlayer = 0
 	yPlayer = 0
 	vxPlayer = 0
 	vyPlayer = 0
+	player = entity.create_entity("Asheiya Briceval",xPlayer,yPlayer,assetPlayer)
+
 	speedPlayer = 0.1 #deplaxcement pas seconde
 	player = movingent.create_moving_ent(player,vxPlayer,vyPlayer,speedPlayer)
 

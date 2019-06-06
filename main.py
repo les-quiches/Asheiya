@@ -163,7 +163,6 @@ def Init_manche():
 
 	if manche == 10 :
 		Shadow_background=hitbox.Create_ShadowBackgrond(1)
-		print allAssetGameZone["NumZone"]
 		acutalAssetGameZone= allAssetGameZone["Zone_"+str(allAssetGameZone["NumZone"])]
 		#on concoit le joueur___________________________________________________________________________________________________________________________
 
@@ -422,7 +421,7 @@ def Time_game():
 				#gravité
 				if actualTime >timeGravity + 0.08 :
 					if (ent["Gravity"]):
-						onTheGround = entity.is_ground_beneath(entity.feet(ent))
+						onTheGround = entity.is_ground_beneath(entity.feet(ent), Shadow_background)
 						if ent["Jump"]>0 :
 							if gridGame[ent["y"]-1][ent["x"]]["Background"] != _wall :
 								ent = movingent.move_entity(ent,0,-1,True)
@@ -434,11 +433,6 @@ def Time_game():
 						ent = movingent.gravity(ent,onTheGround)
 
 					timeGravity = actualTime
-
-				#gestion conséquences collisions
-					if "boon" in TG_collidedEnt :
-						ent = boon.caught(TG_collidedEnt,ent)
-						TG_toRemove.append(ent)
 
 			#on remet le joueur en position d'attente s'il fait rien
 			if actualTime>player["LastTime"]+0.03 :

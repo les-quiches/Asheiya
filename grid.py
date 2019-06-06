@@ -41,10 +41,8 @@ def Create_Grid(CG_filename):
 			elif element in ["X","-","+"]:
 				myGrid[y][x]["Backgound"]=_wall
 			myGrid[y][x]["Entity"]={}
-
-	files.SAVE_FILE_JSON(myGrid,"log_wtf")
 	return
-Create_Grid("GameZone/Windows.txt")
+
 
 def Supr_Ent_Grid(SEG_ent, SEG_grid) :
 	"""

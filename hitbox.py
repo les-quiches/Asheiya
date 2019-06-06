@@ -1,16 +1,13 @@
 #-*- coding:utf-8 -*
 void_collision ="0"
-random_zone="O"
-damage_Zone= "¤"
 _wall = "X"
 Gostwall = "-"
-take_damage = "."
-Boon_Zone = "$"
+EntityHitbox = "E"
 
 import files
 import sys
 
-def Create_Shadow(CS_asset,CS_type_hitbox):#envoyer Entity["Asset"]["Name asset"]["Asset"]
+def Create_Shadow(CS_asset):#fonctionne
     """
     G{classtree}
     DESCRIPTION
@@ -22,9 +19,6 @@ def Create_Shadow(CS_asset,CS_type_hitbox):#envoyer Entity["Asset"]["Name asset"
 
     @param CS_asset: Liste de tableau représentant un asset
     @type CS_asset : list
-
-    @param CS_type_hitbox: type de l'hitbox
-    @type CS_type_hitbox: str
 
     RETOUR
     ======
@@ -50,7 +44,7 @@ def Create_Shadow(CS_asset,CS_type_hitbox):#envoyer Entity["Asset"]["Name asset"
         for i in range(0,len(CS_asset[frame])):
             for j in range(0,len(CS_asset[frame][i])):
                 if CS_asset[frame][i][j] != " ":
-                    CS_Claque[frame][i][j] = CS_type_hitbox
+                    CS_Claque[frame][i][j] = EntityHitbox
                 else:
                     CS_Claque[frame][i][j] = void_collision
     return(CS_Claque)

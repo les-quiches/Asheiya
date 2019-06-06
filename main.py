@@ -97,16 +97,19 @@ def Init(): 	#initialisation des variables
 
 	assetMenu=["Menu","Game_dev"]
 
-	timeStep = 0.03 # en secondes -> 20 images par secondes
+
+	#Time_game___________________________________________________________________________________________________________________
+	timeStep = 0.02 # en secondes -> 20 images par secondes
 	timeScreen = time.time()
 	timeGravity = time.time()
 
-	#start menu
+
+	#start menu_____________________________________________________________________________________________________________________________
 	menu="Game_dev"
 	manche = 10 #1 pour premiere manche, 0 pour le nb de fois qu'on est passe dans la boucle
 
 
-	#asset background
+	#asset background__________________________________________________________________________________________________________________________
 
 	window=background.create_window("GameZone/Windows.txt")
 	allAssetGameZone={}
@@ -127,44 +130,40 @@ def Init(): 	#initialisation des variables
 	tty.setcbreak(sys.stdin.fileno())
 
 
-	#on concoit le joueur
-	xPlayer = 0
-	yPlayer = 0
+	#on concoit le joueur___________________________________________________________________________________________________________________________
+
 	assetPlayer = {}
-	ShadowAssetPlayer={}
 	assetPlayer["position"]=["Wait","Right",0] #correspond a sa representation : course/attente, orientation, position du bras
 	for Asheiya_doc in asheiyaAsset :
-		assetPlayer[Asheiya_doc]=entity.create_asset("Asheiya/Asset/" + Asheiya_doc + ".txt") #chargement Asset et Shadow
-		ShadowAssetPlayer[Asheiya_doc]={}
-		ShadowAssetPlayer[Asheiya_doc]["Asset"]=hitbox.Create_Shadow(assetPlayer[Asheiya_doc]["Asset"],take_damage)
-		ShadowAssetPlayer[Asheiya_doc]["FrameNb"]=assetPlayer[Asheiya_doc]["FrameNb"]
+		assetPlayer[Asheiya_doc]=entity.create_asset("Asheiya/Asset/" + Asheiya_doc + ".txt")
 
-	player = entity.create_entity("Asheiya Briceval",xPlayer,yPlayer,assetPlayer,ShadowAssetPlayer)
+	player = entity.create_entity("Asheiya Briceval",xPlayer,yPlayer,assetPlayer)
+
+	xPlayer = 0
+	yPlayer = 0
 	vxPlayer = 0
 	vyPlayer = 0
 	speedPlayer = 0.1 #deplaxcement pas seconde
 	player = movingent.create_moving_ent(player,vxPlayer,vyPlayer,speedPlayer)
 
+
 	lifePlayer = 18
 	armorPlayer =25
 	player = livingent.create_living_ent(player,lifePlayer,armorPlayer)
 
-	damage = 5
+
 	assetShot = {}
-	ShadowAssetShot = {}
 	for Shot_doc in ["Gun_Horizontal","Gun_Slash","Gun_UnSlash","Gun_Vertical"] :
 		assetShot[Shot_doc] =entity.create_asset("Asheiya/Projectile/"+Shot_doc+".txt")
-		ShadowAssetShot[Shot_doc]={}
-		ShadowAssetShot[Shot_doc]["Asset"]=hitbox.Create_Shadow(assetShot[Shot_doc]["Asset"],damage_Zone)
-		ShadowAssetShot[Shot_doc]["FrameNb"]=assetShot[Shot_doc]["FrameNb"]
+
+	damage = 5
 	shotDelay = 3
 	bulletSpeed = 0.05
-
 	player = shootingent.create_shooting_ent(player,damage,bulletSpeed,assetShot,shotDelay)
+
 
 	spowerSpeed = 1 #toutes les secondes on augmente de 1 la charge du super
 	spowerMax = 100 #au bout de 100 charges on peut utiliser l'ultime
-
 	player = character.create_character(player , spowerSpeed, spowerMax)
 
 	allEntity.append(player)
@@ -214,11 +213,7 @@ def Init_manche():
 		ShadowAssetBonus={}
 		assetBonus["boon1"] = entity.create_asset("Boon/boon1.txt") #-afair en sorte que les accès soient automatisé
 		assetBonus["Actual"] = assetBonus["boon1"]
-		ShadowAssetBonus["boon1"]={}
-		ShadowAssetBonus["boon1"]["Asset"]=hitbox.Create_Shadow(assetBonus["boon1"]["Asset"],Boon_Zone)
-		ShadowAssetBonus["boon1"]["FrameNb"]=assetBonus["boon1"]["FrameNb"]
-		ShadowAssetBonus["Actual"]=ShadowAssetBonus["boon1"]
-		boon1 = entity.create_entity("boon1", xbonus, ybonus, assetBonus,ShadowAssetBonus) #-afair en sorte que leurs noms s'incrémente tout seul
+		boon1 = entity.create_entity("boon1", xbonus, ybonus, assetBonus) #-afair en sorte que leurs noms s'incrémente tout seul
 		boon1 = boon.create_boon(boon1, listeBonus)
 
 		allEntity.append(boon1)
@@ -229,12 +224,8 @@ def Init_manche():
 		assetBonus = {}
 		assetBonus["boonGenerator"] = entity.create_asset("Boon/boonGenerator.txt")
 		assetBonus["Actual"] = assetBonus["boonGenerator"]
-		ShadowAssetBonus["boonGenerator"]={}
-		ShadowAssetBonus["boonGenerator"]["Asset"]=hitbox.Create_Shadow(assetBonus["Actual"]["Asset"],Boon_Zone)
-		ShadowAssetBonus["boonGenerator"]["FrameNb"]=assetBonus["boonGenerator"]["FrameNb"]
-		ShadowAssetBonus["Actual"]=ShadowAssetBonus["boon1"]
 		geneSpeed = 2
-		boong = entity.create_entity("boong1", xbonus, ybonus, assetBonus, ShadowAssetBonus)
+		boong = entity.create_entity("boong1", xbonus, ybonus, assetBonus)
 		boong = boon.create_boon_generator(boong, listeBonus, geneSpeed)
 
 		allEntity.append(boong)

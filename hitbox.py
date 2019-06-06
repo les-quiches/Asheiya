@@ -156,20 +156,17 @@ def hit(bullet, entities , Shadow_backgound ) :#non tester
     HIT_log["entity"] = None
 
     HIT_collision_wall = detect_collision_wall(bullet,Shadow_backgound)
-
-    if HIT_collision_wall != void_collision :
+    if HIT_collision_wall != Gostwall :
         if HIT_collision_wall != _wall:
             for HIT_entity in entities:
                 HIT_collision_entity = detect_collision_entity(bullet,HIT_entity)
-                print "sdjvhsdjvbsdhv         ",HIT_collision_entity
                 if HIT_collision_entity :
                     if bullet["origine"] == HIT_entity["Name"]:
                         HIT_log["is_hit"] = False
                         HIT_log["hit_entity"]=False
                         HIT_log["entity"] = None
                         pass
-                    if "livingEnt" in HIT_entity["Type"] :
-                        print "defegsgqsvgx"
+                    elif "livingEnt" in HIT_entity["Type"] :
                         HIT_log["is_hit"] = True
                         HIT_log["hit_entity"]=True  #test si la balle touche une entite ou pas
                         HIT_log["entity"] = HIT_entity
@@ -267,9 +264,6 @@ def collision(COLLI_ent, COLLI_allEntityTest, COLLI_Shadow_background) : #non te
         # si on est ici c'est un BUG
 
     return COLLI_log
-
-
-
 def detect_collision_wall(Entity,Shadow_background):#ne fonctionne pas
     """
     G{classtree}
@@ -328,7 +322,7 @@ def create_void_shadow(Xmax,Ymax):
     @return Shadow: Calque de dimmantion Xmax, Ymax
     @rtype Shadow:list
     """
-    Shadow = [void_collision * Xmax for _ in range(Ymax)]
+    Shadow = [[void_collision] * Xmax for _ in range(Ymax)]
     return Shadow
 
 def detect_collision_entity(DCE_Entity_1, DCE_Entity_2):#non tester
@@ -442,8 +436,11 @@ if (__name__=="__main__"):
     import time
     #init
 
-    Shadow = Create_ShadowBackgrond(1)
+    cc = Create_ShadowBackgrond(1)
+    dd = create_void_shadow(10,10)
+    Shadow=Add_Shadow(dd,cc)
     background.show_window(Shadow)
+
 """
     gameZone=[
     "Zone_1",

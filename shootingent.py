@@ -318,7 +318,7 @@ def hit(bullet, entities , gameBorder, walls ) :
                     HIT_log["entity"] = entity
             else:
                 HIT_log["is_hit"] = False
-                HIT_log["hit_entity"]=False  
+                HIT_log["hit_entity"]=False
                 HIT_log["entity"] = None
     else:
         HIT_log["is_hit"] = True

@@ -185,9 +185,9 @@ def Init_manche():
 		player = movingent.tp_entity(player,20,37)
 
 		#placement des bonus :  #-afair quand on les placera tous, automatiser le tout
-		listeBonus = {"speedUp" : 0.02, "fireRateUp" : 1}
+		listeBonus = {"speedUp" : 0.02, "fireRateUp" : 1, "lifeUp":5}
 		xbonus = 80
-		ybonus = 40
+		ybonus = 37
 		assetBonus = {}
 		assetBonus["boon1"] = entity.create_asset("Boon/boon1.txt") #-afair en sorte que les accès soient automatisé
 		assetBonus["Actual"] = assetBonus["boon1"]
@@ -213,7 +213,7 @@ def Init_manche():
 		assetMob1["mob1"] = entity.create_asset("Mobs/mob1.txt")
 		assetMob1["Actual"]= assetMob1["mob1"]
 
-		mob1 = entity.create_entity("testmob",20,20,assetMob1, "AItest")
+		mob1 = entity.create_entity("testmob",30,37,assetMob1)
 		mob1 = movingent.create_moving_ent(mob1,1,1,0.5, False)
 
 		allEntity.append(mob1)
@@ -374,19 +374,23 @@ def Time_game():
 						if logHit["is_hit"]:#il y a eu collision
 							toRemove.append(ent)
 					else :
-						willCollide = movingent.collision(ent,allEntity,acutalAssetGameZone,walls)[0]
-						if willCollide :
+						logHit = movingent.collision(ent,allEntity,acutalAssetGameZone,walls)
+						if logHit["is_hit"] :
 							ent = movingent.move_entity(ent,-ent["Vx"],-ent["Vy"])
+						if logHit["hit_entity"] :
+							if "boon" in logHit["entity"]["Type"] :
+								ent = boon.caught(logHit["entity"],ent)
+
 				#gravité							
 				if actualTime >timeGravity + 0.08 :												
 						if (ent["Gravity"]):
-							onTheGround = entity.is_ground_beneath(entity.feet(ent),acutalAssetGameZone,walls)
 							if ent["Jump"]>0 :
 								movingent.move_entity(ent,0,-1,True)
-								willCollide = movingent.collision(ent,allEntity,acutalAssetGameZone,walls)[0]
+								willCollide = movingent.collision(ent,allEntity,acutalAssetGameZone,walls)["is_hit"]
 								if willCollide :
 									ent = movingent.move_entity(ent,0,1,False)
-							elif not(onTheGround) :
+							onTheGround = entity.is_ground_beneath(entity.feet(ent),acutalAssetGameZone,walls)
+							if not(onTheGround) and ent["Jump"]<=0 :
 								movingent.move_entity(ent,0,1,True)
 							ent = movingent.gravity(ent,onTheGround) #on gère la valeur de Jump
 							
@@ -632,24 +636,39 @@ def Interact():
 					if not(player["Jump"]) :
 						player = character.switch_stand(player,"Run")
 					player = movingent.move_entity(player,1,0)
-					if movingent.collision(player, allEntity, acutalAssetGameZone, walls)[0] :
-						player = movingent.move_entity(player,-1,0)
+					#collision
+					logHit = movingent.collision(player,allEntity,acutalAssetGameZone,walls)
+					if logHit["is_hit"] :
+							player = movingent.move_entity(player,-1,0)
+					if logHit["hit_entity"] :
+						if "boon" in logHit["entity"]["Type"] :
+							player = boon.caught(logHit["entity"],player)
 
 				elif c == "q":
 					if not(player["Jump"]) :
 						player = character.switch_stand(player,"Run")
 					player = movingent.move_entity(player,-1,0)
-					if movingent.collision(player, allEntity, acutalAssetGameZone, walls)[0] :
-						player = movingent.move_entity(player,1,0)
+					#collision
+					logHit = movingent.collision(player,allEntity,acutalAssetGameZone,walls)
+					if logHit["is_hit"] :
+							player = movingent.move_entity(player,-1,0)
+					if logHit["hit_entity"] :
+						if "boon" in logHit["entity"]["Type"] :
+							player = boon.caught(logHit["entity"],player)
 
-				elif c == "z" and player["Jump"]==0 and player["Vy"]==0 :
+				elif c == "z" and player["Jump"]==0 and entity.is_ground_beneath(entity.feet(player),acutalAssetGameZone,walls):
 					player = character.switch_stand(player, "Wait")
 					player = movingent.jump(player)
 
 				elif c == "s" :
 					player = movingent.move_entity(player,0,1)
-					if movingent.collision(player, allEntity, acutalAssetGameZone, walls)[0] :
-						player = movingent.move_entity(player,0,-1)
+					#collision
+					logHit = movingent.collision(player,allEntity,acutalAssetGameZone,walls)
+					if logHit["is_hit"] :
+							player = movingent.move_entity(player,-1,0)
+					if logHit["hit_entity"] :
+						if "boon" in logHit["entity"]["Type"] :
+							player = boon.caught(logHit["entity"],player)
 
 				# -afair on fait descendre de la plateforme si c'est sur une plateforme
 			else :

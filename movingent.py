@@ -277,17 +277,22 @@ def collision(COLLI_ent, COLLI_allEntityTest, COLLI_Asset_Game_Zone, COLLI_walls
     """
     COLLI_hitentwall=Zone_Collision(COLLI_ent, COLLI_Asset_Game_Zone, COLLI_walls)
 
-    COLLI_log=[]
-    COLLI_log.append(False)
+    COLLI_log={}
+    COLLI_log["is_hit"]=False
+    COLLI_log["hit_entity"]=False
+    COLLI_log["entity"] = None
 
     if COLLI_hitentwall == _wall:
         #detect un mur
-        COLLI_log[0]=True
+        COLLI_log["is_hit"]=True
     elif COLLI_hitentwall == void_collision:
         for COLLI_Entity in COLLI_allEntityTest:
             if COLLI_Entity != COLLI_ent :
                 if hitbox.detect_collision_entity(COLLI_ent,COLLI_Entity):
-                   COLLI_log[0]=True
+                    COLLI_log["is_hit"]=True
+                    COLLI_log["hit_entity"]=True
+                    COLLI_log["entity"] = COLLI_Entity
+                    files.SAVE_FILE_JSON(COLLI_log,"log_nonWTF")
                     #collision entre les deux entiter
     else:
         files.SAVE_FILE_JSON(COLLI_ent,"log_wtf")

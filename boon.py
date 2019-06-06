@@ -175,24 +175,26 @@ def caught(boon, Entity) :
 	assert type(Entity) is dict
 	assert type(boon) is dict
 	assert "entity" in Entity["Type"]
-	assert "livingEnt" in Entity["Type"]
 	assert "boon" in boon["Type"]
 
 
 	allbonus = what_boon(boon)
 	for bonus in allbonus :
-		if bonus == "lifeUp" :
-			Entity = livingent.heal(Entity,boon["bonus"])
-		elif bonus == "damageUp" :
-			Entity = shootingent.damageUp(Entity, bonus["bonus"])
-		elif bonus == "armorUp" :
-			Entity = livingent.armorUp(Entity, bonus["bonus"])
-		elif bonus =="speedUp" :
-			Entity = movingent.speedUp(Entity, bonus["bonus"])
-		elif bonus == "armorMaxUp" :
-			Entity = livingent.armorMaxUp(Entity, bonus["bonus"])
-		elif bonus == "fireRateUp" :
-			Entity = shootingent.fireRateUp(Entity, bonus["bonus"])
+		if "livingEnt" in Entity["Type"] :
+			if bonus == "lifeUp" :
+				Entity = livingent.heal(Entity,boon["bonus"])
+			elif bonus == "armorUp" :
+				Entity = livingent.armorUp(Entity, bonus["bonus"])
+			elif bonus == "armorMaxUp" :
+				Entity = livingent.armorMaxUp(Entity, bonus["bonus"])
+		if "shotingEnt" in Entity["Type"] :
+			if bonus == "damageUp" :
+				Entity = shootingent.damageUp(Entity, bonus["bonus"])
+			elif bonus == "fireRateUp" :
+				Entity = shootingent.fireRateUp(Entity, bonus["bonus"])
+		if "livingEnt" in Entity["Type"] :
+			if bonus =="speedUp" :
+				Entity = movingent.speedUp(Entity, bonus["bonus"])
 
 
 	return Entity

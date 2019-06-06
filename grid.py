@@ -31,8 +31,8 @@ def Supr_Ent_Grid(SEG_ent, SEG_grid) :
 """
 	for SEG_y in SEG_ent["Asset"][ActualAsset]["Shadow"] :
 		for SEG_x in SEG_y :
-			if SEG_x != void_collision :
-				SEG_grid[SEG_ent["y"]+SEG_y][SEG_ent["x"]+SEG_x]["Entity"].remove(SEG_ent)
+			if SEG_x != void_collision and (SEG_ent in SEG_grid[SEG_ent["y"]+SEG_y][SEG_ent["x"]+SEG_x]["Entity"]) :
+				SEG_grid[SEG_ent["x"]+SEG_x][SEG_ent["y"]+SEG_y]["Entity"].remove(SEG_ent)
 
 	return SEG_grid
 
@@ -69,7 +69,7 @@ def Add_Ent_Grid(SEG_ent, SEG_grid, SEG_collision=False) :
 				if SEG_collision :
 					for SEG_what_ent in SEG_grid[SEG_ent["y"]+SEG_y][SEG_ent["x"]+SEG_x]["Entity"] :
 						SEG_collided_ent.append(SEG_what_ent)
-				SEG_grid[SEG_ent["y"]+SEG_y][SEG_ent["x"]+SEG_x]["Entity"].append(SEG_ent)
+				SEG_grid[SEG_ent["x"]+SEG_x][SEG_ent["y"]+SEG_y]["Entity"].append(SEG_ent)
 
-	return SEG_grid
 
+	return (SEG_grid, SEG_collided_ent)

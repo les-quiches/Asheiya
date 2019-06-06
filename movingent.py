@@ -3,6 +3,8 @@
 import entity
 import time
 import hitbox
+import grid
+
 import files
 
 void_collision ="0"
@@ -91,7 +93,7 @@ def speedUp(SU_Entity, SU_amount) :
 
 
 #_____Move______________________________________________________________________
-def move_entity(ME_Entity,ME_x,ME_y,ME_isGravity=False):
+def move_entity(ME_Entity,ME_grid,ME_x,ME_y,ME_isGravity=False,ME_isCollision=False):
 
     """
     G{classtree}
@@ -105,29 +107,38 @@ def move_entity(ME_Entity,ME_x,ME_y,ME_isGravity=False):
     @param ME_Entity: Entite que l'on veux déplacer
     @type ME_Entity: dict
 
+    @param ME_Entity: grille représentant le jeu
+    @type ME_Entity: list
+
     @param ME_x: déplacement sur x que l'on veux appliquer à l'entité
     @type  ME_x: int
 
     @param ME_y: déplacement sur y que l'on veux appliquer à l'entité
     @type  ME_y: int
 
-    @param ME_willCollide: True si le déplacement va engendrer une collision, False sinon
-    @type ME_willCollide : bool
 
     @param ME_isGravity: True si le déplacement est dû à la gravité
     @type ME_isGravity : bool
 
+    @param ME_isCollision: True si le déplacement doit vérifier les collisions, False sinon
+    @type ME_isCollision : bool
     RETOUR
     ======
 
     @return ME_Entity : Entité déplacé
     @rtype ME_Entity :dict
     """
+    ME_grid = grid.Supr_Ent_Grid(ME_Entity,ME_grid)
+
     ME_Entity["x"]+=2*ME_x
     ME_Entity["y"]+=ME_y
+
+    ME_grid,ME_collided = grid.Add_Ent_Grid(ME_Entity,ME_grid,ME_isCollision)
+
     if not(ME_isGravity):
         ME_Entity["LastTime"]=time.time()
-    return(ME_Entity)
+
+    return(ME_Entity,ME_grid,ME_collided)
 
 def tp_entity(TPE_Entity,TPE_x,TPE_y):
     """

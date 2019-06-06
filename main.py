@@ -35,6 +35,7 @@ oldSettings = termios.tcgetattr(sys.stdin)
 
 window= None #contete du jeu manche/menu
 walls=None
+gridGame = None #grile comportant dans chaqune de ses cases un dictionnaire, celui-ci a deux clés : Background contenant le caractère correspondant au type de fond, et Entity, une liste contenant les entités présentes sur cette case.
 allAssetGameZone = None
 acutalAssetGameZone = None
 
@@ -383,7 +384,7 @@ def Time_game():
 	======
 		Sans retour
 	"""
-	global window, timeStep, timeScreen, walls, allEntity, player, menu, timeGravity, acutalAssetGameZone, Story
+	global window, timeStep, timeScreen, walls, allEntity, player, menu, timeGravity, acutalAssetGameZone, Story, gridGame
 	actualTime=time.time()
 	if menu == "manche":
 		#on est en jeu
@@ -405,7 +406,7 @@ def Time_game():
 									ent = boon.caught(PlayeurDetect[2],ent)
 									toRemove.append(PlayeurDetect[2])
 					if (ent["Vx"]!=0 or ent["Vy"]!=0) :
-						ent = movingent.move_entity(ent,ent["Vx"], ent["Vy"])
+						ent, gridGame, = movingent.move_entity(ent,ent["Vx"], ent["Vy"])
 					if "bullet" in ent["Type"] :
 						logHit = hitbox.hit(ent, allEntity, Shadow_background)
 						if logHit["hit_entity"]:#une entite a etait touche
@@ -639,7 +640,7 @@ def Interact():
 		#recuperation evenement clavier
 		return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
 
-	global player, menu, manche, walls, acutalAssetGameZone
+	global player, menu, manche, walls, acutalAssetGameZone, gridGame
 
 	if isData() :
 		c = sys.stdin.read(1)
@@ -668,49 +669,56 @@ def Interact():
 
 			if not(player["spowerOn"]):
 				if c == "l":
+					gridGame = grid.Supr_Ent_Grid(player, gridGame)
 					player = character.switch_orientation(player,"Right")
 					player = character.switch_stand(player,"Wait")
+					player,gridGame,INT_whatcollide=movingent.move_entity(player,gridGame,0,0,,True)
 
 				elif c == "j":
+					gridGame = grid.Supr_Ent_Grid(player, gridGame)
 					player = character.switch_orientation(player,"Left")
 					player = character.switch_stand(player,"Wait")
+					player,gridGame,INT_whatcollide=movingent.move_entity(player,gridGame,0,0,,True)
 
 				elif c == "i":
+					gridGame = grid.Supr_Ent_Grid(player, gridGame)
 					player = character.switch_fire_angle(player,45)
 					player = character.switch_stand(player,"Wait")
+					player,gridGame,INT_whatcollide=movingent.move_entity(player,gridGame,0,0,,True)
 
 				elif c == "k":
+					gridGame = grid.Supr_Ent_Grid(player, gridGame)
 					player = character.switch_fire_angle(player,-45)
 					player = character.switch_stand(player,"Wait")
+					player,gridGame,INT_whatcollide=movingent.move_entity(player,gridGame,0,0,,True)
 
 
 				# /!\ dans toute cette zone, gerer les collisions avant les deplacements avec hitbox.collision modification pour se soir detect_collision_wall
 				elif c == "d":
 					if not(player["Jump"]) :
+						gridGame = grid.Supr_Ent_Grid(player, gridGame)
 						player = character.switch_stand(player,"Run")
-					player = movingent.move_entity(player,1,0)
-					if hitbox.detect_collision_wall(player, Shadow_background) == _wall:
-						player = movingent.move_entity(player,-1,0)
+					if gridGame[player["x"]+1][player["y"]]["Background"] != _wall:
+						player,gridGame,INT_whatcollide=movingent.move_entity(player,gridGame,1,0,,True)
 
 
 				elif c == "q":
 					if not(player["Jump"]) :
+						gridGame = grid.Supr_Ent_Grid(player, gridGame)
 						player = character.switch_stand(player,"Run")
-					player = movingent.move_entity(player,-1,0)
+					if gridGame[player["x"]-1][player["y"]]["Background"] != _wall:
+						player,gridGame,INT_whatcollide=movingent.move_entity(player,gridGame,-1,0,,True)
 
-					if hitbox.detect_collision_wall(player, Shadow_background) == _wall:
-						player = movingent.move_entity(player,1,0)
 
 				elif c == "z" and player["Jump"]==0 and player["Vy"]==0 :
+					gridGame = grid.Supr_Ent_Grid(player, gridGame)
 					player = character.switch_stand(player, "Wait")
 					player = movingent.jump(player)
+					player,gridGame,INT_whatcollide=movingent.move_entity(player,gridGame,0,0,,True)
 
 				elif c == "s" :
-					player = movingent.move_entity(player,0,1)
-					if hitbox.detect_collision_wall(player, Shadow_background) == _wall:
-						player = movingent.move_entity(player,0,-1)
-					elif hitbox.detect_collision_wall(player, Shadow_background) == Gostwall:
-						player = movingent.move_entity(player,0,1)
+					if gridGame[player["x"]][player["y"]+1]["Background"] == Gostwall:
+					player,gridGame,INT_whatcollide=movingent.move_entity(player,gridGame,0,1,,True)
 
 			else :
 				None
@@ -727,6 +735,7 @@ def Interact():
 				None
 
 	termios.tcflush(sys.stdin.fileno(),termios.TCIFLUSH) #on vide le buffer d'entree
+	return INT_whatcollide
 
 
 

@@ -294,7 +294,7 @@ def Game():
 		#a integrer dans la derniere fonction qui sera appele par startMenu -afair
 
 	if menu == "manche" :
-		if manche%10 == 0: #on est dans une mancge non initialise
+		if manche%10 == 0: #on est dans une manche non initialise
 			Init_manche()
 		#gestion des IAs :
 		for ent in allEntity:
@@ -336,7 +336,9 @@ def Game():
 						finManche = False
 					pass
 			if finManche :
-				manche = "YouWin"
+				menu = "YouWin"
+				sys.stdout.write("\033[37m")
+				sys.stdout.write("\033[40m")
 			# #gestion des fins de manches
 
 			# if not(livingent.is_alive(boss)) :
@@ -344,6 +346,8 @@ def Game():
 			# 	#-afair, gerer suivant la valeur de manche
 			if not(livingent.is_alive(player)):
 				menu = "youLose"
+				sys.stdout.write("\033[37m")
+				sys.stdout.write("\033[40m")
 	"""
 	if menu == "transition" :
 		manche +=9 #on passe a la manche suivante

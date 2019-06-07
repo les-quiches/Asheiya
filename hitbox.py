@@ -160,7 +160,7 @@ def hit(bullet, entities , Shadow_backgound ) :#non tester
         if HIT_collision_wall != _wall:
             for HIT_entity in entities:
                 HIT_collision_entity = detect_collision_entity(bullet,HIT_entity)
-                if HIT_collision_entity :
+                if HIT_collision_entity != void_collision :
                     if bullet["origine"] == HIT_entity["Name"]:
                         HIT_log["is_hit"] = False
                         HIT_log["hit_entity"]=False
@@ -355,7 +355,6 @@ def detect_collision_entity(DCE_Entity_1, DCE_Entity_2):#non tester
     DCE_Shadow_asset_1 = DCE_Entity_1["Asset"]["Actual"]["Shadow"][DCE_Entity_1["Asset"]["Actual"]["FrameNb"]]
     DCE_Shadow_asset_2 = DCE_Entity_2["Asset"]["Actual"]["Shadow"][DCE_Entity_2["Asset"]["Actual"]["FrameNb"]]
     DCE_Shadow = Add_Shadow(DCE_Shadow_asset_2,DCE_Void_Shadow,DCE_x2,DCE_y2)
-    show_Shadow(DCE_Shadow_asset_2)
     for i in range(0,len(DCE_Shadow_asset_1)):
         for j in range(0,len(DCE_Shadow_asset_1[i])):
             if DCE_Shadow_asset_1[i][j] != void_collision:

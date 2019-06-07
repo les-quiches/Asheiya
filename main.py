@@ -197,7 +197,7 @@ def Init_manche():
 		shotDelay = 3
 		bulletSpeed = 0.04
 		colorBullet = color["txt"]["Red"]
-		player = shootingent.create_shooting_ent(player,damage,bulletSpeed,assetShot,colorBullet,shotDelay)
+		player = shootingent.create_shooting_ent(player,damage,bulletSpeed,assetShot,shotDelay,colorBullet)
 
 
 		spowerSpeed = 1 #toutes les secondes on augmente de 1 la charge du super
@@ -332,7 +332,8 @@ def Game():
 			finManche = True
 			for ent in allEntity :
 				if "livingEnt" in ent["Type"]:
-					finManche = False
+					if not("character" in ent["Type"]):
+						finManche = False
 					pass
 			if finManche :
 				manche = "YouWin"
@@ -418,8 +419,9 @@ def Time_game():
 					if (ent["Gravity"]):
 						onTheGround = entity.is_ground_beneath(entity.feet(ent), Shadow_background)
 						if ent["Jump"]>0 :
-							if Shadow_background[ent["y"]-1][ent["x"]] != _wall :
-								ent = movingent.move_entity(ent,0,-1,True)
+							ent=movingent.move_entity(player,0,-1)
+							if hitbox.detect_collision_wall(ent,Shadow_background) == _wall:
+								ent = movingent.move_entity(ent,0,1,True)
 								TG_whatcollide=TG_whatcollide + TG_toAdd
 
 						elif not(onTheGround):
@@ -639,7 +641,7 @@ def Interact():
 			menu = "manche"
 
 		elif menu == "YouWin":
-			menu = "transition"
+			menu = "EndGame"
 
 		elif menu == "youLose":
 			menu = "EndGame"
@@ -675,25 +677,30 @@ def Interact():
 				elif c == "d":
 					if not(player["Jump"]) :
 						player = character.switch_stand(player,"Run")
-					if not(entity.is_ground_right(entity.RightSide(player),Shadow_background)):
-						player=movingent.move_entity(player,1,0)
+					player=movingent.move_entity(player,1,0)
+					if hitbox.detect_collision_wall(player,Shadow_background)==_wall:
+						player=movingent.move_entity(player,-1,0)
 
 
 				elif c == "q":
 					if not(player["Jump"]) :
 						player = character.switch_stand(player,"Run")
-					if not(entity.is_ground_left(entity.LeftSide(player),Shadow_background)):
-						player=movingent.move_entity(player,-1,0)
+					player=movingent.move_entity(player,-1,0)
+					if hitbox.detect_collision_wall(player,Shadow_background)==_wall:
+						player=movingent.move_entity(player,1,0)
 
 
-				elif c == "z" and player["Jump"]==0 and entity.is_ground_beneath(entity.feet(player), Shadow_background):
-					player = character.switch_stand(player, "Wait")
-					player = movingent.jump(player)
-					player=movingent.move_entity(player,0,-1)
+				elif c == "z" and player["Jump"]==0:
+					player=movingent.move_entity(player,0,1)
+					if hitbox.detect_collision_wall(player,Shadow_background) in [_wall,Gostwall]:
+						player=movingent.move_entity(player,0,-2)
+						player = character.switch_stand(player, "Wait")
+						player = movingent.jump(player)
 
 				elif c == "s" :
-					if Shadow_background[player["y"]+1][player["x"]]== Gostwall:
-						player=movingent.move_entity(player,0,1,)
+					player=movingent.move_entity(player,0,1)
+					if hitbox.detect_collision_wall(player,Shadow_background)==_wall:
+						player=movingent.move_entity(player,0,-1)
 
 
 				termios.tcflush(sys.stdin.fileno(),termios.TCIFLUSH) #on vide le buffer d'entree

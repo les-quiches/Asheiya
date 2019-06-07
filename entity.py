@@ -17,7 +17,7 @@ EntityHitbox = "E"
 
 
 #_____Create____________________________________________________________________
-def create_entity(Name, X, Y, Asset, AI = None):
+def create_entity(Name, X, Y, Asset,color, AI = None):
     """
     G{classtree}
     DESCRIPTION
@@ -42,8 +42,8 @@ def create_entity(Name, X, Y, Asset, AI = None):
     @param Asset : grille représentant le jeu
     @type Asset : list
 
-    @param grid : grille du jeu
-    @type  grid : list
+    @param color : couleur de l'asset
+    @type  color : couleur de l'asset
 
     @param AI : si l'entite est automatiquement controle, chemin d'acces vers le fichier qui la controle
     @type AI : str
@@ -62,6 +62,7 @@ def create_entity(Name, X, Y, Asset, AI = None):
     Entity["x"]= X
     Entity["y"]= Y
     Entity["Asset"]= Asset
+    Entity["Color"]=color
     Entity["AI"]=AI
 
     return Entity

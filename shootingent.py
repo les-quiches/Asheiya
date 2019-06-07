@@ -18,7 +18,7 @@ take_damage = "."
 
 import files
 #_____Create____________________________________________________________________
-def create_shooting_ent(Entity, damage, bulletSpeed, assetShot, shotDelay, lastShot=[time.time(),0]) :
+def create_shooting_ent(Entity, damage, bulletSpeed, assetShot, shotDelay,color, lastShot=[time.time(),0]) :
 
     """
     G{classtree}
@@ -63,6 +63,7 @@ def create_shooting_ent(Entity, damage, bulletSpeed, assetShot, shotDelay, lastS
     Entity["baseShotDelay"] = shotDelay
     Entity["lastShot"] = lastShot
     Entity["Type"].append("shootingEnt")
+    Entity["bulletColor"]=color
     return Entity
 
 def create_bullet(Entity, damage, origine) :
@@ -268,7 +269,7 @@ def shoot(Entity) :
     asset = {}
     asset[name_asset] = Entity["assetShot"][name_asset]
     asset["Actual"] = Entity["assetShot"][name_asset]
-    bullet = entity.create_entity(bullet_name,x,y,asset)
+    bullet = entity.create_entity(bullet_name,x,y,asset,Entity["bulletColor"])
     bullet = movingent.create_moving_ent(bullet, Vx, Vy, Entity["bulletSpeed"])
     bullet = create_bullet(bullet,Entity["damage"],Entity["Name"])
 

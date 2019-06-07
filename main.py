@@ -97,7 +97,7 @@ def Init(): 	#initialisation des variables
 
 
 	#start menu_____________________________________________________________________________________________________________________________
-	menu= "manche"
+	menu= "Game_dev2"
 	manche = 10 #1 pour premiere manche, 0 pour le nb de fois qu'on est passe dans la boucle
 
 
@@ -148,7 +148,7 @@ def Init_manche():
 	"""
 	#-afaire
 
-	global manche, menu, player, allAssetGameZone, acutalAssetGameZone, Story, Shadow_background
+	global manche, menu, player, allAssetGameZone, acutalAssetGameZone, Story, Shadow_background, color
 
 
 	asheiyaAsset=[
@@ -177,7 +177,7 @@ def Init_manche():
 		vxPlayer = 0
 		vyPlayer = 0
 
-		player = entity.create_entity("Asheiya Briceval",xPlayer,yPlayer,assetPlayer)
+		player = entity.create_entity("Asheiya Briceval",xPlayer,yPlayer,assetPlayer,color["txt"]["Yellow"])
 
 
 		speedPlayer = 0.1 #deplaxcement pas seconde
@@ -196,7 +196,8 @@ def Init_manche():
 		damage = 5
 		shotDelay = 3
 		bulletSpeed = 0.04
-		player = shootingent.create_shooting_ent(player,damage,bulletSpeed,assetShot,shotDelay)
+		colorBullet = color["txt"]["Red"]
+		player = shootingent.create_shooting_ent(player,damage,bulletSpeed,assetShot,colorBullet,shotDelay)
 
 
 		spowerSpeed = 1 #toutes les secondes on augmente de 1 la charge du super
@@ -214,7 +215,7 @@ def Init_manche():
 		assetBonus = {}
 		assetBonus["boon1"] = entity.create_asset("Boon/boon1.txt") #-afair en sorte que les accès soient automatisé
 		assetBonus["Actual"] = assetBonus["boon1"]
-		boon1= entity.create_entity("boon1", xbonus, ybonus, assetBonus) #-afair en sorte que leurs noms s'incrémente tout seul
+		boon1= entity.create_entity("boon1", xbonus, ybonus, assetBonus, color["txt"]["Green"]) #-afair en sorte que leurs noms s'incrémente tout seul
 		boon1 = boon.create_boon(boon1, listeBonus)
 
 		allEntity.append(boon1)
@@ -226,7 +227,7 @@ def Init_manche():
 		assetBonus["boonGenerator"] = entity.create_asset("Boon/boonGenerator.txt")
 		assetBonus["Actual"] = assetBonus["boonGenerator"]
 		geneSpeed = 2
-		boong = entity.create_entity("boong1", xbonus, ybonus, assetBonus)
+		boong = entity.create_entity("boong1", xbonus, ybonus, assetBonus,color["txt"]["Cyan"])
 		boong = boon.create_boon_generator(boong, listeBonus, geneSpeed)
 
 		allEntity.append(boong)
@@ -238,14 +239,14 @@ def Init_manche():
 
 
 		Cristal_1 ={}
-		Cristal_1 = entity.create_entity("Cristal_1",42,24,assetCristal)#position x=42,y=24
+		Cristal_1 = entity.create_entity("Cristal_1",42,24,assetCristal,color["txt"]["Pink"])#position x=42,y=24
 
 		Cristal_1 = livingent.create_living_ent(Cristal_1,9,0)#9 point de vie, 0 point d'armure
 		allEntity.append(Cristal_1)
 
 
 		Cristal_2 ={}
-		Cristal_2 = entity.create_entity("Cristal_1",73,36,assetCristal)#position x=73,y=37
+		Cristal_2 = entity.create_entity("Cristal_1",73,36,assetCristal,color["txt"]["Red"])#position x=73,y=37
 		Cristal_1 = livingent.create_living_ent(Cristal_2,12,0)#12 point de vie, 0 point d'armure
 		allEntity.append(Cristal_2)
 
@@ -292,68 +293,56 @@ def Game():
 		#animation de demarage + elements loristiques et tout
 		#a integrer dans la derniere fonction qui sera appele par startMenu -afair
 
-	if menu == "manche" and (manche%10 == 0) : #on est dans une mancge non initialise
-		Init_manche()
-
-
-	#gestion des IAs :
-	for ent in allEntity:
-		if ent["AI"]!=None :
-			log = AI.execute(ent, allEntity)
-			ent = log[0]
-			allEntity = log[1]
-
-
-	#gestion des assets actuelles :
-	for ent in allEntity :
-		if "character" in ent["Type"] :
-			ent["Asset"]["Actual"] = character.get_asset(ent)
-			pass #au cas ou on mette d'autre type ensuite, il faut pas que les assets actuels s'écrasent les uns les autres.
-
-
-	#gestion de l'ultime
-	if player["spowerDelay"]<=0 :
-		player=character.power_off(player) #si le joueur n'a plus de temps d'ultime, il n'est pas entrain de l'utiliser
-		player["spowerDelay"]=0
-
-	#gestion des générateurs de boons -afair :
-	for ent in allEntity :
-		if "boonGenerator" in ent["Type"] :
-			# if il n'y a pas de bonus sur la case du générateur : -afair
-			# boong = boon.set_free(boong)
-			None
-
-
-
-	#gestion des cadavres
-	toRemove = []
 	if menu == "manche" :
+		if manche%10 == 0: #on est dans une mancge non initialise
+			Init_manche()
+		#gestion des IAs :
+		for ent in allEntity:
+			if ent["AI"]!=None :
+				log = AI.execute(ent, allEntity)
+				ent = log[0]
+				allEntity = log[1]
+		#gestion des assets actuelles :
 		for ent in allEntity :
-			if "livingEnt" in ent["Type"]:
-				if not(livingent.is_alive(ent)):
-					toRemove.append(ent)
+			if "character" in ent["Type"] :
 
-		for deadEnt in toRemove :
-			allEntity.remove(deadEnt)
-
-		finManche = True
+				ent["Asset"]["Actual"] = character.get_asset(ent)
+				pass #au cas ou on mette d'autre type ensuite, il faut pas que les assets actuels s'écrasent les uns les autres.
+		#gestion de l'ultime
+		if player["spowerDelay"]<=0 :
+			player=character.power_off(player) #si le joueur n'a plus de temps d'ultime, il n'est pas entrain de l'utiliser
+			player["spowerDelay"]=0
+		#gestion des générateurs de boons -afair :
 		for ent in allEntity :
-			if "livingEnt" in ent["Type"]:
-				finManche = False
-				pass
-		if finManche :
-			manche = "YouWin"
+			if "boonGenerator" in ent["Type"] :
+				# if il n'y a pas de bonus sur la case du générateur : -afair
+				# boong = boon.set_free(boong)
+				None
+		#gestion des cadavres
+		toRemove = []
+		if menu == "manche" :
+			for ent in allEntity :
+				if "livingEnt" in ent["Type"]:
+					if not(livingent.is_alive(ent)):
+						toRemove.append(ent)
 
+			for deadEnt in toRemove :
+				allEntity.remove(deadEnt)
 
-		# #gestion des fins de manches
+			finManche = True
+			for ent in allEntity :
+				if "livingEnt" in ent["Type"]:
+					finManche = False
+					pass
+			if finManche :
+				manche = "YouWin"
+			# #gestion des fins de manches
 
-		# if not(livingent.is_alive(boss)) :
-		# 	menu = "transition"
-		# 	#-afair, gerer suivant la valeur de manche
-
-		if not(livingent.is_alive(player)):
-			menu = "youLose"
-			# -afair
+			# if not(livingent.is_alive(boss)) :
+			# 	menu = "transition"
+			# 	#-afair, gerer suivant la valeur de manche
+			if not(livingent.is_alive(player)):
+				menu = "youLose"
 	"""
 	if menu == "transition" :
 		manche +=9 #on passe a la manche suivante
@@ -512,36 +501,13 @@ def Show() :
 	#on efface tout
 
 	Windows()
-
 	if menu == "manche":
 		#on affiche les entités
 		for ent in allEntity :
-			if "boon" in ent["Type"] :
-				color_bg = color["background"]["Black"]
-				color_txt = color["txt"]["Green"]
-
-			elif "bullet" in ent["Type"] :
-				color_bg = color["background"]["Black"]
-				color_txt = color["txt"]["Red"]
-
-			else :
-				color_bg = color["background"]["Black"]
-				color_txt = color["txt"]["Cyan"]
-
-			if "character" in ent["Type"]:
-				color_bg = color["background"]["Black"]
-				color_txt = color["txt"]["Yellow"]
+			color_txt = ent["Color"]
+			color_bg = color["background"]["Black"]
 			entity.show_entity(ent,color_bg,color_txt)
-
-
 	timeScreen = time.time()
-
-	#restoration couleur
-	#sys.stdout.write("\033[37m")
-	#sys.stdout.write("\033[40m")
-	#
-	#deplacement curseur
-	#sys.stdout.write("\033[1;1H\n")
 	return
 
 
@@ -679,7 +645,8 @@ def Interact():
 			menu = "EndGame"
 
 
-		elif ((manche%10)==1 and menu=="manche") : #on est en jeu
+		elif ((manche%10)==1 and menu=="manche") :
+			#on est en jeu
 			if (c == "\n" and player["spowerCharge"]>=player["spowerMax"]) : #-afair : si on appuie sur espace on balance l'ultime
 				player["spowerCharge"]=0
 				player["spowerDelay"]=4
@@ -725,7 +692,7 @@ def Interact():
 					player=movingent.move_entity(player,0,-1)
 
 				elif c == "s" :
-					if gridGame[player["y"]+1][player["x"]]== Gostwall:
+					if Shadow_background[player["y"]+1][player["x"]]== Gostwall:
 						player=movingent.move_entity(player,0,1,)
 
 
@@ -733,19 +700,8 @@ def Interact():
 
 			else :
 				None
-				#-afair : gestion des interactions lorsque l'on est en ulti
-
-		if menu in ["youLose", "YouWin" , "transition"] : #-afair, si on est dans un menu textuel
-		#deplacer le pointeur suivant l'endroit
-		#passer a la suite si c'est une transitioin, quitte le jeu si c'est une fin de jeu
-			if c=="z":
-				None
-			elif c=="s" :
-				None
-			elif c=="d" :
-				None
-
-	return INT_whatcollide
+				#-afair : gestion des interactions lorsque l'on est en ultiS
+	return
 
 
 
